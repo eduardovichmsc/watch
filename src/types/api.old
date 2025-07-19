@@ -1,0 +1,42 @@
+// src/types/api.ts
+
+// Базовый тип для всех компонентов
+export interface BaseComponent {
+	id: number;
+	name: string;
+	description: string;
+	price: string; // Цены приходят как строки, нужно будет парсить
+	image: string | null;
+	watch_types: { id: number; name: string; description: string }[];
+}
+
+// Конкретные типы компонентов
+export type Case = BaseComponent & { material: string; diameter: string };
+export type Bezel = BaseComponent & {
+	material: string;
+	color: string;
+	style: string;
+};
+export type Dial = BaseComponent & { color: string; material: string };
+export type Strap = BaseComponent & { strap_type: string; color: string }; // "braslet" на фронте
+export type Hand = BaseComponent & { hand_type: "hour" | "minute" | "second" }; // Для main_arrows
+export type SecondHand = BaseComponent & { color: string; material: string }; // для second_arrows
+export type GmtHand = BaseComponent & { color: string; material: string }; // для gmt_arrows
+export type Logo = BaseComponent & { logo: "logo" | "custom" | "none" };
+// Добавьте сюда другие типы компонентов, если они есть (subdial_arrows, date_windows)
+
+// Тип для моделей часов
+export interface ApiWatchType {
+	id: number;
+	name: string;
+	description: string;
+	image: string | null;
+}
+
+// Тип для ответа с пагинацией
+export interface PaginatedResponse<T> {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: T[];
+}

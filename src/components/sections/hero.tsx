@@ -1,0 +1,131 @@
+// app/components/Hero.tsx
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { Settings, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { PATHS } from "@/constants/paths";
+
+const content = {
+	image: {
+		src: "/home/royal-collection.jpg",
+		alt: "Премиальные кастомизированные часы",
+	},
+	subtitle: "BEYOND TIMEKEEPING",
+	title: {
+		line1: "Your Legacy,",
+		line2: "Engineered.",
+	},
+	description:
+		"Совершенная инженерия. Бескомпромиссный дизайн. Создайте часы, которые отражают именно вас.",
+	button: {
+		text: "Создать свои часы",
+		link: PATHS.CONFIGURATOR,
+	},
+	secondaryButton: {
+		text: "Посмотреть коллекцию",
+		link: PATHS.DESIGN_GALLERY,
+	},
+};
+
+// Варианты для анимации Framer Motion
+const containerVariants = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.15,
+		},
+	},
+} as const;
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 20 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		transition: {
+			duration: 0.6,
+			ease: [0.4, 0.0, 0.2, 1],
+		},
+	},
+} as const;
+
+export const Hero = () => {
+	return (
+		<section className="relative w-full h-screen bg-black text-white flex items-center justify-center overflow-hidden">
+			{/* Фоновое изображение и градиент */}
+			<div className="absolute inset-0 z-0">
+				<motion.div
+					initial={{ scale: 1, opacity: 0.3 }}
+					animate={{ scale: 1.05, opacity: 0.5 }}
+					transition={{
+						duration: 15,
+						ease: "easeInOut",
+						repeat: Infinity,
+						repeatType: "mirror",
+					}}
+					className="w-full h-full">
+					<Image
+						src={content.image.src}
+						fill
+						priority
+						className="object-cover"
+						alt={content.image.alt}
+					/>
+				</motion.div>
+				{/* Градиент */}
+				<div className="absolute inset-0 bg-radial-gradient(ellipse_at_center,transparent_20%,black_85%)"></div>
+			</div>
+
+			{/* Контент по центру */}
+			<motion.div
+				variants={containerVariants}
+				initial="hidden"
+				animate="visible"
+				className="relative z-10 flex flex-col items-center text-center px-4">
+				<motion.p
+					variants={itemVariants}
+					className="font-mono text-sm uppercase tracking-widest text-zinc-400">
+					{content.subtitle}
+				</motion.p>
+
+				<motion.h1
+					variants={itemVariants}
+					className="mt-4 font-extralight text-6xl md:text-8xl lg:text-9xl tracking-tighter text-white leading-none">
+					{content.title.line1}
+					<br />
+					{content.title.line2}
+				</motion.h1>
+
+				<motion.p
+					variants={itemVariants}
+					className="mt-6 max-w-xl text-lg text-zinc-300">
+					{content.description}
+				</motion.p>
+
+				{/* Контейнер для кнопок */}
+				<motion.div
+					variants={itemVariants}
+					className="mt-12 flex flex-col items-center gap-6">
+					{/* Основная кнопка */}
+					<Link
+						href={content.button.link}
+						className="group inline-flex items-center justify-center gap-x-3 h-16 w-full sm:w-auto px-8 bg-white text-black font-semibold rounded-none transition-colors hover:bg-zinc-200">
+						<Settings className="w-6 h-6 transition-transform duration-300 group-hover:rotate-45" />
+						<span>{content.button.text}</span>
+					</Link>
+
+					{/* Вторичная кнопка */}
+					<Link
+						href={content.secondaryButton.link}
+						className="group inline-flex items-center gap-x-2 text-zinc-400 transition-colors hover:text-white">
+						<span>{content.secondaryButton.text}</span>
+						<ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+					</Link>
+				</motion.div>
+			</motion.div>
+		</section>
+	);
+};
