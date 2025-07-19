@@ -1,31 +1,45 @@
-// src/components/ui/cursor.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useCursorStore } from "@/stores/cursor";
 import { ChevronDown, MoveHorizontal, Search } from "lucide-react";
 
 export const CustomCursor = () => {
+	const [isTouchDevice, setIsTouchDevice] = useState(false);
 	const { variant } = useCursorStore();
-
-	// Логика движения
 	const cursorX = useMotionValue(-100);
 	const cursorY = useMotionValue(-100);
 	const springConfig = { damping: 25, stiffness: 300 };
 	const springX = useSpring(cursorX, springConfig);
 	const springY = useSpring(cursorY, springConfig);
 
+	// Определение типа устройства
 	useEffect(() => {
-		const moveCursor = (e: MouseEvent) => {
-			cursorX.set(e.clientX);
-			cursorY.set(e.clientY);
-		};
-		window.addEventListener("mousemove", moveCursor);
-		return () => {
-			window.removeEventListener("mousemove", moveCursor);
-		};
-	}, [cursorX, cursorY]);
+		const hasTouchSupport =
+			"ontouchstart" in window || navigator.maxTouchPoints > 0;
+		if (hasTouchSupport) {
+			setIsTouchDevice(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		// Оптимизация: слушатель только для не-сенсорных устройств
+		if (!isTouchDevice) {
+			const moveCursor = (e: MouseEvent) => {
+				cursorX.set(e.clientX);
+				cursorY.set(e.clientY);
+			};
+			window.addEventListener("mousemove", moveCursor);
+			return () => {
+				window.removeEventListener("mousemove", moveCursor);
+			};
+		}
+	}, [isTouchDevice, cursorX, cursorY]);
+
+	if (isTouchDevice) {
+		return null;
+	}
 
 	const dotVariants = {
 		default: {
@@ -49,7 +63,6 @@ export const CustomCursor = () => {
 		},
 	};
 
-	// Варианты для Кольца
 	const ringVariants = {
 		default: {
 			height: 32,
@@ -105,7 +118,6 @@ export const CustomCursor = () => {
 
 	return (
 		<>
-			{/* Точка */}
 			<motion.div
 				variants={dotVariants}
 				animate={variant}
@@ -118,8 +130,6 @@ export const CustomCursor = () => {
 				}}
 				className="fixed top-0 left-0 z-[9999] pointer-events-none"
 			/>
-
-			{/* Кольцо */}
 			<motion.div
 				variants={ringVariants}
 				animate={variant}

@@ -68,7 +68,7 @@ export function Header() {
 			<header className={headerClasses}>
 				<div
 					className={clsx(
-						"mx-auto flex items-center justify-between px-4 sm:px-8 lg:px-16 transition-all duration-300 ease-in-out",
+						"mx-auto flex items-center justify-between px-8 lg:px-16 transition-all duration-300 ease-in-out",
 						{
 							"py-6 lg:py-10": isHomePage && !isScrolled,
 							"py-4": !isHomePage || isScrolled,

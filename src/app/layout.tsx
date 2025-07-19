@@ -8,6 +8,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { CustomCursor } from "@/components/ui/cursor";
+import { Preloader } from "@/components/layouts/preloader";
+import { GlobalAlert } from "@/components/layouts/alert";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -53,6 +55,10 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={`${ibmPlexMono.variable} ${urbanist.variable} ${geistSans.variable} ${cormorant.variable} ${geistMono.variable} antialiased`}>
+				<Preloader />
+
+				<CustomCursor />
+				<GlobalAlert />
 				{children}
 			</body>
 		</html>

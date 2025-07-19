@@ -40,7 +40,7 @@ export default function CartPage() {
 
 	return (
 		<div className="mx-auto px-4 py-12 sm:px-6 lg:px-16 pb-32 lg:pb-12">
-			<h1 className="font-light text-5xl md:text-7xl tracking-tighter text-black mb-12">
+			<h1 className="px-4 lg:px-0 font-light text-5xl md:text-7xl tracking-tighter text-black mb-12">
 				Ваша корзина.
 			</h1>
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">

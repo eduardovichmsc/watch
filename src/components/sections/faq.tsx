@@ -3,6 +3,7 @@
 
 import { motion } from "framer-motion";
 import { FaqItem } from "@/components/shared/card/faq";
+import { PATHS } from "@/constants/paths";
 
 const faqData = [
 	{
@@ -82,7 +83,7 @@ export const FaqSection = () => {
 						Наша команда поддержки готова помочь вам с любым вопросом.
 					</p>
 					<a
-						href="/contact"
+						href={PATHS.CONTACTS}
 						className="
               group inline-flex items-center gap-3 mt-6 px-8 py-3 
               font-semibold text-base border border-stone-800 text-stone-800

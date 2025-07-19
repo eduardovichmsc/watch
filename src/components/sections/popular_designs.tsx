@@ -70,7 +70,7 @@ export const PopularDesigns = () => {
 
 	return (
 		<section className="w-full bg-white text-black overflow-hidden">
-			<div className="mx-auto px-16 py-24 sm:py-32">
+			<div className="mx-auto px-8 lg:px-16 py-24 sm:py-32">
 				{/* Заголовок */}
 				<div className="max-w-3xl">
 					<p className="font-mono text-sm uppercase tracking-widest text-zinc-500">
@@ -83,13 +83,13 @@ export const PopularDesigns = () => {
 				</div>
 
 				{/* Компонент карусели */}
-				<Carousel setApi={setApi} className="mt-20 -ml-4">
+				<Carousel setApi={setApi} className="mt-20 lg:-ml-4">
 					<CarouselContent>
 						{content.carouselContent.map((design) => (
 							<CarouselItem
 								key={design.id}
-								className="pl-4 md:basis-1/2 lg:basis-1/3">
-								<div className="p-1">
+								className="lg:pl-4 md:basis-1/2 lg:basis-1/3">
+								<div className=" lg:p-1">
 									<Link href={design.href} className="group block">
 										<div className="w-full overflow-hidden bg-zinc-100 rounded-none">
 											<Image
@@ -118,8 +118,8 @@ export const PopularDesigns = () => {
 						))}
 					</CarouselContent>
 
-					{/* Контролы карусели и кнопка "Смотреть все" */}
-					<div className="mt-16 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-8">
+					{/* Контроль карусели */}
+					<div className="lg:mt-16 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-8">
 						<Link
 							href="/gallery"
 							className="group inline-flex items-center justify-center gap-x-3 h-16 w-full sm:w-auto px-8 bg-transparent text-black border border-zinc-800 rounded-none font-semibold transition-colors hover:bg-black hover:text-white">
@@ -131,7 +131,7 @@ export const PopularDesigns = () => {
 							<div className="font-mono text-sm text-zinc-500">
 								{current} / {count}
 							</div>
-							{/* Кастомные кнопки навигации */}
+
 							<CarouselPrevious className="static -translate-y-0 w-16 h-16 rounded-none border-zinc-800 bg-transparent text-black hover:bg-black hover:text-white" />
 							<CarouselNext className="static -translate-y-0 w-16 h-16 rounded-none border-zinc-800 bg-transparent text-black hover:bg-black hover:text-white" />
 						</div>

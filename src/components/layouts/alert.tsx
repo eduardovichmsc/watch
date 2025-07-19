@@ -44,7 +44,7 @@ export const GlobalAlert = () => {
 							bgClass
 						)}>
 						<div className="flex-shrink-0">{icon}</div>
-						<p className="flex-grow font-semibold">{message}</p>
+						<p className="flex-grow font-medium">{message}</p>
 						<button
 							onClick={hideAlert}
 							className="p-1 rounded-full hover:bg-white/20 transition-colors"

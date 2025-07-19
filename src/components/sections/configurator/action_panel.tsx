@@ -52,7 +52,7 @@ export const ActionPanel = ({
 		setIsSharing(true);
 		try {
 			await navigator.clipboard.writeText(window.location.href);
-			showAlert("Ссылка на конфигурацию скопирована!", "success");
+			showAlert("Ссылка на конфигурацию скопирована", "success");
 			setIsCopied(true);
 		} catch (err) {
 			console.error("Не удалось скопировать ссылку: ", err);
@@ -66,7 +66,7 @@ export const ActionPanel = ({
 		setIsAddingToCart(true);
 		try {
 			await new Promise((resolve) => setTimeout(resolve, 500));
-			showAlert("Товар добавлен в коризну!", "success");
+			showAlert("Товар добавлен в корзину", "success");
 			addToCart(model, window.location.href, selection, totalPrice);
 			setIsAdded(true);
 		} catch (err) {
@@ -138,7 +138,7 @@ export const ActionPanel = ({
 							onClick={handleAddToCartClick}
 							disabled={isAnyActionInProgress || !model}
 							className={cn(
-								"aspect-square lg:aspect-auto flex-1 h-14 lg:h-16 flex items-center justify-center gap-x-2 lg:gap-x-3 text-white font-semibold text-sm lg:text-base rounded-none transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed",
+								"aspect-square lg:aspect-auto flex-1 h-14 lg:h-16 flex items-center justify-center gap-x-2 lg:gap-x-3 text-white font-medium text-sm lg:text-base rounded-none transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed",
 								{
 									"bg-emerald-600": isAdded,
 									"bg-zinc-700": isAddingToCart,

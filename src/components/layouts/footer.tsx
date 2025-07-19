@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Instagram, Facebook, Youtube, Twitter } from "lucide-react";
 
 const content = {
-	logo: "ChronoLux",
+	logo: "WotchModClub",
 	tagline: "Инженерия. Воплощенная в вас.",
 	socials: [
 		{ href: "#", label: "Instagram", icon: Instagram },

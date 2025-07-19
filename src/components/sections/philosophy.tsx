@@ -12,7 +12,7 @@ const content = {
 
 export const PhilosophySection = () => (
 	<section className="bg-white text-black py-24 sm:py-32">
-		<div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+		<div className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
 			<div className="relative w-full aspect-square">
 				<Image
 					src={content.image}

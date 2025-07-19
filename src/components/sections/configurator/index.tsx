@@ -99,13 +99,13 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
-				className="sticky top-8 lg:top-16 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
+				className="sticky top-16 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
 			{/* Правая колонка */}
 			<div className="h-fit">
 				{/* Заголовок */}
-				<div className="lg:sticky top-17 z-50 bg-white px-2 py-6 lg:px-6 lg:py-8 border-b border-slate-200">
+				<div className="lg:sticky top-17 z-50 bg-white/80 backdrop-blur-md px-2 py-6 lg:px-6 lg:py-8 border-b border-slate-200">
 					<h2 className="font-light text-5xl lg:text-6xl tracking-tighter text-black">
 						Конструктор.
 					</h2>

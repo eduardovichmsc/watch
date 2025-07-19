@@ -59,7 +59,7 @@ export const Hero = () => {
 			<div className="absolute inset-0 z-0">
 				<motion.div
 					initial={{ scale: 1, opacity: 0.3 }}
-					animate={{ scale: 1.05, opacity: 0.5 }}
+					animate={{ scale: 1.05, opacity: 0.75 }}
 					transition={{
 						duration: 15,
 						ease: "easeInOut",
