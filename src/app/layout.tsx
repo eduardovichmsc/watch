@@ -6,7 +6,9 @@ import {
 	IBM_Plex_Mono,
 	Urbanist,
 } from "next/font/google";
+
 import "./globals.css";
+
 import { CustomCursor } from "@/components/ui/cursor";
 import { Preloader } from "@/components/layouts/preloader";
 import { GlobalAlert } from "@/components/layouts/alert";

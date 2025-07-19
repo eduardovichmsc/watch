@@ -1,5 +1,4 @@
 // app/components/shared/card/cart.tsx
-
 "use client";
 
 import { CartItem } from "@/stores/cart";
@@ -31,7 +30,9 @@ export function CartItemCard({
 	return (
 		<div className="grid grid-cols-[96px_1fr] items-start gap-4 p-4 sm:grid-cols-[128px_1fr_auto] sm:gap-6 sm:p-6">
 			{/* Колонка с изображением */}
-			<div className="size-24 sm:size-32 flex-shrink-0 relative bg-slate-100">
+			<Link
+				href={item.href || "/"}
+				className="block size-24 sm:size-32 flex-shrink-0 relative bg-slate-100">
 				{Object.entries(item.selection)
 					.filter(([, part]) => part?.image)
 					.map(([partType, part]) => {
@@ -55,7 +56,7 @@ export function CartItemCard({
 							/>
 						);
 					})}
-			</div>
+			</Link>
 
 			{/* Колонка с деталями конфигурации */}
 			<div className="flex flex-col h-full">
@@ -92,7 +93,7 @@ export function CartItemCard({
 					</dl>
 				</div>
 
-				{/* На мобильных цена и кнопка удаления находятся здесь */}
+				{/* Цена и кнопка - мобилка */}
 				<div className="flex items-center justify-between mt-2 sm:hidden">
 					<p className="font-medium text-lg text-black">
 						{item.totalPrice.toLocaleString("ru-RU")} KZT

@@ -28,8 +28,8 @@
 		"**/*.tsx",
 		".next/types/**/*.ts",
 		"src/app/(root)/favorites/page.demo",
-		"src/components/sections/configurator/visualizator.old",
-		"src/components/sections/configurator/accordion_category.old"
+		"src/components/sections/constructor/visualizator.old",
+		"src/components/sections/constructor/accordion_category.old"
 	],
 	"exclude": ["node_modules"]
 }

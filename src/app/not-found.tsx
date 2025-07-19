@@ -13,7 +13,7 @@ const content = {
 	description:
 		"Механизм этой страницы не существует или был перемещен. Давайте вернемся к чему-то более интересному.",
 	buttonHome: "На главную",
-	buttonConfigurator: "В конструктор",
+	buttonConstructor: "В конструктор",
 };
 
 export default function NotFoundPage() {
@@ -76,12 +76,12 @@ export default function NotFoundPage() {
 						{content.buttonHome}
 					</Link>
 					<Link
-						href={PATHS.CONFIGURATOR}
+						href={PATHS.CONSTRUCTOR}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
 						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 border border-slate-300 text-slate-800 font-semibold uppercase tracking-wider hover:bg-slate-100 transition-colors">
 						<Wrench size={20} />
-						{content.buttonConfigurator}
+						{content.buttonConstructor}
 					</Link>
 				</motion.div>
 			</div>

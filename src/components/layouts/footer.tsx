@@ -1,16 +1,12 @@
 // src/components/layout/Footer.tsx
 import Link from "next/link";
 import { Instagram, Facebook, Youtube, Twitter } from "lucide-react";
+import { SocialMediaList } from "@/constants/social";
 
 const content = {
 	logo: "WotchModClub",
 	tagline: "Инженерия. Воплощенная в вас.",
-	socials: [
-		{ href: "#", label: "Instagram", icon: Instagram },
-		{ href: "#", label: "Facebook", icon: Facebook },
-		{ href: "#", label: "YouTube", icon: Youtube },
-		{ href: "#", label: "Twitter", icon: Twitter },
-	],
+	socials: SocialMediaList,
 	links: [
 		{
 			title: "Магазин",

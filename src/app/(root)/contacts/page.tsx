@@ -1,20 +1,15 @@
 // src/app/contacts/page.tsx
 "use client";
 
-import { Instagram, Send } from "lucide-react";
 import { ContactForm } from "@/components/sections/contacts/form";
 import { InfoBlock } from "@/components/sections/contacts/info";
 import { SocialLink } from "@/components/sections/contacts/social_link";
-
-const socialLinks = [
-	{ name: "Instagram", href: "#", icon: <Instagram size={24} /> },
-	{ name: "Telegram", href: "#", icon: <Send size={24} /> },
-];
+import { SocialMediaList } from "@/constants/social";
 
 export default function ContactsPage() {
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-2 min-h-[calc(100vh-80px)]">
-			{/* Левая колонка: Информация */}
+			{/* Левая колонка*/}
 			<div className="bg-black text-white p-8 md:p-12 lg:p-16 flex flex-col justify-between">
 				<div>
 					<h1 className="font-light text-5xl md:text-7xl xl:text-8xl tracking-tighter mb-12">
@@ -35,8 +30,13 @@ export default function ContactsPage() {
 						Соцсети
 					</h3>
 					<div className="flex items-center gap-4">
-						{socialLinks.map((link) => (
-							<SocialLink key={link.name} {...link} />
+						{SocialMediaList.map((link) => (
+							<SocialLink
+								key={link.label}
+								label={link.label}
+								href={link.href}
+								Icon={link.icon}
+							/>
 						))}
 					</div>
 				</div>

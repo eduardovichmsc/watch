@@ -10,11 +10,12 @@ import { PATHS } from "@/constants/paths";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { useCursorStore } from "@/stores/cursor";
+import { SocialMediaList } from "@/constants/social";
 
 const navItems = [
 	{ label: "Главная", href: PATHS.HOME },
 	{ label: "Галерея", href: PATHS.DESIGN_GALLERY },
-	{ label: "Конструктор", href: PATHS.CONFIGURATOR },
+	{ label: "Конструктор", href: PATHS.CONSTRUCTOR },
 	{ label: "Контакты", href: PATHS.CONTACTS },
 ];
 
@@ -59,7 +60,7 @@ export function Header() {
 		"w-full top-0 z-[101] transition-colors duration-300 ease-in-out",
 		isHomePage ? "fixed" : "sticky",
 		isLightMode
-			? "bg-white/80 backdrop-blur-md border-b border-slate-200"
+			? "bg-white lg:bg-white/80 backdrop-blur-md border-b border-slate-200"
 			: "border-b border-transparent"
 	);
 
@@ -231,13 +232,20 @@ export function Header() {
 									hello@wotchmod.club
 								</a>
 								<span className="text-slate-300">/</span>
-								<a
-									href="#"
-									className="text-slate-500 hover:text-black transition-colors"
-									onMouseEnter={() => setVariant("link")}
-									onMouseLeave={() => setVariant("default")}>
-									Instagram
-								</a>
+								{SocialMediaList.map((item, index) => (
+									<span key={index}>
+										<a
+											href="#"
+											className="text-slate-500 hover:text-black transition-colors"
+											onMouseEnter={() => setVariant("link")}
+											onMouseLeave={() => setVariant("default")}>
+											{item.label}
+										</a>
+										{index < SocialMediaList.length - 1 && (
+											<span className="text-slate-300">/</span>
+										)}
+									</span>
+								))}
 							</div>
 						</div>
 					</motion.div>

@@ -12,7 +12,7 @@ import {
 	getSecondHands,
 	getGMTHands,
 } from "@/services/data";
-import { WatchConfigurator } from "@/components/sections/configurator";
+import { WatchConfigurator } from "@/components/sections/constructor";
 import { SquareSpinner } from "@/components/ui/spinner";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
