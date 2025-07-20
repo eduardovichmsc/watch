@@ -19,23 +19,20 @@ export const ContactForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setStatus("submitting");
-		await new Promise((resolve) => setTimeout(resolve, 1500));
-		setStatus("success");
-
-		// try {
-		// 	await new Promise((resolve) => setTimeout(resolve, 1500));
-		// 	if (Math.random() < 0.1) throw new Error("Server error");
-		// 	setStatus("success");
-		// 	showAlert("Ваше сообщение успешно отправлено!", "success");
-		// 	setName("");
-		// 	setEmail("");
-		// 	setMessage("");
-		// } catch (error) {
-		// 	setStatus("error");
-		// 	showAlert("Произошла ошибка. Попробуйте снова.", "error");
-		// } finally {
-		// 	setTimeout(() => setStatus("idle"), 2000);
-		// }
+		try {
+			await new Promise((resolve) => setTimeout(resolve, 1500));
+			if (Math.random() < 0.1) throw new Error("Server error");
+			setStatus("success");
+			showAlert("Ваше сообщение успешно отправлено!", "success");
+			setName("");
+			setEmail("");
+			setMessage("");
+		} catch (error) {
+			setStatus("error");
+			showAlert("Произошла ошибка. Попробуйте снова.", "error");
+		} finally {
+			setTimeout(() => setStatus("idle"), 2000);
+		}
 	};
 
 	const isSubmitting = status === "submitting";
