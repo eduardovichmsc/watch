@@ -21,7 +21,7 @@ const content = {
 		"Совершенная инженерия. Бескомпромиссный дизайн. Создайте часы, которые отражают именно вас.",
 	button: {
 		text: "Создать свои часы",
-		link: PATHS.CONSTRUCTOR,
+		link: PATHS.CONFIGURATOR,
 	},
 	secondaryButton: {
 		text: "Посмотреть коллекцию",
@@ -29,6 +29,7 @@ const content = {
 	},
 };
 
+// Варианты для анимации Framer Motion
 const containerVariants = {
 	hidden: { opacity: 0 },
 	visible: {

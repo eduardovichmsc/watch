@@ -8,7 +8,6 @@ import { useCartStore } from "@/stores/cart";
 import { ShoppingBag } from "lucide-react";
 import { CartItemCard } from "@/components/shared/card/cart";
 import { OrderSummary } from "@/components/sections/cart/order_summary";
-import { PATHS } from "@/constants/paths";
 
 export default function CartPage() {
 	const items = useCartStore((state) => state.items);
@@ -31,7 +30,7 @@ export default function CartPage() {
 					конструктор, чтобы начать.
 				</p>
 				<Link
-					href={PATHS.CONSTRUCTOR}
+					href="/configurator"
 					className="h-16 inline-flex items-center justify-center px-8 bg-black text-white font-semibold rounded-none hover:bg-zinc-800 transition-colors">
 					Перейти в конструктор
 				</Link>
@@ -61,7 +60,7 @@ export default function CartPage() {
 				{/* Сводка по заказу (видна только на десктопе) */}
 				<div className="hidden lg:block lg:sticky top-22">
 					<OrderSummary subtotal={subtotal} />
-
+					{/* Кнопка оформления */}
 					<button
 						onClick={() => alert("Переход к оформлению заказа (TBD)")}
 						className="w-full h-16 mt-6 bg-black text-white font-semibold text-base rounded-none hover:bg-zinc-800 transition-colors">
