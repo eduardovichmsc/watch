@@ -1,4 +1,3 @@
-// src/components/constructor/action_panel.tsx
 "use client";
 
 import { cn } from "@/lib/utils";

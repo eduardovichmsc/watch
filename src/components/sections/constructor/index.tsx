@@ -1,4 +1,3 @@
-// src/components/constructor/index.tsx
 "use client";
 
 import type {
