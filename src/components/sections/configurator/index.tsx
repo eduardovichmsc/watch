@@ -14,6 +14,7 @@ import { AccordionSection } from "./accordion";
 import { WatchPreviewPanel } from "./preview_panel";
 import { ActionPanel } from "./action_panel";
 import { useWatchConfiguratorParams } from "@/hooks/useConfiguratorParams";
+import { ConfiguratorLoader } from "./loader";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -91,6 +92,8 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 			style: { scale: 250 },
 		},
 	];
+
+	if (isLoading) return <ConfiguratorLoader />;
 
 	return (
 		<div className="lg:grid lg:grid-cols-2 relative pb-8 lg:pb-0">

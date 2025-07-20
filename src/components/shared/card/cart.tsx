@@ -31,7 +31,9 @@ export function CartItemCard({
 	return (
 		<div className="grid grid-cols-[96px_1fr] items-start gap-4 p-4 sm:grid-cols-[128px_1fr_auto] sm:gap-6 sm:p-6">
 			{/* Колонка с изображением */}
-			<div className="size-24 sm:size-32 flex-shrink-0 relative bg-slate-100">
+			<Link
+				href={item.href}
+				className="size-24 sm:size-32 flex-shrink-0 relative bg-slate-100">
 				{Object.entries(item.selection)
 					.filter(([, part]) => part?.image)
 					.map(([partType, part]) => {
@@ -55,7 +57,7 @@ export function CartItemCard({
 							/>
 						);
 					})}
-			</div>
+			</Link>
 
 			{/* Колонка с деталями конфигурации */}
 			<div className="flex flex-col h-full">

@@ -1,14 +1,15 @@
 "use client";
 import { useCursorStore } from "@/stores/cursor";
+import { ComponentType } from "react";
 
 export const SocialLink = ({
-	name,
+	label,
 	href,
-	icon,
+	Icon,
 }: {
-	name: string;
+	label: string;
 	href: string;
-	icon: React.ReactNode;
+	Icon: ComponentType<{ size?: number; className?: string }>;
 }) => {
 	const { setVariant } = useCursorStore();
 	return (
@@ -19,8 +20,8 @@ export const SocialLink = ({
 			onMouseEnter={() => setVariant("link")}
 			onMouseLeave={() => setVariant("default")}
 			className="flex items-center justify-center size-14 border border-slate-700 text-slate-300 hover:bg-white hover:text-black transition-colors"
-			aria-label={name}>
-			{icon}
+			aria-label={label}>
+			<Icon size={24} />
 		</a>
 	);
 };

@@ -5,6 +5,7 @@ import { Instagram, Send } from "lucide-react";
 import { ContactForm } from "@/components/sections/contacts/form";
 import { InfoBlock } from "@/components/sections/contacts/info";
 import { SocialLink } from "@/components/sections/contacts/social_link";
+import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
 
 const socialLinks = [
 	{ name: "Instagram", href: "#", icon: <Instagram size={24} /> },
@@ -35,8 +36,8 @@ export default function ContactsPage() {
 						Соцсети
 					</h3>
 					<div className="flex items-center gap-4">
-						{socialLinks.map((link) => (
-							<SocialLink key={link.name} {...link} />
+						{SOCIAL_MEDIA_LINKS.map((link) => (
+							<SocialLink key={link.label} Icon={link.icon} {...link} />
 						))}
 					</div>
 				</div>

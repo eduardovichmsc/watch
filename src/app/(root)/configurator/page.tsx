@@ -13,17 +13,7 @@ import {
 	getGMTHands,
 } from "@/services/data";
 import { WatchConfigurator } from "@/components/sections/configurator";
-import { SquareSpinner } from "@/components/ui/spinner";
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const ConfiguratorLoader = () => {
-	return (
-		<div className="flex min-h-[80vh] items-center justify-center">
-			<SquareSpinner />
-		</div>
-	);
-};
+import { ConfiguratorLoader } from "@/components/sections/configurator/loader";
 
 export default async function ConfiguratorPage() {
 	const [
@@ -44,7 +34,6 @@ export default async function ConfiguratorPage() {
 		getHands(),
 		getSecondHands(),
 		getGMTHands(),
-		sleep(1000),
 	]);
 
 	return (

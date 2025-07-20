@@ -13,7 +13,7 @@ const content = {
 	description:
 		"Механизм этой страницы не существует или был перемещен. Давайте вернемся к чему-то более интересному.",
 	buttonHome: "На главную",
-	buttonConfigurator: "В конструктор",
+	buttonConfigurator: "В конфигуратор",
 };
 
 export default function NotFoundPage() {

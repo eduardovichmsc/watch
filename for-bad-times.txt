@@ -1,0 +1,2 @@
+// чекает цикл рендера
+dpdm src/components/sections/constructor.tsx --circular

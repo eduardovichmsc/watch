@@ -1,24 +1,16 @@
 // src/components/layout/Footer.tsx
 import Link from "next/link";
-import { Instagram, Facebook, Youtube, Twitter } from "lucide-react";
+import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
+import { MAIN_LINKS } from "@/constants/paths";
 
 const content = {
 	logo: "WotchModClub",
 	tagline: "Инженерия. Воплощенная в вас.",
-	socials: [
-		{ href: "#", label: "Instagram", icon: Instagram },
-		{ href: "#", label: "Facebook", icon: Facebook },
-		{ href: "#", label: "YouTube", icon: Youtube },
-		{ href: "#", label: "Twitter", icon: Twitter },
-	],
+	socials: SOCIAL_MEDIA_LINKS,
 	links: [
 		{
 			title: "Магазин",
-			items: [
-				{ href: "/catalog", label: "Каталог" },
-				{ href: "/configurator", label: "Конфигуратор" },
-				{ href: "/new-arrivals", label: "Новинки" },
-			],
+			items: MAIN_LINKS.filter((item) => !item.label.includes("Контакты")),
 		},
 		{
 			title: "Компания",

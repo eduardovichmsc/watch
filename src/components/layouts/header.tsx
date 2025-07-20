@@ -6,17 +6,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cart";
-import { PATHS } from "@/constants/paths";
+import { MAIN_LINKS, PATHS } from "@/constants/paths";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { useCursorStore } from "@/stores/cursor";
-
-const navItems = [
-	{ label: "Главная", href: PATHS.HOME },
-	{ label: "Галерея", href: PATHS.DESIGN_GALLERY },
-	{ label: "Конструктор", href: PATHS.CONFIGURATOR },
-	{ label: "Контакты", href: PATHS.CONTACTS },
-];
+import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
 
 export function Header() {
 	const { setVariant } = useCursorStore();
@@ -59,7 +53,7 @@ export function Header() {
 		"w-full top-0 z-[101] transition-colors duration-300 ease-in-out",
 		isHomePage ? "fixed" : "sticky",
 		isLightMode
-			? "bg-white/80 backdrop-blur-md border-b border-slate-200"
+			? "bg-white lg:bg-white/80 backdrop-blur-md border-b border-slate-200"
 			: "border-b border-transparent"
 	);
 
@@ -90,7 +84,7 @@ export function Header() {
 					<div className="flex items-center gap-4 sm:gap-6">
 						{/* Навигация для десктопа */}
 						<nav className="hidden lg:flex items-center gap-6">
-							{navItems.map((item) => (
+							{MAIN_LINKS.map((item) => (
 								<Link
 									key={item.label}
 									href={item.href}
@@ -195,7 +189,7 @@ export function Header() {
 
 							{/* Основная навигация */}
 							<nav className="flex flex-col items-end gap-y-4 -mt-20">
-								{navItems.map((item, index) => (
+								{MAIN_LINKS.map((item, index) => (
 									<motion.div
 										key={item.href}
 										initial={{ x: 100, opacity: 0 }}
@@ -231,13 +225,21 @@ export function Header() {
 									hello@wotchmod.club
 								</a>
 								<span className="text-slate-300">/</span>
-								<a
-									href="#"
-									className="text-slate-500 hover:text-black transition-colors"
-									onMouseEnter={() => setVariant("link")}
-									onMouseLeave={() => setVariant("default")}>
-									Instagram
-								</a>
+								{SOCIAL_MEDIA_LINKS.map((link, index) => (
+									<>
+										<a
+											key={index}
+											href="#"
+											className="text-slate-500 hover:text-black transition-colors"
+											onMouseEnter={() => setVariant("link")}
+											onMouseLeave={() => setVariant("default")}>
+											{link.label}
+										</a>
+										{SOCIAL_MEDIA_LINKS.length - 1 > index && (
+											<span className="block text-slate-300">/</span>
+										)}
+									</>
+								))}
 							</div>
 						</div>
 					</motion.div>

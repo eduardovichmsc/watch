@@ -6,11 +6,11 @@ interface SpinnerProps {
 	className?: string;
 }
 
-export function SquareSpinner({ className }: SpinnerProps) {
+export function Spinner({ className }: SpinnerProps) {
 	return (
 		<div
 			className={clsx(
-				"size-12 animate-spin rounded-md border-4 border-slate-200 border-t-slate-800",
+				"size-12 animate-spin border-4 border-slate-200 border-t-slate-800",
 				className
 			)}
 		/>

@@ -22,14 +22,6 @@
 			"@/*": ["./src/*"]
 		}
 	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"src/app/(root)/favorites/page.demo",
-		"src/components/sections/configurator/visualizator.old",
-		"src/components/sections/configurator/accordion_category.old"
-	],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
 }
