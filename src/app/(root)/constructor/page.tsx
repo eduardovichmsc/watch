@@ -17,6 +17,8 @@ import { SquareSpinner } from "@/components/ui/spinner";
 
 // const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+export const dynamic = "force-dynamic";
+
 const ConfiguratorLoader = () => {
 	return (
 		<div className="flex min-h-[80vh] items-center justify-center">
