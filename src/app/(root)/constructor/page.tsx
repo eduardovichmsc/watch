@@ -15,7 +15,7 @@ import {
 import { WatchConfigurator } from "@/components/sections/constructor";
 import { SquareSpinner } from "@/components/ui/spinner";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ConfiguratorLoader = () => {
 	return (
@@ -44,7 +44,6 @@ export default async function ConfiguratorPage() {
 		getHands(),
 		getSecondHands(),
 		getGMTHands(),
-		sleep(1000),
 	]);
 
 	return (
