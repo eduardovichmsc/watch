@@ -43,7 +43,7 @@ export default function CartPage() {
 			<h1 className="px-4 lg:px-0 font-light text-5xl md:text-7xl tracking-tighter text-black mb-12">
 				Ваша корзина.
 			</h1>
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 				{/* Список товаров */}
 				<div className="lg:col-span-2 bg-white border border-slate-200 rounded-none">
 					<div className="divide-y divide-slate-200">

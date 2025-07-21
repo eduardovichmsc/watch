@@ -13,7 +13,7 @@ import type {
 import { AccordionSection } from "./accordion";
 import { WatchPreviewPanel } from "./preview_panel";
 import { ActionPanel } from "./action_panel";
-import { useWatchConfiguratorParams } from "@/hooks/useConfiguratorParams";
+import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 
 interface WatchConfiguratorProps {
@@ -110,7 +110,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				{/* Заголовок */}
 				<div className="lg:sticky top-17 z-50 bg-white/80 backdrop-blur-md px-2 py-6 lg:px-6 lg:py-8 border-b border-slate-200">
 					<h2 className="font-light text-5xl lg:text-6xl tracking-tighter text-black">
-						Конструктор.
+						Конфигуратор.
 					</h2>
 				</div>
 

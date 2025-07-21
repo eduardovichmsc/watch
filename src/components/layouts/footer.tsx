@@ -37,7 +37,7 @@ const content = {
 		buttonText: "Подписаться",
 	},
 	legal: {
-		copyright: `© ${new Date().getFullYear()} ChronoLux. Все права защищены.`,
+		copyright: `© ${new Date().getFullYear()} WotchModClub. Все права защищены.`,
 		links: [
 			{ href: "/privacy-policy", label: "Политика конфиденциальности" },
 			{ href: "/terms-of-service", label: "Условия использования" },

@@ -5,6 +5,7 @@ import { useAlertStore } from "@/stores/alert";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, Info, AlertTriangle, X } from "lucide-react";
 import { clsx } from "clsx";
+import { useCursorStore } from "@/stores/cursor";
 
 const alertConfig = {
 	success: {
@@ -29,6 +30,8 @@ export const GlobalAlert = () => {
 	const { isOpen, message, type, hideAlert } = useAlertStore();
 	const { icon, bgClass } = alertConfig[type];
 
+	const { setVariant } = useCursorStore();
+
 	return (
 		<AnimatePresence>
 			{isOpen && (
@@ -37,7 +40,7 @@ export const GlobalAlert = () => {
 					animate={{ y: 0, opacity: 1 }}
 					exit={{ y: -100, opacity: 0 }}
 					transition={{ type: "spring", stiffness: 300, damping: 30 }}
-					className="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] backdrop-blur-xs">
+					className="fixed top-5 left-1/2 -translate-x-1/2 z-[1000] backdrop-blur-xs">
 					<div
 						className={clsx(
 							"flex items-center gap-4 text-white p-4 shadow-2xl min-w-[320px] max-w-md",
@@ -48,6 +51,8 @@ export const GlobalAlert = () => {
 						<button
 							onClick={hideAlert}
 							className="p-1 rounded-full hover:bg-white/20 transition-colors"
+							onMouseEnter={() => setVariant("link")}
+							onMouseLeave={() => setVariant("default")}
 							aria-label="Закрыть уведомление">
 							<X size={20} />
 						</button>
