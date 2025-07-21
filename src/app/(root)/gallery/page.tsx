@@ -6,9 +6,8 @@ export default async function GalleryPage() {
 	const watchTypes = await getWatchTypes();
 
 	return (
-		// Убираем container, добавляем отступы напрямую
 		<div className="px-4 py-12 sm:px-8 md:py-20 lg:px-16 lg:py-24">
-			{/* Заголовок стал более сдержанным */}
+			{/* Заголовок */}
 			<div className="max-w-4xl mb-12 md:mb-16">
 				<h1 className="font-light text-5xl md:text-7xl tracking-tighter text-black">
 					Галерея моделей.

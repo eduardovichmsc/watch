@@ -97,10 +97,6 @@ body {
 	font-family: var(--font-urbanist);
 }
 
-.font-cormorant {
-	font-family: var(--font-cormorant), serif;
-}
-
 .dark {
 	--background: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
@@ -141,6 +137,14 @@ body {
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	.font-cormorant {
+		font-family: var(--font-cormorant), serif;
+	}
+
+	.font-mono {
+		font-family: var(--font-ibmplexmono);
 	}
 }
 

@@ -19,6 +19,7 @@ import { ConfiguratorLoader } from "./loader";
 import Link from "next/link";
 import { PATHS } from "@/constants/paths";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { SelectModelPrompt } from "./select_model";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -40,22 +41,12 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		totalPrice,
 		canShowPreview,
 		isLoading,
-		// setSelectedModel удален
+		shouldLoad,
 		handleSelectPart,
 		handleAccordionToggle,
 	} = useWatchConfiguratorParams(props);
 
-	// Конфигурация стилей для панели предпросмотра
-	const styleConfig = {
-		strap: { scale: 100 },
-		watchCase: { scale: 100 },
-		bezel: { scale: 100 },
-		dial: { scale: 170 },
-		hand: { scale: 250, top: 10 },
-		secondHand: { scale: 250, top: 20 },
-		gmtHand: { scale: 250 },
-	};
-
+	// Массив для рендеринга секций аккордеона
 	const partSections = [
 		{
 			key: "strap" as const,
@@ -101,12 +92,17 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		},
 	];
 
-	// Хук инициализируется
+	// Прямой заход на /configurator без модели
+	if (!shouldLoad && !isLoading) {
+		return <SelectModelPrompt />;
+	}
+
+	// Модель выбрана и обработка данных
 	if (isLoading) {
 		return <ConfiguratorLoader />;
 	}
 
-	// Если модель не найдена
+	// Модель выбрана, но не найдена
 	if (!selectedModel) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
@@ -123,16 +119,17 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		);
 	}
 
-	// Ссылки назад или же breadcrumbs
+	// Все готово
+	// рендерим конфигуратор
 	const breadcrumbs = [
 		{ label: "Галерея", href: PATHS.DESIGN_GALLERY },
-		{ label: selectedModel && selectedModel.name },
+		{ label: selectedModel.name },
 	];
 
 	return (
 		<div className="lg:grid lg:grid-cols-2 relative pb-[120px] lg:pb-0">
 			<WatchPreviewPanel
-				isLoading={false}
+				isLoading={isLoading}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
@@ -141,15 +138,12 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 
 			{/* Правая колонка */}
 			<div className="h-fit">
-				{/* Заголовок */}
-				<div className="lg:sticky top-17 z-50 bg-white/80 backdrop-blur-md px-4 py-6 lg:px-8 lg:pt-8 border-b border-slate-200">
+				<div className="lg:sticky top-17 z-50 bg-white/80 backdrop-blur-md px-4 py-6 lg:px-6 lg:py-6 border-b border-slate-200 ml-1">
+					<Breadcrumbs crumbs={breadcrumbs} className="mb-4" />
 					<h2 className="font-light text-4xl sm:text-5xl lg:text-6xl tracking-tighter text-black">
-						{selectedModel.name}
+						{selectedModel.name}.
 					</h2>
-
-					<Breadcrumbs crumbs={breadcrumbs} className="mt-4" />
 				</div>
-
 				<div>
 					{partSections.map((section) => {
 						const isAvailable = section.items.length > 0;
@@ -172,7 +166,6 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 						);
 					})}
 				</div>
-
 				<ActionPanel
 					model={selectedModel}
 					selection={selection}

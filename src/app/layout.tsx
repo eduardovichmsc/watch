@@ -55,7 +55,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={`${ibmPlexMono.variable} ${urbanist.variable} ${geistSans.variable} ${cormorant.variable} ${geistMono.variable} antialiased`}>
-				<Preloader />
+				{/* <Preloader /> */}
 
 				<CustomCursor />
 				<GlobalAlert />
