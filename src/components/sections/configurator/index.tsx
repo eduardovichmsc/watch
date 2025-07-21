@@ -16,11 +16,10 @@ import { WatchPreviewPanel } from "./preview_panel";
 import { ActionPanel } from "./action_panel";
 import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
-import Link from "next/link";
-import { PATHS } from "@/constants/paths";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { SelectModelPrompt } from "./select_model";
+import { PATHS } from "@/constants/paths";
 
+// Интерфейс пропсов компонента
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
 	cases: WatchCase[];
@@ -32,19 +31,32 @@ interface WatchConfiguratorProps {
 	gmtHands: GMTHand[];
 }
 
+// Основной компонент
 export function WatchConfigurator(props: WatchConfiguratorProps) {
 	const {
 		selectedModel,
+		setSelectedModel,
 		selection,
 		openAccordion,
 		filteredParts,
 		totalPrice,
 		canShowPreview,
 		isLoading,
-		shouldLoad,
+		mode,
 		handleSelectPart,
 		handleAccordionToggle,
 	} = useWatchConfiguratorParams(props);
+
+	// Конфигурация стилей для предпросмотра
+	const styleConfig = {
+		strap: { scale: 100 },
+		watchCase: { scale: 100 },
+		bezel: { scale: 100 },
+		dial: { scale: 170 },
+		hand: { scale: 250, top: 10 },
+		secondHand: { scale: 250, top: 20 },
+		gmtHand: { scale: 250 },
+	};
 
 	// Массив для рендеринга секций аккордеона
 	const partSections = [
@@ -92,44 +104,20 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		},
 	];
 
-	// Прямой заход на /configurator без модели
-	if (!shouldLoad && !isLoading) {
-		return <SelectModelPrompt />;
-	}
-
-	// Модель выбрана и обработка данных
+	// Состояние загрузки
 	if (isLoading) {
 		return <ConfiguratorLoader />;
 	}
 
-	// Модель выбрана, но не найдена
-	if (!selectedModel) {
-		return (
-			<div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
-				<h2 className="text-3xl font-light mb-4">Модель не найдена</h2>
-				<p className="text-slate-600 mb-8">
-					Возможно, вы перешли по неверной ссылке.
-				</p>
-				<Link
-					href={PATHS.DESIGN_GALLERY}
-					className="h-12 inline-flex items-center justify-center px-6 bg-black text-white font-semibold hover:bg-zinc-800 transition-colors">
-					Вернуться в галерею
-				</Link>
-			</div>
-		);
-	}
-
-	// Все готово
-	// рендерим конфигуратор
-	const breadcrumbs = [
-		{ label: "Галерея", href: PATHS.DESIGN_GALLERY },
-		{ label: selectedModel.name },
-	];
+	// Динамические хлебные крошки
+	const breadcrumbs = selectedModel
+		? [{ label: "Галерея", href: PATHS.STORE }, { label: selectedModel.name }]
+		: [];
 
 	return (
 		<div className="lg:grid lg:grid-cols-2 relative pb-[120px] lg:pb-0">
 			<WatchPreviewPanel
-				isLoading={isLoading}
+				isLoading={false}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
@@ -138,33 +126,59 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 
 			{/* Правая колонка */}
 			<div className="h-fit">
-				<div className="lg:sticky top-17 z-50 bg-white/80 backdrop-blur-md px-4 py-6 lg:px-6 lg:py-6 border-b border-slate-200 ml-1">
-					<Breadcrumbs crumbs={breadcrumbs} className="mb-4" />
+				<div className="lg:sticky top-16 z-50 bg-white/80 backdrop-blur-md px-4 py-6 lg:px-6 lg:py-8 border-b border-slate-200">
+					{selectedModel && (
+						<Breadcrumbs crumbs={breadcrumbs} className="mb-4" />
+					)}
 					<h2 className="font-light text-4xl sm:text-5xl lg:text-6xl tracking-tighter text-black">
-						{selectedModel.name}.
+						{selectedModel
+							? selectedModel.name.toUpperCase()
+							: "Создаение с нуля."}
 					</h2>
+					{!selectedModel && (
+						<p className="mt-2 text-slate-600">
+							Выберите базовую модель, чтобы начать.
+						</p>
+					)}
 				</div>
+
 				<div>
-					{partSections.map((section) => {
-						const isAvailable = section.items.length > 0;
-						const selectedName = isAvailable
-							? section.selectedItem?.name || "Не выбрано"
-							: "Недоступно для этой модели";
-						return (
-							<AccordionSection
-								key={section.key}
-								title={section.title}
-								count={section.items.length}
-								selectedOptionName={selectedName}
-								isOpen={openAccordion === section.key}
-								onToggle={() => handleAccordionToggle(section.key)}
-								items={section.items}
-								selectedItem={section.selectedItem}
-								onSelect={(item) => handleSelectPart(section.key, item)}
-								disabled={!isAvailable}
-							/>
-						);
-					})}
+					{/* Условный рендеринг аккордеона выбора модели */}
+					{mode === "manual" && (
+						<AccordionSection
+							title="Выберите модель"
+							count={props.watchTypes.length}
+							selectedOptionName={selectedModel?.name || "Не выбрано"}
+							isOpen={openAccordion === "model"}
+							onToggle={() => handleAccordionToggle("model")}
+							items={props.watchTypes}
+							selectedItem={selectedModel}
+							onSelect={(item: WatchType) => setSelectedModel(item)}
+						/>
+					)}
+
+					{/* Детали */}
+					{selectedModel &&
+						partSections.map((section, index) => {
+							const isAvailable = section.items.length > 0;
+							const selectedName = isAvailable
+								? section.selectedItem?.name || "Не выбрано"
+								: "Недоступно для этой модели";
+							return (
+								<AccordionSection
+									key={section.key}
+									title={section.title}
+									count={section.items.length}
+									selectedOptionName={selectedName}
+									isOpen={openAccordion === section.key}
+									onToggle={() => handleAccordionToggle(section.key)}
+									items={section.items}
+									selectedItem={section.selectedItem}
+									onSelect={(item) => handleSelectPart(section.key, item)}
+									disabled={!isAvailable}
+								/>
+							);
+						})}
 				</div>
 				<ActionPanel
 					model={selectedModel}

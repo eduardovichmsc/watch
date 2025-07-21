@@ -1,8 +1,8 @@
 // app/gallery/page.tsx
 import { getWatchTypes } from "@/services/data";
-import { GalleryCard } from "@/components/shared/card/gallery";
+import { StoreCard } from "@/components/shared/card/store";
 
-export default async function GalleryPage() {
+export default async function StorePage() {
 	const watchTypes = await getWatchTypes();
 
 	return (
@@ -21,7 +21,7 @@ export default async function GalleryPage() {
 			{watchTypes.length > 0 ? (
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
 					{watchTypes.map((model) => (
-						<GalleryCard key={model.id} model={model} />
+						<StoreCard key={model.id} model={model} />
 					))}
 				</div>
 			) : (

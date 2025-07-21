@@ -8,7 +8,7 @@ const content = {
 	body: "Чтобы приступить к кастомизации, пожалуйста, выберите базовую модель из нашей галереи.",
 	link: {
 		label: "Перейти в галерею",
-		href: PATHS.DESIGN_GALLERY,
+		href: PATHS.STORE,
 	},
 };
 

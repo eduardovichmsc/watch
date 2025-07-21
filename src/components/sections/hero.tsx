@@ -22,12 +22,12 @@ const content = {
 	description:
 		"Совершенная инженерия. Бескомпромиссный дизайн. Создайте часы, которые отражают именно вас.",
 	button: {
-		text: "Создать свои часы",
-		link: PATHS.CONFIGURATOR,
+		text: "Посмотреть модели",
+		link: PATHS.STORE,
 	},
 	secondaryButton: {
-		text: "Посмотреть коллекцию",
-		link: PATHS.DESIGN_GALLERY,
+		text: "Создать свои часы",
+		link: PATHS.CONFIGURATOR,
 	},
 };
 

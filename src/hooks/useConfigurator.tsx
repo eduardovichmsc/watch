@@ -14,6 +14,10 @@ import type {
 	SecondHand,
 	GMTHand,
 } from "@/types";
+import { useConfiguratorStore } from "@/stores/configurator";
+
+// Определяем режимы работы конфигуратора для более чистой логики
+type ConfiguratorMode = "loading" | "preselected" | "manual";
 
 // Интерфейс для пропсов, которые хук получает от компонента
 interface UseWatchConfiguratorProps {
@@ -42,8 +46,13 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
+	// Получаем функции из Zustand синхронно, чтобы сразу очистить состояние
+	const { modelFromStoreId, clearModelFromStore } =
+		useConfiguratorStore.getState();
+
 	// Основные состояния
-	const [shouldLoad, setShouldLoad] = useState<boolean>(false);
+	const [mode, setMode] = useState<ConfiguratorMode>("loading");
+	const [selectedModel, setSelectedModel] = useState<WatchType | null>(null);
 	const [selection, setSelection] = useState<WatchSelection>({
 		watchCase: null,
 		bezel: null,
@@ -54,20 +63,11 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		gmtHand: null,
 	});
 	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-
-	// Флаг, чтобы избежать обновления URL при самой первой загрузке/инициализации
 	const isInitialMount = useRef(true);
+	// Ref для отслеживания ID предыдущей модели, чтобы сбрасывать детали только при смене
+	const prevModelId = useRef<string | number | null>(null);
 
-	// Вычисляем выбранную модель на основе URL.
-	// Этот useMemo зависит только от внешних данных и стабилен.
-	const selectedModel = useMemo(() => {
-		const modelId = searchParams.get("model");
-		if (!modelId) return null;
-		return watchTypes.find((m) => m.id.toString() === modelId) || null;
-	}, [searchParams, watchTypes]);
-
-	// Фильтруем детали. Этот useMemo зависит от стабильного `selectedModel`.
+	// Фильтруем детали, доступные для выбранной модели
 	const filteredParts = useMemo(() => {
 		if (!selectedModel) {
 			return {
@@ -102,89 +102,97 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		gmtHands,
 	]);
 
-	// Эффект для инициализации состояния. Запускается ОДИН РАЗ при изменении модели в URL.
+	// Эффект для инициализации. Запускается только ОДИН РАЗ при монтировании.
 	useEffect(() => {
-		const modelId = searchParams.get("model");
+		let initialModel: WatchType | null = null;
+		const modelIdFromUrl = searchParams.get("model");
 
-		if (!modelId) {
-			setShouldLoad(false);
-			setIsLoading(false);
-			return;
+		if (modelFromStoreId) {
+			setMode("preselected");
+			initialModel = watchTypes.find((m) => m.id === modelFromStoreId) || null;
+			setOpenAccordion("strap");
+			clearModelFromStore();
+		} else if (modelIdFromUrl) {
+			setMode("manual");
+			initialModel =
+				watchTypes.find((m) => m.id.toString() === modelIdFromUrl) || null;
+			setOpenAccordion("strap");
+		} else {
+			setMode("manual");
+			setOpenAccordion("model");
 		}
 
-		// Если `selectedModel` еще не определился (данные могли не успеть прийти), ждем.
+		setSelectedModel(initialModel);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	// Эффект, который устанавливает детали по умолчанию, ТОЛЬКО ПРИ СМЕНЕ МОДЕЛИ
+	useEffect(() => {
+		if (mode === "loading") return;
+
+		// Если модель не выбрана, сбрасываем выбор
 		if (!selectedModel) {
+			setSelection({
+				watchCase: null,
+				bezel: null,
+				dial: null,
+				strap: null,
+				hand: null,
+				secondHand: null,
+				gmtHand: null,
+			});
+			prevModelId.current = null;
 			return;
 		}
 
-		setShouldLoad(true);
+		// Ключевое условие: запускаем сброс, только если ID модели изменился
+		if (selectedModel.id !== prevModelId.current) {
+			const {
+				filteredCases,
+				filteredBezels,
+				filteredDials,
+				filteredStraps,
+				filteredHands,
+				filteredSecondHands,
+				filteredGMTHands,
+			} = filteredParts;
 
-		// Используем `filteredParts`, так как на этом этапе они уже стабильны, потому что `selectedModel` определен.
-		const {
-			filteredCases,
-			filteredBezels,
-			filteredDials,
-			filteredStraps,
-			filteredHands,
-			filteredSecondHands,
-			filteredGMTHands,
-		} = filteredParts;
+			setSelection({
+				watchCase: filteredCases[0] || null,
+				bezel: filteredBezels[0] || null,
+				dial: filteredDials[0] || null,
+				strap: filteredStraps[0] || null,
+				hand: filteredHands[0] || null,
+				secondHand: filteredSecondHands[0] || null,
+				gmtHand: filteredGMTHands[0] || null,
+			});
 
-		const findPart = <T,>(parts: T[], key: string): T | null => {
-			const partId = searchParams.get(key);
-			return (
-				parts.find((p: any) => p.id.toString() === partId) || parts[0] || null
-			);
-		};
+			// Обновляем ref, чтобы сброс не происходил при следующем рендере
+			prevModelId.current = selectedModel.id;
+		}
+	}, [selectedModel, filteredParts, mode]);
 
-		setSelection({
-			watchCase: findPart(filteredCases, "watchCase"),
-			bezel: findPart(filteredBezels, "bezel"),
-			dial: findPart(filteredDials, "dial"),
-			strap: findPart(filteredStraps, "strap"),
-			hand: findPart(filteredHands, "hand"),
-			secondHand: findPart(filteredSecondHands, "secondHand"),
-			gmtHand: findPart(filteredGMTHands, "gmtHand"),
-		});
-
-		setIsLoading(false);
-
-		// Зависим только от `selectedModel`. Когда он меняется (1 раз при заходе на страницу),
-		// эффект запускается, устанавливает состояние и больше не беспокоит.
-	}, [selectedModel, searchParams, filteredParts]);
-
-	// Эффект для обновления URL при изменении ВЫБОРА ПОЛЬЗОВАТЕЛЯ.
+	// Эффект для обновления URL
 	useEffect(() => {
-		if (isInitialMount.current) {
+		if (isInitialMount.current || mode === "loading") {
 			isInitialMount.current = false;
 			return;
 		}
-		if (isLoading || !shouldLoad || !selectedModel) return;
-
 		const params = new URLSearchParams();
-		params.set("model", selectedModel.id.toString());
-		Object.entries(selection).forEach(([key, value]) => {
-			if (value) {
-				params.set(key, value.id.toString());
-			}
-		});
+		if (selectedModel) {
+			params.set("model", selectedModel.id.toString());
+			Object.entries(selection).forEach(([key, value]) => {
+				if (value) params.set(key, value.id.toString());
+			});
+		}
 
 		const currentParams = searchParams.toString();
 		const newParams = params.toString();
 
-		// Обновляем URL, только если параметры действительно изменились
 		if (currentParams !== newParams) {
 			router.replace(`${pathname}?${newParams}`, { scroll: false });
 		}
-	}, [
-		selection,
-		selectedModel,
-		isLoading,
-		shouldLoad,
-		pathname,
-		router,
-		searchParams,
-	]);
+	}, [selection, selectedModel, mode, pathname, router, searchParams]);
 
 	// Вычисление итоговой цены
 	const totalPrice = useMemo(() => {
@@ -214,13 +222,14 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 
 	return {
 		selectedModel,
+		setSelectedModel,
 		selection,
 		openAccordion,
 		filteredParts,
 		totalPrice,
 		canShowPreview,
-		isLoading,
-		shouldLoad,
+		isLoading: mode === "loading",
+		mode,
 		handleSelectPart,
 		handleAccordionToggle,
 	};

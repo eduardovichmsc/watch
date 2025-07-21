@@ -1,4 +1,4 @@
-// src/components/card/gallery.tsx
+// src/components/card/store.tsx
 "use client";
 
 import Image from "next/image";
@@ -11,19 +11,31 @@ import { useCursorStore } from "@/stores/cursor";
 import { Spinner } from "@/components/ui/spinner";
 import { PATHS } from "@/constants/paths";
 import type { WatchType } from "@/types";
+import { useConfiguratorStore } from "@/stores/configurator";
+import { useRouter } from "next/navigation";
 
-interface GalleryCardProps {
+interface StoreCardProps {
 	model: WatchType;
 }
 
-export const GalleryCard = ({ model }: GalleryCardProps) => {
+export const StoreCard = ({ model }: StoreCardProps) => {
 	const { setVariant } = useCursorStore();
+	const { setModelFromStore } = useConfiguratorStore();
 
 	const [imageLoading, setImageLoading] = useState<boolean>(true);
 	const configuratorLink = `${PATHS.CONFIGURATOR}?model=${model.id}`;
 
+	const router = useRouter();
+
+	const handleClick = () => {
+		setModelFromStore(model.id);
+		router.push(PATHS.CONFIGURATOR);
+	};
+
 	return (
-		<div className="flex flex-col border border-slate-200 bg-white">
+		<div
+			className="flex flex-col border border-slate-200 bg-white"
+			onClick={handleClick}>
 			{/* Контейнер для изображения */}
 			<div className="relative aspect-square w-full bg-slate-50 overflow-hidden">
 				{model.image && (
