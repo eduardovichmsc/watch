@@ -204,7 +204,7 @@ export function useWatchConfiguratorParams({
 		totalPrice,
 		canShowPreview,
 		isLoading,
-		setSelectedModel: handleSetSelectedModel, // Экспортируем новый хендлер
+		setSelectedModel: handleSetSelectedModel,
 		handleSelectPart,
 		handleAccordionToggle,
 	};

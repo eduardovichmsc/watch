@@ -24,7 +24,7 @@ export const CustomCursor = () => {
 	}, []);
 
 	useEffect(() => {
-		// Оптимизация: слушатель только для не-сенсорных устройств
+		// Курсор только для не-сенсорных устройств
 		if (!isTouchDevice) {
 			const moveCursor = (e: MouseEvent) => {
 				cursorX.set(e.clientX);

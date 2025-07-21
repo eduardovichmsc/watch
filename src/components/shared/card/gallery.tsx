@@ -14,45 +14,51 @@ interface GalleryCardProps {
 
 export const GalleryCard = ({ model }: GalleryCardProps) => {
 	const { setVariant } = useCursorStore();
-
-	// Создаем ссылку на конфигуратор с ID этой модели
 	const configuratorLink = `${PATHS.CONFIGURATOR}?model=${model.id}`;
 
 	return (
-		<div
-			className="group relative block overflow-hidden border border-slate-200"
-			onMouseEnter={() => setVariant("link")}
-			onMouseLeave={() => setVariant("default")}>
-			<Link href={configuratorLink}>
-				<div className="aspect-square w-full bg-slate-50">
-					{model.image && (
-						<Image
-							src={model.image}
-							alt={model.name}
-							width={500}
-							height={500}
-							className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-						/>
-					)}
-				</div>
+		// Убираем `relative` и `group` с корневого элемента
+		<div className="flex flex-col border border-slate-200 bg-white">
+			{/* Контейнер для изображения */}
+			<div className="aspect-square w-full bg-slate-50 overflow-hidden">
+				{model.image && (
+					<Image
+						src={model.image}
+						alt={model.name}
+						width={600}
+						height={600}
+						className="w-full h-full object-cover"
+					/>
+				)}
+			</div>
 
-				<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-				<div className="absolute bottom-0 left-0 p-6 text-white w-full">
-					<h3 className="text-2xl font-semibold">{model.name}</h3>
-					<p className="font-mono text-sm uppercase text-slate-300">
-						Базовая цена: {parseFloat(model.price).toLocaleString("ru-RU")} KZT
+			{/* Информационный блок под изображением */}
+			<div className="flex flex-col flex-grow p-6">
+				<div className="flex-grow">
+					<h3 className="text-2xl font-medium text-black">{model.name}</h3>
+					<p className="font-mono text-sm uppercase text-slate-500 mt-1">
+						Базовая конфигурация
 					</p>
 				</div>
 
-				{/* Кнопка, появляющаяся при наведении */}
-				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-					<div className="flex items-center gap-x-2 bg-white text-black px-6 py-3 font-semibold">
-						<Settings size={18} />
-						<span>Кастомизировать</span>
+				<div className="border-t border-slate-100 my-4"></div>
+
+				<div className="flex justify-between items-center">
+					<div className="text-xl font-medium text-black">
+						{model.price
+							? `${parseFloat(model.price).toLocaleString("ru-RU")} KZT`
+							: "Цена по запросу"}
 					</div>
+					<Link
+						href={configuratorLink}
+						onMouseEnter={() => setVariant("link")}
+						onMouseLeave={() => setVariant("default")}
+						className="flex items-center justify-center size-12 border border-slate-200 text-slate-600 hover:bg-black hover:text-white transition-colors"
+						aria-label={`Кастомизировать ${model.name}`}>
+						<Settings size={20} />
+					</Link>
 				</div>
-			</Link>
+			</div>
 		</div>
 	);
 };

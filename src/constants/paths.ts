@@ -1,6 +1,6 @@
 export const PATHS = {
 	HOME: "/",
-	DESIGN_GALLERY: "/design_gallery",
+	DESIGN_GALLERY: "/gallery",
 	CONFIGURATOR: "/configurator",
 	CONTACTS: "/contacts",
 	CART: "/cart",

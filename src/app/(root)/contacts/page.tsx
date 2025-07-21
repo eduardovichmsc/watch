@@ -1,16 +1,10 @@
 // src/app/contacts/page.tsx
 "use client";
 
-import { Instagram, Send } from "lucide-react";
 import { ContactForm } from "@/components/sections/contacts/form";
 import { InfoBlock } from "@/components/sections/contacts/info";
 import { SocialLink } from "@/components/sections/contacts/social_link";
 import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
-
-const socialLinks = [
-	{ name: "Instagram", href: "#", icon: <Instagram size={24} /> },
-	{ name: "Telegram", href: "#", icon: <Send size={24} /> },
-];
 
 export default function ContactsPage() {
 	return (
