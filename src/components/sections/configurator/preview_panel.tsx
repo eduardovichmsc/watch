@@ -24,7 +24,7 @@ export function WatchPreviewPanel({
 }: WatchPreviewPanelProps) {
 	return (
 		<div className={cn(className)}>
-			<div className="relative aspect-square w-full">
+			<div className="relative aspect-4/3 lg:aspect-square w-full">
 				{/* Оверлей с лоадером */}
 				<AnimatePresence>
 					{isLoading && (

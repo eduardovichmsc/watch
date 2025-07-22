@@ -14,10 +14,10 @@ const content = {
 		src: "/home/royal-collection.jpg",
 		alt: "Премиальные кастомизированные часы",
 	},
-	subtitle: "BEYOND TIMEKEEPING",
+	subtitle: "БОЛЬШЕ, ЧЕМ ПРОСТО ЧАСЫ",
 	title: {
-		line1: "Your Legacy,",
-		line2: "Engineered.",
+		line1: "Ваше наследие,",
+		line2: "Воплощенное.",
 	},
 	description:
 		"Совершенная инженерия. Бескомпромиссный дизайн. Создайте часы, которые отражают именно вас.",

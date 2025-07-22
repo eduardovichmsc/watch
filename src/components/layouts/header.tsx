@@ -74,11 +74,13 @@ export function Header() {
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
 						className={clsx(
-							"text-2xl sm:text-3xl font-bold font-cormorant transition-colors",
+							"hidden lg:inline text-2xl sm:text-3xl font-bold font-cormorant transition-colors",
 							isLightMode ? "text-slate-900" : "text-white"
 						)}>
-						WotchModClub
+						WotchModsClub
 					</Link>
+
+					<div className="inline lg:hidden"></div>
 
 					{/* Правая часть */}
 					<div className="flex items-center gap-4 sm:gap-6">

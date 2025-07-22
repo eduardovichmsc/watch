@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useCursorStore } from "@/stores/cursor";
-import { ChevronDown, MoveHorizontal, Search } from "lucide-react";
+import { ChevronDown, Heart, MoveHorizontal, Search } from "lucide-react";
 
 export const CustomCursor = () => {
 	const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -105,6 +105,14 @@ export const CustomCursor = () => {
 			backgroundColor: "rgba(255, 255, 255, 1)",
 			mixBlendMode: "difference",
 		},
+		heart: {
+			height: 64,
+			width: 64,
+			borderColor: "rgba(255, 255, 255, 1)",
+			borderWidth: "1px",
+			backgroundColor: "rgba(255, 255, 255, 1)",
+			mixBlendMode: "difference",
+		},
 	};
 
 	const iconVariants = {
@@ -114,6 +122,7 @@ export const CustomCursor = () => {
 		drag: { opacity: 1, scale: 1 },
 		preview: { opacity: 1, scale: 1 },
 		open: { opacity: 1, scale: 1 },
+		heart: { opacity: 1, scale: 1 },
 	};
 
 	return (
@@ -154,6 +163,9 @@ export const CustomCursor = () => {
 					)}
 					{variant === "open" && (
 						<ChevronDown className="mix-blend-difference" size={32} />
+					)}
+					{variant === "heart" && (
+						<Heart className="mix-blend-difference" size={32} />
 					)}
 				</motion.div>
 			</motion.div>

@@ -47,18 +47,6 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		handleAccordionToggle,
 	} = useWatchConfiguratorParams(props);
 
-	// Конфигурация стилей для предпросмотра
-	const styleConfig = {
-		strap: { scale: 100 },
-		watchCase: { scale: 100 },
-		bezel: { scale: 100 },
-		dial: { scale: 170 },
-		hand: { scale: 250, top: 10 },
-		secondHand: { scale: 250, top: 20 },
-		gmtHand: { scale: 250 },
-	};
-
-	// Массив для рендеринга секций аккордеона
 	const partSections = [
 		{
 			key: "strap" as const,
@@ -104,24 +92,22 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		},
 	];
 
-	// Состояние загрузки
 	if (isLoading) {
 		return <ConfiguratorLoader />;
 	}
 
-	// Динамические хлебные крошки
 	const breadcrumbs = selectedModel
 		? [{ label: "Галерея", href: PATHS.STORE }, { label: selectedModel.name }]
 		: [];
 
 	return (
-		<div className="lg:grid lg:grid-cols-2 relative pb-[120px] lg:pb-0">
+		<div className="lg:grid lg:grid-cols-2 relative pb-8 lg:pb-0">
 			<WatchPreviewPanel
 				isLoading={false}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
-				className="sticky top-16 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
+				className="sticky top-14 lg:top-17 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
 			{/* Правая колонка */}
@@ -184,7 +170,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 					model={selectedModel}
 					selection={selection}
 					totalPrice={totalPrice}
-					className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm p-4 border-t border-slate-200 lg:static lg:bg-transparent lg:p-6 lg:pb-0 lg:border-t-0"
+					className="sticky bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm p-4 border-t border-slate-200 lg:static lg:bg-transparent lg:p-6 lg:pb-0 lg:border-t-0"
 				/>
 			</div>
 		</div>

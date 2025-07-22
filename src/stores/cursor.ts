@@ -6,6 +6,7 @@ export type CursorVariant =
 	| "text"
 	| "drag"
 	| "preview"
+	| "heart"
 	| "open";
 
 interface CursorState {

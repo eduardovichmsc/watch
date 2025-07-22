@@ -8,8 +8,11 @@ import { useCartStore } from "@/stores/cart";
 import { ShoppingBag } from "lucide-react";
 import { CartItemCard } from "@/components/shared/card/cart";
 import { OrderSummary } from "@/components/sections/cart/order_summary";
+import { useCursorStore } from "@/stores/cursor";
 
 export default function CartPage() {
+	const { setVariant } = useCursorStore();
+
 	const items = useCartStore((state) => state.items);
 	const removeFromCart = useCartStore((state) => state.removeFromCart);
 	const subtotal = useMemo(
@@ -31,6 +34,8 @@ export default function CartPage() {
 				</p>
 				<Link
 					href="/configurator"
+					onMouseEnter={() => setVariant("link")}
+					onMouseLeave={() => setVariant("default")}
 					className="h-16 inline-flex items-center justify-center px-8 bg-black text-white font-semibold rounded-none hover:bg-zinc-800 transition-colors">
 					Перейти в конструктор
 				</Link>
