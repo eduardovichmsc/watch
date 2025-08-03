@@ -1,4 +1,4 @@
-// src/components/gallery/build-detail.tsx
+// src/components/store/details.tsx
 "use client";
 
 import Image from "next/image";
@@ -19,8 +19,9 @@ import {
 	PreselectedComponents,
 } from "@/stores/configurator";
 import { useAlertStore } from "@/stores/alert";
-import { ComponentListItem } from "@/components/sections/store/component_list_item";
+import { ComponentListItem } from "@/components/sections/store/components/item";
 import { cn } from "@/lib/utils";
+import { ComponentsList } from "./components/list";
 
 const componentTypeKeyMap: { [key: string]: keyof WatchSelection } = {
 	case: "watchCase",
@@ -98,48 +99,36 @@ export const BuildDetail = ({ build }: Props) => {
 						onClick={() => router.push(PATHS.STORE)}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
-						className="absolute top-6 left-6 flex items-center gap-2 bg-black/50 text-white px-4 py-2 backdrop-blur-sm hover:bg-black/80 transition-colors">
+						className="absolute bottom-8 md:bottom-auto md:top-8 right-8 md:right-auto md:left-12 lg:left-16 flex items-center gap-2 bg-black/50 text-white px-4 py-2 backdrop-blur-sm hover:bg-black/80 transition-colors">
 						<ArrowLeft size={18} />
 						<span>Назад к сборкам</span>
 					</button>
 				</div>
 
 				{/* Правая колонка: Информация */}
-				<div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center">
-					<div>
-						<p className="font-mono text-sm uppercase tracking-wider text-slate-500">
+				<div className="py-8 md:py-12 lg:py-16 flex flex-col justify-center">
+					<div className="flex flex-col">
+						<p className="px-8 md:px-12 lg:px-16 order-1 mt-8 font-mono text-sm uppercase tracking-wider text-slate-500">
 							На базе {build.watch_type.name}
 						</p>
 
-						<h1 className="mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
+						<h1 className="px-8 md:px-12 lg:px-16 order-2 mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
 							{build.name}
 						</h1>
 
 						{build.description && (
-							<p className="mt-6 text-lg text-slate-600">{build.description}</p>
+							<p className="px-8 md:px-12 lg:px-16 order-3 mt-6 text-lg text-slate-600">
+								{build.description}
+							</p>
 						)}
 
 						{/* Список компонентов */}
 						{build.components && build.components.length > 0 && (
-							<div className="mt-8">
-								<h2 className="text-xl font-semibold text-slate-800 mb-4">
-									Компоненты сборки:
-								</h2>
-								<div className="border border-slate-200">
-									{build.components.map((component) => (
-										<ComponentListItem
-											key={component.id}
-											type={component.type}
-											name={component.name}
-											imageUrl={component.image}
-										/>
-									))}
-								</div>
-							</div>
+							<ComponentsList build={build} />
 						)}
 
 						{/* Блок с кнопками */}
-						<div className="mt-10 flex flex-col sm:flex-row gap-4">
+						<div className="px-8 md:px-12 lg:px-16  order-4 lg:order-5 mt-10 flex flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent">
 							{/* "Кастомизировать" */}
 							<button
 								onClick={handleCustomizeClick}

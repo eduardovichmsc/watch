@@ -8,11 +8,20 @@ export interface PaginatedResponse<T> {
 	results: T[];
 }
 
+// Тип для категорий
+export interface Category {
+	id: number;
+	name: string;
+	description: string;
+	created_at: string;
+}
+
 /* Тип для моделей часов (Nautiko, Seikojust, ...) */
 export interface WatchType {
 	id: number;
 	name: string;
 	description: string;
+	category: Category;
 	image: string | null;
 	price: string;
 }

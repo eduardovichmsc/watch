@@ -3,7 +3,6 @@
 
 import Image from "next/image";
 
-// Переводим типы компонентов на русский язык для отображения
 const componentTypeMap: { [key: string]: string } = {
 	case: "Корпус",
 	bezel: "Безель",

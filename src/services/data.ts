@@ -1,5 +1,5 @@
-// lib/data.ts
-import "server-only";
+// services/data.ts
+import { SITE } from "@/constants/site";
 import {
 	PaginatedResponse,
 	WatchCase,
@@ -11,9 +11,10 @@ import {
 	SecondHand,
 	GMTHand,
 	Build,
+	Category,
 } from "@/types";
 
-const API_BASE_URL = "https://wotchmodclub.com/watches";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || SITE.API_URL;
 
 async function fetchAllPages<T>(resourcePath: string): Promise<T[]> {
 	let results: T[] = [];
@@ -67,6 +68,10 @@ async function fetchSingle<T>(resourcePath: string): Promise<T | null> {
 }
 
 // Basics
+export async function getCategories(): Promise<Category[]> {
+	return fetchAllPages<Category>("categories/");
+}
+
 export async function getWatchTypes(): Promise<WatchType[]> {
 	return fetchAllPages<WatchType>("watchtypes/");
 }

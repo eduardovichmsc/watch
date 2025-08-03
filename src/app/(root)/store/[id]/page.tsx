@@ -1,7 +1,7 @@
 // src/app/store/[id]/page.tsx
 import { getBuildById } from "@/services/data";
 import { notFound } from "next/navigation";
-import { BuildDetail } from "@/components/sections/store/build_detail";
+import { BuildDetail } from "@/components/sections/store/details";
 import type { Metadata } from "next";
 
 interface Props {

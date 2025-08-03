@@ -18,7 +18,11 @@ export const BuildCard = ({ build }: BuildCardProps) => {
 
 	return (
 		<div className="group relative block overflow-hidden border border-slate-200">
-			<Link href={goToLink} draggable={false}>
+			<Link
+				href={goToLink}
+				draggable={false}
+				onMouseEnter={() => setVariant("link")}
+				onMouseLeave={() => setVariant("default")}>
 				<div className="aspect-4/5 w-full bg-slate-100">
 					{build.image && (
 						<Image
@@ -36,15 +40,6 @@ export const BuildCard = ({ build }: BuildCardProps) => {
 					<p className="font-mono text-xs uppercase text-slate-300 mt-1">
 						На базе {build.watch_type.name}
 					</p>
-				</div>
-				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition duration-500 ease-in-out">
-					<div
-						className="flex items-center gap-x-2 bg-white text-black px-6 py-3 font-medium"
-						onMouseEnter={() => setVariant("link")}
-						onMouseLeave={() => setVariant("default")}>
-						<Settings size={18} />
-						<span>Посмотреть детали</span>
-					</div>
 				</div>
 			</Link>
 		</div>

@@ -10,4 +10,5 @@ export type {
 	SecondHand,
 	GMTHand,
 	Build,
+	Category,
 } from "./watches";
