@@ -46,8 +46,8 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	// Получаем функции из Zustand синхронно, чтобы сразу очистить состояние
-	const { modelFromStoreId, clearModelFromStore } =
+	// Получаем данные и функции из Zustand стора синхронно
+	const { modelFromStoreId, componentsFromStore, clearPreselection } =
 		useConfiguratorStore.getState();
 
 	// Основные состояния
@@ -64,7 +64,6 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	});
 	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 	const isInitialMount = useRef(true);
-	// Ref для отслеживания ID предыдущей модели, чтобы сбрасывать детали только при смене
 	const prevModelId = useRef<string | number | null>(null);
 
 	// Фильтруем детали, доступные для выбранной модели
@@ -111,7 +110,6 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 			setMode("preselected");
 			initialModel = watchTypes.find((m) => m.id === modelFromStoreId) || null;
 			setOpenAccordion("strap");
-			clearModelFromStore();
 		} else if (modelIdFromUrl) {
 			setMode("manual");
 			initialModel =
@@ -126,11 +124,10 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Эффект, который устанавливает детали по умолчанию, ТОЛЬКО ПРИ СМЕНЕ МОДЕЛИ
+	// Эффект, который устанавливает детали по умолчанию или из стора
 	useEffect(() => {
 		if (mode === "loading") return;
 
-		// Если модель не выбрана, сбрасываем выбор
 		if (!selectedModel) {
 			setSelection({
 				watchCase: null,
@@ -145,7 +142,6 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 			return;
 		}
 
-		// Ключевое условие: запускаем сброс, только если ID модели изменился
 		if (selectedModel.id !== prevModelId.current) {
 			const {
 				filteredCases,
@@ -157,20 +153,46 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 				filteredGMTHands,
 			} = filteredParts;
 
+			const findPartById = <T extends { id: number | string }>(
+				partId: number | string | undefined,
+				parts: T[]
+			): T | null => {
+				// Если есть ID из стора, ищем по нему. Если не нашли, берем дефолтный.
+				if (partId !== undefined) {
+					return parts.find((p) => p.id === partId) || parts[0] || null;
+				}
+				// Если ID из стора нет, просто берем дефолтный.
+				return parts[0] || null;
+			};
+
 			setSelection({
-				watchCase: filteredCases[0] || null,
-				bezel: filteredBezels[0] || null,
-				dial: filteredDials[0] || null,
-				strap: filteredStraps[0] || null,
-				hand: filteredHands[0] || null,
-				secondHand: filteredSecondHands[0] || null,
-				gmtHand: filteredGMTHands[0] || null,
+				watchCase: findPartById(componentsFromStore?.watchCase, filteredCases),
+				bezel: findPartById(componentsFromStore?.bezel, filteredBezels),
+				dial: findPartById(componentsFromStore?.dial, filteredDials),
+				strap: findPartById(componentsFromStore?.strap, filteredStraps),
+				hand: findPartById(componentsFromStore?.hand, filteredHands),
+				secondHand: findPartById(
+					componentsFromStore?.secondHand,
+					filteredSecondHands
+				),
+				gmtHand: findPartById(componentsFromStore?.gmtHand, filteredGMTHands),
 			});
 
-			// Обновляем ref, чтобы сброс не происходил при следующем рендере
+			// Очищаем стор ПОСЛЕ того, как использовали его данные
+			if (modelFromStoreId) {
+				clearPreselection();
+			}
+
 			prevModelId.current = selectedModel.id;
 		}
-	}, [selectedModel, filteredParts, mode]);
+	}, [
+		selectedModel,
+		filteredParts,
+		mode,
+		modelFromStoreId,
+		componentsFromStore,
+		clearPreselection,
+	]);
 
 	// Эффект для обновления URL
 	useEffect(() => {

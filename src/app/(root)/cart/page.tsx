@@ -9,6 +9,7 @@ import { ShoppingBag } from "lucide-react";
 import { CartItemCard } from "@/components/shared/card/cart";
 import { OrderSummary } from "@/components/sections/cart/order_summary";
 import { useCursorStore } from "@/stores/cursor";
+import { PATHS } from "@/constants/paths";
 
 export default function CartPage() {
 	const { setVariant } = useCursorStore();
@@ -33,11 +34,11 @@ export default function CartPage() {
 					конструктор, чтобы начать.
 				</p>
 				<Link
-					href="/configurator"
+					href={PATHS.STORE}
 					onMouseEnter={() => setVariant("link")}
 					onMouseLeave={() => setVariant("default")}
 					className="h-16 inline-flex items-center justify-center px-8 bg-black text-white font-semibold rounded-none hover:bg-zinc-800 transition-colors">
-					Перейти в конструктор
+					Перейти в магазин
 				</Link>
 			</div>
 		);

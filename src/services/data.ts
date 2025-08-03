@@ -10,6 +10,7 @@ import {
 	Hand,
 	SecondHand,
 	GMTHand,
+	Build,
 } from "@/types";
 
 const API_BASE_URL = "https://wotchmodclub.com/watches";
@@ -44,10 +45,47 @@ async function fetchAllPages<T>(resourcePath: string): Promise<T[]> {
 	}
 }
 
+async function fetchSingle<T>(resourcePath: string): Promise<T | null> {
+	const url = `${API_BASE_URL}/${resourcePath}`;
+	const headers = { "Content-Type": "application/json" };
+
+	try {
+		const response = await fetch(url, { headers, cache: "force-cache" });
+		if (response.status === 404) {
+			return null;
+		}
+		if (!response.ok) {
+			throw new Error(
+				`API request for ${url} failed with status ${response.status}`
+			);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error(`Error fetching single resource for ${resourcePath}:`, error);
+		return null;
+	}
+}
+
+// Basics
 export async function getWatchTypes(): Promise<WatchType[]> {
 	return fetchAllPages<WatchType>("watchtypes/");
 }
 
+export async function getWatchTypeById(
+	id: string | number
+): Promise<WatchType | null> {
+	return fetchSingle<WatchType>(`watchtypes/${id}`);
+}
+
+export async function getBuilds(): Promise<Build[]> {
+	return fetchAllPages<Build>("builds/");
+}
+
+export async function getBuildById(id: string | number): Promise<Build | null> {
+	return fetchSingle<Build>(`builds/${id}`);
+}
+
+// Details
 export async function getCases(): Promise<WatchCase[]> {
 	return fetchAllPages<WatchCase>("cases/");
 }

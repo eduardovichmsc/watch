@@ -19,7 +19,6 @@ import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { PATHS } from "@/constants/paths";
 
-// Интерфейс пропсов компонента
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
 	cases: WatchCase[];
@@ -31,7 +30,6 @@ interface WatchConfiguratorProps {
 	gmtHands: GMTHand[];
 }
 
-// Основной компонент
 export function WatchConfigurator(props: WatchConfiguratorProps) {
 	const {
 		selectedModel,
@@ -97,7 +95,10 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 	}
 
 	const breadcrumbs = selectedModel
-		? [{ label: "Галерея", href: PATHS.STORE }, { label: selectedModel.name }]
+		? [
+				{ label: "Все модели", href: PATHS.STORE },
+				{ label: selectedModel.name },
+		  ]
 		: [];
 
 	return (
@@ -129,7 +130,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				</div>
 
 				<div>
-					{/* Условный рендеринг аккордеона выбора модели */}
+					{/* Рендеринг аккордеона выбора модели */}
 					{mode === "manual" && (
 						<AccordionSection
 							title="Выберите модель"

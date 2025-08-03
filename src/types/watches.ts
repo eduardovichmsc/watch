@@ -73,8 +73,8 @@ export interface GMTHand extends BaseComponent {
 	material: string;
 	length: string;
 }
+
 /* Тип для хранения состояния текущего выбора пользователя в конфигураторе */
-/* Если добавите новую деталь, не забудьте сюда добавить */
 export interface WatchSelection {
 	watchCase: WatchCase | null;
 	bezel: Bezel | null;
@@ -83,4 +83,35 @@ export interface WatchSelection {
 	hand: Hand | null;
 	secondHand: SecondHand | null;
 	gmtHand: GMTHand | null;
+}
+
+// Типы для готовой сборки
+interface BuildComponent {
+	type: string;
+	name: string;
+	image: string;
+	quantity: number;
+	id: number;
+	price?: string;
+}
+
+export interface Build {
+	id: number;
+	name: string;
+	description: string;
+	watch_type: WatchType;
+	category: string;
+	assembly: number;
+	quantity: number;
+	status: string;
+	notes: string;
+	image: string;
+	components: BuildComponent[];
+	component_images: {
+		type: string;
+		image_url: string;
+		name: string;
+	}[];
+	created_at: string;
+	updated_at: string;
 }

@@ -1,2 +1,15 @@
 // чекает цикл рендера
 dpdm src/components/sections/constructor.tsx --circular
+
+// Types of property 'params' are incompatible
+https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
+
+В кратце:
+interface Props {
+	params: Promise<{ id: string }>;
+}
+export ... Page(){
+  const { id } = await params;
+  
+  ...
+}
