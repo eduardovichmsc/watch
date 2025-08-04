@@ -8,9 +8,9 @@ import { Menu, X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cart";
 import { MAIN_LINKS, PATHS } from "@/constants/paths";
 import { motion, AnimatePresence } from "framer-motion";
-import { clsx } from "clsx";
 import { useCursorStore } from "@/stores/cursor";
 import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
+import { cn } from "@/lib/utils";
 
 export function Header() {
 	const { setVariant } = useCursorStore();
@@ -49,7 +49,7 @@ export function Header() {
 		}
 	}, [pathname]);
 
-	const headerClasses = clsx(
+	const headerClasses = cn(
 		"w-full top-0 z-[101] transition-colors duration-300 ease-in-out",
 		isHomePage ? "fixed" : "sticky",
 		isLightMode
@@ -61,7 +61,7 @@ export function Header() {
 		<>
 			<header className={headerClasses}>
 				<div
-					className={clsx(
+					className={cn(
 						"mx-auto flex items-center justify-between px-8 lg:px-16 transition-all duration-300 ease-in-out",
 						{
 							"py-6 lg:py-10": isHomePage && !isScrolled,
@@ -73,7 +73,7 @@ export function Header() {
 						href={PATHS.HOME}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
-						className={clsx(
+						className={cn(
 							"hidden lg:inline text-2xl sm:text-3xl font-bold font-cormorant transition-colors",
 							isLightMode ? "text-slate-900" : "text-white"
 						)}>
@@ -92,9 +92,11 @@ export function Header() {
 									href={item.href}
 									onMouseEnter={() => setVariant("link")}
 									onMouseLeave={() => setVariant("default")}
-									className={clsx(
+									className={cn(
 										"text-sm font-medium transition-colors",
-										pathname === item.href
+										isMenuOpen && pathname !== item.href
+											? "text-slate-500"
+											: pathname === item.href
 											? isLightMode
 												? "text-black"
 												: "text-white"
@@ -109,12 +111,13 @@ export function Header() {
 
 						{/* Разделитель */}
 						<div
-							className="hidden lg:block w-px h-6 bg-slate-200"
-							style={{
-								backgroundColor: isLightMode ? "rgb(226, 232, 240)" : "white",
-								mixBlendMode: isLightMode ? "normal" : "difference",
-								opacity: isLightMode ? 1 : 0.5,
-							}}></div>
+							className={cn(
+								"hidden lg:block w-px h-6",
+								isLightMode
+									? "bg-slate-400 mix-blend-normal opacity-100"
+									: "bg-white mix-blend-difference opacity-50"
+							)}
+						/>
 
 						{/* Иконки и кнопка меню */}
 						<div className="flex items-center gap-4 sm:gap-6">
@@ -123,20 +126,22 @@ export function Header() {
 								aria-label="Корзина"
 								onMouseEnter={() => setVariant("link")}
 								onMouseLeave={() => setVariant("default")}
-								className={clsx(
+								className={cn(
 									"relative transition-colors",
 									isLightMode
 										? "text-slate-600 hover:text-slate-900"
-										: "text-slate-100 hover:text-white"
+										: "text-slate-100 hover:text-white",
+									isMenuOpen ? "text-slate-600" : null
 								)}>
 								<ShoppingBag className="size-6" />
 								{items.length > 0 && (
 									<div
-										className={clsx(
+										className={cn(
 											"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
 											isLightMode
 												? "bg-black text-white"
-												: "bg-white text-black"
+												: "bg-white text-black",
+											isMenuOpen ? "border border-slate-900" : null
 										)}>
 										<span className="text-xs font-semibold">
 											{items.length > 9 ? "9+" : items.length}
@@ -159,7 +164,7 @@ export function Header() {
 									animate={{ rotate: 0, opacity: 1 }}
 									exit={{ rotate: 90, opacity: 0 }}
 									transition={{ duration: 0.3 }}
-									className={clsx(
+									className={cn(
 										"transition-colors",
 										isMenuOpen
 											? "text-slate-800"
@@ -205,7 +210,7 @@ export function Header() {
 										onMouseLeave={() => setVariant("default")}>
 										<Link
 											href={item.href}
-											className={clsx(
+											className={cn(
 												"text-5xl sm:text-6xl md:text-8xl text-right font-light transition-colors",
 												pathname === item.href
 													? "text-black"

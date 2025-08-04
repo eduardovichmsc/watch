@@ -4,15 +4,22 @@ import { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useCursorStore } from "@/stores/cursor";
 import { ChevronDown, Heart, MoveHorizontal, Search } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export const CustomCursor = () => {
 	const [isTouchDevice, setIsTouchDevice] = useState(false);
-	const { variant } = useCursorStore();
+	const { variant, setVariant } = useCursorStore();
 	const cursorX = useMotionValue(-100);
 	const cursorY = useMotionValue(-100);
 	const springConfig = { damping: 25, stiffness: 300 };
 	const springX = useSpring(cursorX, springConfig);
 	const springY = useSpring(cursorY, springConfig);
+
+	const pathname = usePathname();
+
+	useEffect(() => {
+		setVariant("default");
+	}, [pathname]);
 
 	// Определение типа устройства
 	useEffect(() => {

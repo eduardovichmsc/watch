@@ -88,7 +88,7 @@ export function WatchPreviewPanel({
 						{selectedModel
 							? `MODEL - ${selectedModel.image
 									?.split("/")
-									.slice(4, 6)
+									.slice(2, 5)
 									.join(" / ")
 									.toUpperCase()}`
 							: "CUSTOM BUILD"}

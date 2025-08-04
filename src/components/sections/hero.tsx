@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Settings, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { PATHS } from "@/constants/paths";
 import { usePreloaderStore } from "@/stores/preloader";
 import { useCursorStore } from "@/stores/cursor";
@@ -31,7 +31,7 @@ const content = {
 	},
 };
 
-const containerVariants = {
+const containerVariants: Variants = {
 	hidden: { opacity: 0 },
 	visible: {
 		opacity: 1,
@@ -42,7 +42,7 @@ const containerVariants = {
 	},
 } as const;
 
-const itemVariants = {
+const itemVariants: Variants = {
 	hidden: { opacity: 0, y: 20 },
 	visible: {
 		opacity: 1,

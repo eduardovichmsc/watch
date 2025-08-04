@@ -122,7 +122,7 @@ export const ActionPanel = ({
 							{isCopied ? (
 								<div className="flex items-center gap-x-2">
 									<CheckIcon className="w-5 h-5" />
-									<span className="hidden lg:inline text-sm font-semibold">
+									<span className="hidden lg:inline text-sm font-medium">
 										Скопировано
 									</span>
 								</div>

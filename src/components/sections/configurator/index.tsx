@@ -108,7 +108,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
-				className="sticky top-14 lg:top-17 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
+				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
 			{/* Правая колонка */}

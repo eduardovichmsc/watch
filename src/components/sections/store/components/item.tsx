@@ -28,7 +28,7 @@ export const ComponentListItem = ({
 	const fullImageUrl = `https://wotchmodclub.com${imageUrl}`;
 
 	return (
-		<div className="flex items-center gap-4 p-3 border-b border-slate-100 last:border-b-0">
+		<div className="flex items-center gap-4 p-3 border-b border-slate-200 last:border-b-0">
 			<div className="relative size-16 flex-shrink-0 bg-slate-100 overflow-hidden">
 				<Image
 					src={fullImageUrl}

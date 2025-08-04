@@ -19,7 +19,6 @@ import {
 	PreselectedComponents,
 } from "@/stores/configurator";
 import { useAlertStore } from "@/stores/alert";
-import { ComponentListItem } from "@/components/sections/store/components/item";
 import { cn } from "@/lib/utils";
 import { ComponentsList } from "./components/list";
 
@@ -52,6 +51,10 @@ export const BuildDetail = ({ build }: Props) => {
 			return () => clearTimeout(timer);
 		}
 	}, [isCopied]);
+
+	const handleBaseClick = () => {
+		router.push(PATHS.CONFIGURATOR + "?model=" + build.watch_type.id);
+	};
 
 	const handleShareClick = async () => {
 		if (isSharing) return;
@@ -109,13 +112,22 @@ export const BuildDetail = ({ build }: Props) => {
 				<div className="py-8 md:py-12 lg:py-16 flex flex-col justify-center">
 					<div className="flex flex-col">
 						<p className="px-8 md:px-12 lg:px-16 order-1 mt-8 font-mono text-sm uppercase tracking-wider text-slate-500">
-							На базе {build.watch_type.name}
+							На базе{" "}
+							<span
+								className="underline underline-offset-4"
+								onClick={handleBaseClick}
+								onMouseEnter={() => setVariant("link")}
+								onMouseLeave={() => setVariant("default")}>
+								{build.watch_type.name}
+							</span>
 						</p>
 
-						<h1 className="px-8 md:px-12 lg:px-16 order-2 mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
+						{/* Название сборки */}
+						<h1 className="px-8 md:px-12 lg:px-16 order-2 mt-4 lg:mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
 							{build.name}
 						</h1>
 
+						{/* Описание */}
 						{build.description && (
 							<p className="px-8 md:px-12 lg:px-16 order-3 mt-6 text-lg text-slate-600">
 								{build.description}
@@ -128,15 +140,13 @@ export const BuildDetail = ({ build }: Props) => {
 						)}
 
 						{/* Блок с кнопками */}
-						<div className="px-8 md:px-12 lg:px-16  order-4 lg:order-5 mt-10 flex flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent">
+						<div className="px-8 md:px-12 lg:px-16 order-4 lg:order-5 mt-10 flex flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent">
 							{/* "Кастомизировать" */}
 							<button
 								onClick={handleCustomizeClick}
 								disabled={isActionInProgress}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}
-								className="group flex-1 inline-flex items-center justify-center gap-x-3 h-16 px-10 bg-black text-white font-semibold hover:bg-zinc-800 transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
-								<Settings className="w-6 h-6 transition-transform duration-300 group-hover:rotate-45" />
+								className="group flex-1 inline-flex items-center justify-center gap-x-3 h-16 px-10 bg-black text-white font-medium hover:bg-zinc-800 transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
+								<Settings className="w-6 h-6" />
 								<span>Кастомизировать</span>
 							</button>
 
@@ -145,21 +155,24 @@ export const BuildDetail = ({ build }: Props) => {
 								type="button"
 								onClick={handleShareClick}
 								disabled={isActionInProgress}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}
 								className={cn(
-									"h-16 w-16 flex items-center justify-center shrink-0 border transition-all duration-300 disabled:cursor-not-allowed",
+									"aspect-square lg:aspect-auto h-14 lg:h-16 flex items-center justify-center rounded-none border transition-all duration-300 disabled:cursor-not-allowed",
 									{
-										"bg-emerald-50 border-emerald-400 text-emerald-600":
+										"w-auto px-4 bg-emerald-50 border-emerald-400 text-emerald-600":
 											isCopied,
-										"border-slate-300 bg-slate-100": isSharing,
-										"border-slate-200 text-slate-600 hover:bg-slate-100":
+										"w-14 lg:w-16 border-slate-300 bg-slate-100": isSharing,
+										"w-14 lg:w-16 border-slate-200 text-slate-600 hover:bg-slate-100":
 											!isCopied && !isSharing,
 									}
 								)}
 								aria-label="Поделиться сборкой">
 								{isCopied ? (
-									<CheckIcon className="w-6 h-6" />
+									<div className="flex items-center gap-x-2">
+										<CheckIcon className="w-6 h-6" />
+										<span className="hidden lg:inline text-sm font-medium">
+											Скопировано
+										</span>
+									</div>
 								) : isSharing ? (
 									<Loader2 className="w-6 h-6 animate-spin text-slate-500" />
 								) : (

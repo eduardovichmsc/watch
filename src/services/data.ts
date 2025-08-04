@@ -14,7 +14,7 @@ import {
 	Category,
 } from "@/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || SITE.API_URL;
+const API_BASE_URL = SITE.API_URL;
 
 async function fetchAllPages<T>(resourcePath: string): Promise<T[]> {
 	let results: T[] = [];
@@ -25,8 +25,8 @@ async function fetchAllPages<T>(resourcePath: string): Promise<T[]> {
 		while (nextUrl) {
 			const response = await fetch(nextUrl, {
 				headers,
-				// cache: "no-store"
-				cache: "force-cache",
+				cache: "no-store",
+				// cache: "force-cache",
 			});
 			if (!response.ok) {
 				throw new Error(
