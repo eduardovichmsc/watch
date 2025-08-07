@@ -1,4 +1,6 @@
-const API_BASE_URL = "https://wotchmodclub.com/watches";
+import { SITE } from "@/constants/site";
+
+const API_BASE_URL = SITE.API_URL;
 
 export async function getToken() {
 	try {

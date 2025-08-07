@@ -14,7 +14,7 @@ export const ComponentsList = ({ build }: Props) => {
 			<div className="border border-slate-200">
 				{build.components.map((component) => (
 					<ComponentListItem
-						key={component.id}
+						key={component.id + component.name}
 						type={component.type}
 						name={component.name}
 						imageUrl={component.image}

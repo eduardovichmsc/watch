@@ -2,6 +2,7 @@
 
 "use client";
 
+import { SITE } from "@/constants/site";
 import { CartItem } from "@/stores/cart";
 import { useCursorStore } from "@/stores/cursor";
 import { Trash2Icon } from "lucide-react";

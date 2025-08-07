@@ -5,6 +5,7 @@ export const PATHS = {
 	CONFIGURATOR: "/configurator",
 	CONTACTS: "/contacts",
 	CART: "/cart",
+	ADMIN: "/admin",
 } as const;
 
 export const MAIN_LINKS = [

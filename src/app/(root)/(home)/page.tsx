@@ -1,15 +1,15 @@
 // src/app/page.tsx
-import { Hero } from "@/components/sections/hero";
-import { PopularDesigns } from "@/components/sections/popular_designs";
-import { Process } from "@/components/sections/process";
-import { FaqSection } from "@/components/sections/faq";
-import { PhilosophySection } from "@/components/sections/philosophy";
+import { Hero } from "@/components/sections/home/hero";
+import { Process } from "@/components/sections/home/process";
+import { FaqSection } from "@/components/sections/home/faq";
+import { PhilosophySection } from "@/components/sections/home/philosophy";
+import { RecentBuildsSection } from "@/components/sections/home/recent_builds";
 
 export default function HomePage() {
 	return (
 		<div className="">
 			<Hero />
-			<PopularDesigns />
+			<RecentBuildsSection />
 			<Process />
 			<PhilosophySection />
 			<FaqSection />

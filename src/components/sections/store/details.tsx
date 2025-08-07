@@ -1,26 +1,30 @@
-// src/components/store/details.tsx
+// src/components/gallery/build-detail.tsx
 "use client";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-	Settings,
 	ArrowLeft,
+	ShoppingCartIcon,
 	CheckIcon,
 	Loader2,
 	Share2Icon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import { PATHS } from "@/constants/paths";
 import type { Build, WatchSelection } from "@/types";
 import { useCursorStore } from "@/stores/cursor";
-import {
-	useConfiguratorStore,
-	PreselectedComponents,
-} from "@/stores/configurator";
+import { useCartStore } from "@/stores/cart";
 import { useAlertStore } from "@/stores/alert";
 import { cn } from "@/lib/utils";
 import { ComponentsList } from "./components/list";
+import { SITE } from "@/constants/site";
+
+interface Props {
+	build: Build;
+	calculatedPrice: number;
+}
 
 const componentTypeKeyMap: { [key: string]: keyof WatchSelection } = {
 	case: "watchCase",
@@ -32,19 +36,19 @@ const componentTypeKeyMap: { [key: string]: keyof WatchSelection } = {
 	gmthands: "gmtHand",
 };
 
-interface Props {
-	build: Build;
-}
-
-export const BuildDetail = ({ build }: Props) => {
+export const BuildDetail = ({ build, calculatedPrice }: Props) => {
 	const { setVariant } = useCursorStore();
-	const { setPreselection } = useConfiguratorStore();
+	const addToCart = useCartStore((state) => state.addToCart);
 	const showAlert = useAlertStore((state) => state.showAlert);
 	const router = useRouter();
 
+	// Состояния для кнопок
 	const [isSharing, setIsSharing] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
+	const [isAddingToCart, setIsAddingToCart] = useState(false);
+	const [isAdded, setIsAdded] = useState(false);
 
+	// Эффекты для сброса состояний alert
 	useEffect(() => {
 		if (isCopied) {
 			const timer = setTimeout(() => setIsCopied(false), 2000);
@@ -52,12 +56,21 @@ export const BuildDetail = ({ build }: Props) => {
 		}
 	}, [isCopied]);
 
+	useEffect(() => {
+		if (isAdded) {
+			const timer = setTimeout(() => setIsAdded(false), 2000);
+			return () => clearTimeout(timer);
+		}
+	}, [isAdded]);
+
+	// Переход в конфигуратор с чистой базовой моделью
 	const handleBaseClick = () => {
 		router.push(PATHS.CONFIGURATOR + "?model=" + build.watch_type.id);
 	};
 
+	// Копирование ссылки
 	const handleShareClick = async () => {
-		if (isSharing) return;
+		if (isSharing || isCopied) return;
 		setIsSharing(true);
 		try {
 			await navigator.clipboard.writeText(window.location.href);
@@ -71,20 +84,60 @@ export const BuildDetail = ({ build }: Props) => {
 		}
 	};
 
-	const handleCustomizeClick = () => {
-		const preselectedComponents: PreselectedComponents = {};
+	// Преобразуем массив `build.components` в объект `WatchSelection` для корзины
+	const buildSelection = useMemo((): WatchSelection => {
+		const selection: WatchSelection = {
+			watchCase: null,
+			bezel: null,
+			dial: null,
+			strap: null,
+			hand: null,
+			secondHand: null,
+			gmtHand: null,
+		};
 		build.components.forEach((component) => {
 			const key = componentTypeKeyMap[component.type.toLowerCase()];
 			if (key) {
-				preselectedComponents[key] = component.id;
+				// @ts-ignore
+				selection[key] = {
+					id: component.id,
+					name: component.name,
+					image: SITE.BASE + component.image,
+					price: "0",
+					watch_types: [],
+				};
 			}
 		});
+		return selection;
+	}, [build.components]);
 
-		setPreselection(build.watch_type.id, preselectedComponents);
-		router.push(PATHS.CONFIGURATOR);
+	// Добавление готовой сборки в корзину
+	const handleAddToCartClick = async () => {
+		if (isAddingToCart || isAdded) return;
+		setIsAddingToCart(true);
+		try {
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			addToCart(
+				build.watch_type,
+				window.location.href,
+				buildSelection,
+				calculatedPrice
+			);
+			showAlert("Сборка добавлена в корзину", "success");
+			setIsAdded(true);
+		} catch (err) {
+			console.error("Ошибка при добавлении в корзину: ", err);
+			showAlert("Ошибка при добавлении в корзину", "error");
+		} finally {
+			setIsAddingToCart(false);
+		}
 	};
 
-	const isActionInProgress = isSharing || isCopied;
+	const isActionInProgress = isSharing || isCopied || isAddingToCart || isAdded;
+	const itemVariants = {
+		hidden: { opacity: 0, y: 20 },
+		visible: { opacity: 1, y: 0 },
+	};
 
 	return (
 		<div className="min-h-screen">
@@ -110,47 +163,84 @@ export const BuildDetail = ({ build }: Props) => {
 
 				{/* Правая колонка: Информация */}
 				<div className="py-8 md:py-12 lg:py-16 flex flex-col justify-center">
-					<div className="flex flex-col">
-						<p className="px-8 md:px-12 lg:px-16 order-1 mt-8 font-mono text-sm uppercase tracking-wider text-slate-500">
-							На базе{" "}
-							<span
-								className="underline underline-offset-4"
-								onClick={handleBaseClick}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}>
-								{build.watch_type.name}
-							</span>
-						</p>
+					<motion.div
+						initial="hidden"
+						animate="visible"
+						variants={{
+							hidden: { opacity: 0 },
+							visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+						}}>
+						<div className="px-8 md:px-12 lg:px-16">
+							<motion.p
+								variants={itemVariants}
+								className="font-mono text-sm uppercase tracking-wider text-slate-500">
+								На базе{" "}
+								<span
+									className="underline underline-offset-4 cursor-pointer"
+									onClick={handleBaseClick}
+									onMouseEnter={() => setVariant("link")}
+									onMouseLeave={() => setVariant("default")}>
+									{build.watch_type.name}
+								</span>
+							</motion.p>
 
-						{/* Название сборки */}
-						<h1 className="px-8 md:px-12 lg:px-16 order-2 mt-4 lg:mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
-							{build.name}
-						</h1>
+							<motion.h1
+								variants={itemVariants}
+								className="mt-4 lg:mt-2 font-light text-5xl md:text-6xl tracking-tighter text-black">
+								{build.name}
+							</motion.h1>
 
-						{/* Описание */}
-						{build.description && (
-							<p className="px-8 md:px-12 lg:px-16 order-3 mt-6 text-lg text-slate-600">
-								{build.description}
-							</p>
-						)}
+							{build.description && (
+								<motion.p
+									variants={itemVariants}
+									className="mt-6 text-lg text-slate-600">
+									{build.description}
+								</motion.p>
+							)}
+						</div>
 
-						{/* Список компонентов */}
 						{build.components && build.components.length > 0 && (
-							<ComponentsList build={build} />
+							<motion.div variants={itemVariants} className="mt-8">
+								<ComponentsList build={build} />
+							</motion.div>
 						)}
 
-						{/* Блок с кнопками */}
-						<div className="px-8 md:px-12 lg:px-16 order-4 lg:order-5 mt-10 flex flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent">
-							{/* "Кастомизировать" */}
+						<motion.div
+							variants={itemVariants}
+							className="px-8 md:px-12 lg:px-16 order-4 lg:order-5 mt-10 flex flex-col sm:flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent border-t border-slate-200 lg:border-t-0">
+							{/* Кнопка добавления в корзину */}
 							<button
-								onClick={handleCustomizeClick}
+								onClick={handleAddToCartClick}
 								disabled={isActionInProgress}
-								className="group flex-1 inline-flex items-center justify-center gap-x-3 h-16 px-10 bg-black text-white font-medium hover:bg-zinc-800 transition-colors disabled:bg-slate-400 disabled:cursor-not-allowed">
-								<Settings className="w-6 h-6" />
-								<span>Кастомизировать</span>
+								onMouseEnter={() => setVariant("link")}
+								onMouseLeave={() => setVariant("default")}
+								className={cn(
+									"group flex-1 inline-flex items-center justify-center gap-x-3 h-16 px-6 text-white font-medium transition-colors disabled:cursor-not-allowed",
+									{
+										"bg-emerald-600": isAdded,
+										"bg-zinc-700": isAddingToCart,
+										"bg-black hover:bg-zinc-800": !isAdded && !isAddingToCart,
+									}
+								)}>
+								{isAdded ? (
+									<CheckIcon className="w-6 h-6" />
+								) : isAddingToCart ? (
+									<Loader2 className="w-6 h-6 animate-spin" />
+								) : (
+									<ShoppingCartIcon className="w-6 h-6" />
+								)}
+								<span className="text-sm sm:text-base">
+									{isAdded
+										? "Добавлено"
+										: isAddingToCart
+										? "Добавление..."
+										: `В корзину за ${calculatedPrice.toLocaleString(
+												"ru-RU"
+										  )} KZT`}
+								</span>
 							</button>
 
-							{/* "Поделиться" */}
+							{/* Кнопка "Поделиться" */}
 							<button
 								type="button"
 								onClick={handleShareClick}
@@ -165,22 +255,22 @@ export const BuildDetail = ({ build }: Props) => {
 											!isCopied && !isSharing,
 									}
 								)}
-								aria-label="Поделиться сборкой">
+								aria-label="Поделиться конфигурацией">
 								{isCopied ? (
 									<div className="flex items-center gap-x-2">
-										<CheckIcon className="w-6 h-6" />
+										<CheckIcon className="w-5 h-5" />
 										<span className="hidden lg:inline text-sm font-medium">
 											Скопировано
 										</span>
 									</div>
 								) : isSharing ? (
-									<Loader2 className="w-6 h-6 animate-spin text-slate-500" />
+									<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-slate-500" />
 								) : (
-									<Share2Icon className="w-6 h-6" />
+									<Share2Icon className="w-5 h-5 lg:w-6 lg:h-6" />
 								)}
 							</button>
-						</div>
-					</div>
+						</motion.div>
+					</motion.div>
 				</div>
 			</div>
 		</div>

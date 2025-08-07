@@ -1,4 +1,4 @@
-// app/components/Process.tsx
+// app/components/home/process.tsx
 
 const content = {
 	header: {
@@ -64,7 +64,6 @@ export const Process = () => {
 					</p>
 				</div>
 
-				{/* 3. Рендерим карточки с помощью .map() по массиву steps */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{content.steps.map((step) => (
 						<StepCard key={step.number} number={step.number} title={step.title}>

@@ -120,7 +120,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 					<h2 className="font-light text-4xl sm:text-5xl lg:text-6xl tracking-tighter text-black">
 						{selectedModel
 							? selectedModel.name.toUpperCase()
-							: "Создаение с нуля."}
+							: "Создание с нуля."}
 					</h2>
 					{!selectedModel && (
 						<p className="mt-2 text-slate-600">

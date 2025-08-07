@@ -51,7 +51,7 @@ async function fetchSingle<T>(resourcePath: string): Promise<T | null> {
 	const headers = { "Content-Type": "application/json" };
 
 	try {
-		const response = await fetch(url, { headers, cache: "force-cache" });
+		const response = await fetch(url, { headers, cache: "default" });
 		if (response.status === 404) {
 			return null;
 		}

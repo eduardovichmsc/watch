@@ -1,5 +1,14 @@
 // src/app/store/[id]/page.tsx
-import { getBuildById } from "@/services/data";
+import {
+	getBezels,
+	getBuildById,
+	getCases,
+	getDials,
+	getGMTHands,
+	getHands,
+	getSecondHands,
+	getStraps,
+} from "@/services/data";
 import { notFound } from "next/navigation";
 import { BuildDetail } from "@/components/sections/store/details";
 import type { Metadata } from "next";
@@ -31,11 +40,53 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BuildPage({ params }: Props) {
 	const { id } = await params;
-	const [build] = await Promise.all([getBuildById(id)]);
+	const [
+		build,
+		allCases,
+		allBezels,
+		allDials,
+		allStraps,
+		allHands,
+		allSecondHands,
+		allGmtHands,
+	] = await Promise.all([
+		getBuildById(id),
+		getCases(),
+		getBezels(),
+		getDials(),
+		getStraps(),
+		getHands(),
+		getSecondHands(),
+		getGMTHands(),
+	]);
 
 	if (!build) {
 		notFound();
 	}
 
-	return <BuildDetail build={build} />;
+	let totalPrice = parseFloat(build.watch_type.price || "0");
+
+	const priceMap = {
+		case: new Map(allCases.map((i) => [i.id, parseFloat(i.price || "0")])),
+		bezel: new Map(allBezels.map((i) => [i.id, parseFloat(i.price || "0")])),
+		dial: new Map(allDials.map((i) => [i.id, parseFloat(i.price || "0")])),
+		strap: new Map(allStraps.map((i) => [i.id, parseFloat(i.price || "0")])),
+		hand: new Map(allHands.map((i) => [i.id, parseFloat(i.price || "0")])),
+		secondhand: new Map(
+			allSecondHands.map((i) => [i.id, parseFloat(i.price || "0")])
+		),
+		gmthands: new Map(
+			allGmtHands.map((i) => [i.id, parseFloat(i.price || "0")])
+		),
+	};
+
+	build.components.forEach((component) => {
+		const componentType = component.type.toLowerCase() as keyof typeof priceMap;
+		const price = priceMap[componentType]?.get(component.id);
+		if (price) {
+			totalPrice += price;
+		}
+	});
+
+	return <BuildDetail build={build} calculatedPrice={totalPrice} />;
 }

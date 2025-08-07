@@ -1,16 +1,18 @@
-// src/components/layout/Header.tsx
+// src/components/layout/header.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, User2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useCartStore } from "@/stores/cart";
 import { MAIN_LINKS, PATHS } from "@/constants/paths";
-import { motion, AnimatePresence } from "framer-motion";
 import { useCursorStore } from "@/stores/cursor";
 import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/constants/site";
 
 export function Header() {
 	const { setVariant } = useCursorStore();
@@ -20,16 +22,17 @@ export function Header() {
 	const items = useCartStore((store) => store.items);
 
 	const isHomePage = pathname === PATHS.HOME;
-	const isLightMode = !isHomePage || isScrolled;
 
 	// Логика скролла и закрытия меню
 	useEffect(() => {
 		const handleScroll = () => {
 			setIsScrolled(window.scrollY > 150);
 		};
+
 		if (isHomePage) {
 			window.addEventListener("scroll", handleScroll);
 			handleScroll();
+
 			return () => window.removeEventListener("scroll", handleScroll);
 		} else {
 			setIsScrolled(true);
@@ -49,12 +52,16 @@ export function Header() {
 		}
 	}, [pathname]);
 
+	const hasBackground = !isHomePage || isScrolled;
+
 	const headerClasses = cn(
-		"w-full top-0 z-[101] transition-colors duration-300 ease-in-out",
+		"w-full top-0 z-[101] transition-colors duration-300 ease-in-out border-b",
 		isHomePage ? "fixed" : "sticky",
-		isLightMode
-			? "bg-white lg:bg-white/80 backdrop-blur-md border-b border-slate-200"
-			: "border-b border-transparent"
+		{
+			"bg-white lg:bg-white/80 backdrop-blur-md border-slate-200":
+				hasBackground,
+			"border-transparent": !hasBackground,
+		}
 	);
 
 	return (
@@ -75,7 +82,7 @@ export function Header() {
 						onMouseLeave={() => setVariant("default")}
 						className={cn(
 							"hidden lg:inline text-2xl sm:text-3xl font-bold font-cormorant transition-colors",
-							isLightMode ? "text-slate-900" : "text-white"
+							hasBackground ? "text-slate-900" : "text-white"
 						)}>
 						WotchModsClub
 					</Link>
@@ -93,18 +100,29 @@ export function Header() {
 									onMouseEnter={() => setVariant("link")}
 									onMouseLeave={() => setVariant("default")}
 									className={cn(
-										"text-sm font-medium transition-colors",
+										"relative text-sm font-medium transition-colors",
 										isMenuOpen && pathname !== item.href
 											? "text-slate-500"
 											: pathname === item.href
-											? isLightMode
+											? hasBackground
 												? "text-black"
 												: "text-white"
-											: isLightMode
+											: hasBackground
 											? "text-slate-500 hover:text-black"
 											: "text-slate-300 hover:text-white"
 									)}>
 									{item.label}
+									{pathname === item.href && (
+										<motion.span
+											className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-current"
+											layoutId="active-nav-dot"
+											transition={{
+												type: "spring",
+												stiffness: 350,
+												damping: 30,
+											}}
+										/>
+									)}
 								</Link>
 							))}
 						</nav>
@@ -113,7 +131,7 @@ export function Header() {
 						<div
 							className={cn(
 								"hidden lg:block w-px h-6",
-								isLightMode
+								hasBackground
 									? "bg-slate-400 mix-blend-normal opacity-100"
 									: "bg-white mix-blend-difference opacity-50"
 							)}
@@ -122,13 +140,28 @@ export function Header() {
 						{/* Иконки и кнопка меню */}
 						<div className="flex items-center gap-4 sm:gap-6">
 							<Link
+								href={SITE.BASE + PATHS.ADMIN}
+								aria-label="Авторизоваться"
+								onMouseEnter={() => setVariant("link")}
+								onMouseLeave={() => setVariant("default")}
+								className={cn(
+									"relative transition-colors",
+									hasBackground
+										? "text-slate-600 hover:text-slate-900"
+										: "text-slate-100 hover:text-white",
+									isMenuOpen ? "text-slate-600" : null
+								)}>
+								<User2 className="size-6" />
+							</Link>
+
+							<Link
 								href={PATHS.CART}
 								aria-label="Корзина"
 								onMouseEnter={() => setVariant("link")}
 								onMouseLeave={() => setVariant("default")}
 								className={cn(
 									"relative transition-colors",
-									isLightMode
+									hasBackground
 										? "text-slate-600 hover:text-slate-900"
 										: "text-slate-100 hover:text-white",
 									isMenuOpen ? "text-slate-600" : null
@@ -138,7 +171,7 @@ export function Header() {
 									<div
 										className={cn(
 											"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
-											isLightMode
+											hasBackground
 												? "bg-black text-white"
 												: "bg-white text-black",
 											isMenuOpen ? "border border-slate-900" : null
@@ -155,9 +188,7 @@ export function Header() {
 								onClick={() => setIsMenuOpen(!isMenuOpen)}
 								onMouseEnter={() => setVariant("link")}
 								onMouseLeave={() => setVariant("default")}
-								aria-label="Открыть меню"
-								// className="lg:hidden"
-							>
+								aria-label="Открыть меню">
 								<motion.div
 									key={isMenuOpen ? "close" : "open"}
 									initial={{ rotate: -90, opacity: 0 }}
@@ -168,7 +199,7 @@ export function Header() {
 										"transition-colors",
 										isMenuOpen
 											? "text-slate-800"
-											: isLightMode
+											: hasBackground
 											? "text-slate-800"
 											: "text-white"
 									)}>
@@ -180,7 +211,7 @@ export function Header() {
 				</div>
 			</header>
 
-			{/* Оверлей меню */}
+			{/* Оверлей меню (без изменений) */}
 			<AnimatePresence>
 				{isMenuOpen && (
 					<motion.div
@@ -211,10 +242,10 @@ export function Header() {
 										<Link
 											href={item.href}
 											className={cn(
-												"text-5xl sm:text-6xl md:text-8xl text-right font-light transition-colors",
+												"text-5xl sm:text-6xl md:text-8xl text-right transition-colors",
 												pathname === item.href
-													? "text-black"
-													: "text-neutral-400 hover:text-black"
+													? "text-black font-medium"
+													: "text-neutral-400 hover:text-black font-light"
 											)}>
 											{item.label}
 										</Link>
@@ -233,9 +264,8 @@ export function Header() {
 								</a>
 								<span className="text-slate-300">/</span>
 								{SOCIAL_MEDIA_LINKS.map((link, index) => (
-									<>
+									<Fragment key={index}>
 										<a
-											key={index}
 											href="#"
 											className="text-slate-500 hover:text-black transition-colors"
 											onMouseEnter={() => setVariant("link")}
@@ -245,7 +275,7 @@ export function Header() {
 										{SOCIAL_MEDIA_LINKS.length - 1 > index && (
 											<span className="block text-slate-300">/</span>
 										)}
-									</>
+									</Fragment>
 								))}
 							</div>
 						</div>
