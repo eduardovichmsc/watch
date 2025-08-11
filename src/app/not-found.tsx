@@ -12,8 +12,14 @@ const content = {
 	title: "Страница не найдена",
 	description:
 		"Механизм этой страницы не существует или был перемещен. Давайте вернемся к чему-то более интересному.",
-	buttonHome: "На главную",
-	buttonConfigurator: "В конфигуратор",
+	primaryButton: {
+		label: "На главную",
+		path: PATHS.HOME,
+	},
+	secondaryButton: {
+		label: "В магазин",
+		path: PATHS.STORE,
+	},
 };
 
 export default function NotFoundPage() {
@@ -68,20 +74,20 @@ export default function NotFoundPage() {
 					transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
 					className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
 					<Link
-						href={PATHS.HOME}
+						href={content.primaryButton.path}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
 						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 bg-black text-white font-semibold uppercase tracking-wider hover:bg-zinc-800 transition-colors">
 						<Compass size={20} />
-						{content.buttonHome}
+						{content.primaryButton.label}
 					</Link>
 					<Link
-						href={PATHS.CONFIGURATOR}
+						href={content.primaryButton.path}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
 						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 border border-slate-300 text-slate-800 font-semibold uppercase tracking-wider hover:bg-slate-100 transition-colors">
 						<Wrench size={20} />
-						{content.buttonConfigurator}
+						{content.secondaryButton.label}
 					</Link>
 				</motion.div>
 			</div>

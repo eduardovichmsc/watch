@@ -207,7 +207,7 @@ export const BuildDetail = ({ build, calculatedPrice }: Props) => {
 
 						<motion.div
 							variants={itemVariants}
-							className="px-8 md:px-12 lg:px-16 order-4 lg:order-5 mt-10 flex flex-col sm:flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent border-t border-slate-200 lg:border-t-0">
+							className="px-8 md:px-12 lg:px-16 order-4 lg:order-5 mt-10 flex flex-row gap-4 sticky bottom-0 py-4 lg:py-0 lg:static bg-white lg:bg-transparent border-t border-slate-200 lg:border-t-0">
 							{/* Кнопка добавления в корзину */}
 							<button
 								onClick={handleAddToCartClick}
@@ -246,7 +246,7 @@ export const BuildDetail = ({ build, calculatedPrice }: Props) => {
 								onClick={handleShareClick}
 								disabled={isActionInProgress}
 								className={cn(
-									"aspect-square lg:aspect-auto h-14 lg:h-16 flex items-center justify-center rounded-none border transition-all duration-300 disabled:cursor-not-allowed",
+									"aspect-square lg:aspect-auto w-full flex items-center justify-center rounded-none border transition-all duration-300 disabled:cursor-not-allowed",
 									{
 										"w-auto px-4 bg-emerald-50 border-emerald-400 text-emerald-600":
 											isCopied,

@@ -78,13 +78,17 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		},
 		{
 			key: "secondHand" as const,
-			title: "Секундные стрелки",
+			title: selectedModel?.name.toLowerCase().includes("shock")
+				? "Боковые стрелки"
+				: "Секундные стрелки",
 			items: filteredParts.filteredSecondHands,
 			selectedItem: selection.secondHand,
 		},
 		{
 			key: "gmtHand" as const,
-			title: "GMT - стрелки",
+			title: selectedModel?.name.toLowerCase().includes("shock")
+				? "Дисплей"
+				: "GMT - стрелки",
 			items: filteredParts.filteredGMTHands,
 			selectedItem: selection.gmtHand,
 		},

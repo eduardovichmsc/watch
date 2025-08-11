@@ -83,7 +83,7 @@ export const Hero = () => {
 				<div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
 			</div>
 
-			{/* Контент по центру */}
+			{/* Контент */}
 			<motion.div
 				variants={containerVariants}
 				initial="hidden"
@@ -116,8 +116,6 @@ export const Hero = () => {
 					{/* Основная кнопка */}
 					<Link
 						href={content.button.link}
-						onMouseEnter={() => setVariant("link")}
-						onMouseLeave={() => setVariant("default")}
 						className="group inline-flex items-center justify-center gap-x-3 h-14 w-full sm:w-auto px-8 bg-white text-black rounded-none transition-colors hover:bg-zinc-200">
 						<Settings className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45" />
 						<span>{content.button.text}</span>

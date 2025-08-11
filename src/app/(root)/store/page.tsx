@@ -1,6 +1,8 @@
 import { BuildWrapper } from "@/components/sections/store";
 import { getBuilds, getCategories } from "@/services/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function StorePage() {
 	const [builds, categories] = await Promise.all([
 		getBuilds(),
