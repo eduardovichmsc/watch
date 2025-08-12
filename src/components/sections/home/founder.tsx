@@ -8,7 +8,7 @@ const content = {
 	image: "/about/founder-photo.jpg",
 };
 
-const MeetTheFounder = () => (
+export const MeetTheFounder = () => (
 	<section className="bg-slate-50 text-black py-24 sm:py-32">
 		<div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
 			<div className="order-last lg:order-first">

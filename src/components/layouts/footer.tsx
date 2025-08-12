@@ -1,7 +1,7 @@
 // src/components/layout/Footer.tsx
 import Link from "next/link";
-import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
-import { MAIN_LINKS } from "@/constants/paths";
+import { SOCIAL_MEDIA_LINKS } from "@/constants";
+import { MAIN_LINKS } from "@/constants";
 
 const content = {
 	logo: "WotchModClub",
@@ -56,7 +56,7 @@ export function Footer() {
 	return (
 		<footer className="bg-black text-zinc-400">
 			<div className="mx-auto px-8 lg:px-16 py-16 sm:pt-24">
-				{/* Верхняя часть футера с основной информацией */}
+				{/* Верхняя часть футера */}
 				<div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
 					{/* Левый блок: Логотип и соцсети */}
 					<div className="lg:col-span-4">

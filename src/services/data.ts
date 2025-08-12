@@ -1,5 +1,5 @@
 // services/data.ts
-import { SITE } from "@/constants/site";
+import { SITE } from "@/constants";
 import {
 	PaginatedResponse,
 	WatchCase,

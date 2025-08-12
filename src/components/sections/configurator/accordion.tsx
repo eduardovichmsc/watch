@@ -1,10 +1,9 @@
-// app/components/configurator/accordion.tsx
+// src/components/sections/configurator/accordion.tsx
 "use client";
 
 import { ChevronDown, MoveHorizontalIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-
 import {
 	Carousel,
 	CarouselContent,
@@ -20,9 +19,9 @@ type Item = {
 	price?: string;
 };
 
-interface AccordionSectionProps<T extends Item> {
+interface Props<T extends Item> {
 	title: string;
-	count: number;
+	count?: number;
 	selectedOptionName: string;
 	isOpen: boolean;
 	onToggle: () => void;
@@ -34,11 +33,12 @@ interface AccordionSectionProps<T extends Item> {
 		scale?: number;
 		top?: number;
 	};
+	children?: React.ReactNode;
 }
 
 export function AccordionSection<T extends Item>({
 	title,
-	count,
+	count = 0,
 	selectedOptionName,
 	isOpen,
 	onToggle,
@@ -47,18 +47,17 @@ export function AccordionSection<T extends Item>({
 	onSelect,
 	disabled = false,
 	style,
-}: AccordionSectionProps<T>) {
+	children,
+}: Props<T>) {
 	const { setVariant } = useCursorStore();
 	const [api, setApi] = useState<CarouselApi>();
 	const [canScroll, setCanScroll] = useState(false);
 
 	useEffect(() => {
 		if (!api) return;
-
 		const checkScrollable = () => setCanScroll(api.canScrollNext());
 		checkScrollable();
 		api.on("reInit", checkScrollable);
-
 		return () => {
 			api.off("reInit", checkScrollable);
 		};
@@ -72,9 +71,7 @@ export function AccordionSection<T extends Item>({
 			<button
 				onClick={onToggle}
 				disabled={disabled}
-				onMouseEnter={() =>
-					setVariant(!disabled && !isOpen ? "open" : "default")
-				}
+				onMouseEnter={() => setVariant("link")}
 				onMouseLeave={() => setVariant("default")}
 				className="flex justify-between items-center w-full py-5 lg:pl-6 lg:py-6 text-left disabled:cursor-not-allowed">
 				<div>
@@ -108,14 +105,21 @@ export function AccordionSection<T extends Item>({
 						}}
 						transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
 						className="overflow-hidden">
-						{/* Контент */}
-						<div className="pb-6 pr-0 lg:px-6 lg:pr-0">
-							{items.length === 0 ? (
+						{/* Условный рендеринг */}
+						<div className="pb-6 px-2 lg:px-6 lg:pr-0">
+							{children ? (
+								// Если есть `children`, рендерим `children`
+								children
+							) : items.length === 0 ? (
+								// Если массив `items` пуст, показываем сообщение
 								<p className="text-sm text-center text-slate-500 font-mono">
 									НЕТ ДОСТУПНЫХ ОПЦИЙ
 								</p>
 							) : (
-								<div>
+								// Если сверху не сработало, рендерим карусель
+								<div
+									onMouseEnter={() => setVariant("drag")}
+									onMouseLeave={() => setVariant("link")}>
 									<Carousel
 										setApi={setApi}
 										opts={{ align: "start", dragFree: true }}
@@ -127,6 +131,8 @@ export function AccordionSection<T extends Item>({
 													className="pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5">
 													<button
 														onClick={() => onSelect(item)}
+														onMouseEnter={() => setVariant("link")}
+														onMouseLeave={() => setVariant("drag")}
 														className={`w-full block text-left p-1 lg:p-2 border-2 rounded-none transition-colors ${
 															selectedItem?.id === item.id
 																? "border-black"
@@ -154,7 +160,6 @@ export function AccordionSection<T extends Item>({
 																)}
 															</div>
 														</div>
-
 														<p className="font-medium text-xs text-slate-800 truncate">
 															{item.name}
 														</p>
@@ -173,7 +178,8 @@ export function AccordionSection<T extends Item>({
 							)}
 						</div>
 
-						{canScroll && (
+						{/* Подсказка о прокрутке (показывается, только если есть куда крутить) */}
+						{!children && canScroll && (
 							<div className="flex items-center justify-center text-xs text-slate-500 font-mono mb-6">
 								<MoveHorizontalIcon className="size-4 mr-2" />
 								<span>ПРОКРУТИТЕ ДЛЯ ПРОСМОТРА</span>

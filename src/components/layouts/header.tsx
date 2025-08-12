@@ -8,11 +8,11 @@ import { Menu, X, ShoppingBag, User2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useCartStore } from "@/stores/cart";
-import { MAIN_LINKS, PATHS } from "@/constants/paths";
+import { MAIN_LINKS, PATHS } from "@/constants";
 import { useCursorStore } from "@/stores/cursor";
-import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
+import { SOCIAL_MEDIA_LINKS } from "@/constants";
 import { cn } from "@/lib/utils";
-import { SITE } from "@/constants/site";
+import { SITE } from "@/constants";
 
 export function Header() {
 	const { setVariant } = useCursorStore();
@@ -211,7 +211,7 @@ export function Header() {
 				</div>
 			</header>
 
-			{/* Оверлей меню (без изменений) */}
+			{/* Оверлей меню */}
 			<AnimatePresence>
 				{isMenuOpen && (
 					<motion.div

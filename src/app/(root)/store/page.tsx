@@ -1,7 +1,13 @@
 import { BuildWrapper } from "@/components/sections/store";
 import { getBuilds, getCategories } from "@/services/data";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+	title: "Магазин | WotchModClub",
+	description: "Кастомная сборка часов Seikomod | WotchModClub",
+};
 
 export default async function StorePage() {
 	const [builds, categories] = await Promise.all([

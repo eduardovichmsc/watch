@@ -1,4 +1,4 @@
-// src/components/gallery/build-detail.tsx
+// src/components/store/build/details.tsx
 "use client";
 
 import Image from "next/image";
@@ -199,6 +199,7 @@ export const BuildDetail = ({ build, calculatedPrice }: Props) => {
 							)}
 						</div>
 
+						{/* Список компонентов */}
 						{build.components && build.components.length > 0 && (
 							<motion.div variants={itemVariants} className="mt-8">
 								<ComponentsList build={build} />

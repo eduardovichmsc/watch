@@ -18,6 +18,7 @@ import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { PATHS } from "@/constants/paths";
+import { LogoControlPanel } from "./logo/control_panel";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -43,6 +44,12 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		mode,
 		handleSelectPart,
 		handleAccordionToggle,
+
+		// Лого
+		customLogo,
+		handleLogoChange,
+		handleLogoPropChange,
+		removeLogo,
 	} = useWatchConfiguratorParams(props);
 
 	const partSections = [
@@ -108,10 +115,11 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 	return (
 		<div className="lg:grid lg:grid-cols-2 relative pb-8 lg:pb-0">
 			<WatchPreviewPanel
-				isLoading={false}
+				isLoading={isLoading}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
+				customLogo={customLogo}
 				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
@@ -134,7 +142,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				</div>
 
 				<div>
-					{/* Рендеринг аккордеона выбора модели */}
+					{/* Выбор модели */}
 					{mode === "manual" && (
 						<AccordionSection
 							title="Выберите модель"
@@ -170,6 +178,27 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 								/>
 							);
 						})}
+
+					{selectedModel && (
+						<AccordionSection
+							title="Ваш логотип (опционально)"
+							selectedOptionName={
+								customLogo.image ? "Логотип загружен" : "Не загружен"
+							}
+							isOpen={openAccordion === "logo"}
+							onToggle={() => handleAccordionToggle("logo")}
+							items={[]}
+							count={0}
+							selectedItem={null}
+							onSelect={() => {}}>
+							<LogoControlPanel
+								logoState={customLogo}
+								onLogoChange={handleLogoChange}
+								onPropChange={handleLogoPropChange}
+								onRemove={removeLogo}
+							/>
+						</AccordionSection>
+					)}
 				</div>
 				<ActionPanel
 					model={selectedModel}

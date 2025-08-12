@@ -19,6 +19,14 @@ import { useConfiguratorStore } from "@/stores/configurator";
 // Определяем режимы работы конфигуратора для более чистой логики
 type ConfiguratorMode = "loading" | "preselected" | "manual";
 
+// Состояние логотипа
+export interface CustomLogoState {
+	image: string | null;
+	scale: number;
+	x: number;
+	y: number;
+}
+
 // Интерфейс для пропсов, которые хук получает от компонента
 interface UseWatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -65,6 +73,14 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 	const isInitialMount = useRef(true);
 	const prevModelId = useRef<string | number | null>(null);
+
+	// Состояние логотипа
+	const [customLogo, setCustomLogo] = useState<CustomLogoState>({
+		image: null,
+		scale: 0.2,
+		x: 0,
+		y: 25,
+	});
 
 	// Фильтруем детали, доступные для выбранной модели
 	const filteredParts = useMemo(() => {
@@ -242,6 +258,25 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		setOpenAccordion(openAccordion === name ? null : name);
 	};
 
+	// Обработчик загрузки файла
+	const handleLogoChange = (file: File) => {
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			setCustomLogo((prev) => ({ ...prev, image: reader.result as string }));
+		};
+		reader.readAsDataURL(file);
+	};
+
+	// Обработчик изменения свойств (размер, позиция)
+	const handleLogoPropChange = (prop: keyof CustomLogoState, value: number) => {
+		setCustomLogo((prev) => ({ ...prev, [prop]: value }));
+	};
+
+	// Удаление логотипа
+	const removeLogo = () => {
+		setCustomLogo((prev) => ({ ...prev, image: null }));
+	};
+
 	return {
 		selectedModel,
 		setSelectedModel,
@@ -254,5 +289,11 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		mode,
 		handleSelectPart,
 		handleAccordionToggle,
+
+		// Лого
+		customLogo,
+		handleLogoChange,
+		handleLogoPropChange,
+		removeLogo,
 	};
 }
