@@ -1,13 +1,15 @@
+// src/components/sections/configurator/action_panel.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
 import { useAlertStore } from "@/stores/alert";
-import { useCartStore } from "@/stores/cart";
+// import { useCartStore } from "@/stores/cart";
 import { useCursorStore } from "@/stores/cursor";
+import { useFavoritesStore } from "@/stores/favorites";
 import { WatchSelection, WatchType } from "@/types";
-import { CheckIcon, Loader2, Share2Icon, ShoppingCartIcon } from "lucide-react";
+import { CheckIcon, HeartIcon, Loader2, Share2Icon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface ActionPanelProps {
 	model: WatchType | null;
@@ -22,24 +24,54 @@ export const ActionPanel = ({
 	totalPrice,
 	className,
 }: ActionPanelProps) => {
-	// zustand
+	// ZUSTAND сторы
 	const { setVariant } = useCursorStore();
 	const showAlert = useAlertStore((state) => state.showAlert);
+	const { addFavorite, removeFavorite, isFavorite } = useFavoritesStore();
+	// const addToCart = useCartStore((state) => state.addToCart);
 
-	const [isCopied, setIsCopied] = useState(false);
-	const [isAdded, setIsAdded] = useState(false);
+	// Состояние кнопок (локальные)
 	const [isSharing, setIsSharing] = useState(false);
+	const [isCopied, setIsCopied] = useState(false);
+	const [isSavingFavorite, setIsSavingFavorite] = useState(false);
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
+	const [isAdded, setIsAdded] = useState(false);
 
-	const addToCart = useCartStore((state) => state.addToCart);
+	// Логика избранного
+	const customBuildId =
+		typeof window !== "undefined" ? window.location.href : "";
+	const isCurrentlyFavorite = useMemo(
+		() => isFavorite(customBuildId),
+		[isFavorite, customBuildId]
+	);
 
-	useEffect(() => {
-		if (isAdded) {
-			const timer = setTimeout(() => setIsAdded(false), 2000);
-			return () => clearTimeout(timer);
+	const handleToggleFavorite = async () => {
+		if (isSavingFavorite || !model) return;
+		setIsSavingFavorite(true);
+		try {
+			await new Promise((resolve) => setTimeout(resolve, 300));
+
+			if (isCurrentlyFavorite) {
+				removeFavorite(customBuildId);
+				showAlert("Конфигурация удалена из избранного", "info");
+			} else {
+				const favoriteItem = {
+					type: "custom" as const,
+					id: customBuildId,
+					name: `${model.name}`,
+					selection: selection,
+					url: customBuildId,
+					watch_type: model,
+				};
+				addFavorite(favoriteItem);
+				showAlert("Конфигурация сохранена в избранное", "success");
+			}
+		} finally {
+			setIsSavingFavorite(false);
 		}
-	}, [isAdded]);
+	};
 
+	// Логика "поделиться"
 	useEffect(() => {
 		if (isCopied) {
 			const timer = setTimeout(() => setIsCopied(false), 2000);
@@ -56,32 +88,45 @@ export const ActionPanel = ({
 			setIsCopied(true);
 		} catch (err) {
 			console.error("Не удалось скопировать ссылку: ", err);
+			showAlert("Не удалось скопировать ссылку", "error");
 		} finally {
 			setIsSharing(false);
 		}
 	};
 
-	const handleAddToCartClick = async () => {
-		if (isAddingToCart || !model) return;
-		setIsAddingToCart(true);
-		try {
-			await new Promise((resolve) => setTimeout(resolve, 500));
-			showAlert("Товар добавлен в корзину", "success");
-			addToCart(model, window.location.href, selection, totalPrice);
-			setIsAdded(true);
-		} catch (err) {
-			console.error("Ошибка при добавлении в корзину: ", err);
-		} finally {
-			setIsAddingToCart(false);
-		}
-	};
+	// Логика "В корзину"
+	// useEffect(() => {
+	// 	if (isAdded) {
+	// 		const timer = setTimeout(() => setIsAdded(false), 2000);
+	// 		return () => clearTimeout(timer);
+	// 	}
+	// }, [isAdded]);
 
+	// const handleAddToCartClick = async () => {
+	// 	if (isAddingToCart || !model) return;
+	// 	setIsAddingToCart(true);
+	// 	try {
+	// 		await new Promise((resolve) => setTimeout(resolve, 500));
+	// 		showAlert("Товар добавлен в корзину", "success");
+	// 		addToCart(model, window.location.href, selection, totalPrice);
+	// 		setIsAdded(true);
+	// 	} catch (err) {
+	// 		console.error("Ошибка при добавлении в корзину: ", err);
+	// 		showAlert("Ошибка при добавлении в корзину", "error");
+	// 	} finally {
+	// 		setIsAddingToCart(false);
+	// 	}
+	// };
+
+	// Блокировка всех кнопок
 	const isAnyActionInProgress =
-		isSharing || isAddingToCart || isCopied || isAdded;
+		isSharing || isAddingToCart || isCopied || isAdded || isSavingFavorite;
 
 	return (
 		<div className={cn(className)}>
-			<div className="flex w-full flex-col lg:items-stretch">
+			<div
+				className="flex w-full flex-col lg:items-stretch"
+				hidden={model === null || false}>
 				<p className="hidden text-sm text-slate-500 mb-6 text-left lg:block">
 					Если возникли вопросы, свяжитесь с нашим{" "}
 					<Link
@@ -104,10 +149,13 @@ export const ActionPanel = ({
 					</div>
 
 					<div className="flex items-center gap-x-2 lg:gap-x-4 lg:w-full">
+						{/* Кнопка "Поделиться" */}
 						<button
 							type="button"
 							onClick={handleShareClick}
 							disabled={isAnyActionInProgress}
+							onMouseEnter={() => setVariant("link")}
+							onMouseLeave={() => setVariant("default")}
 							className={cn(
 								"aspect-square lg:aspect-auto h-14 lg:h-16 flex items-center justify-center rounded-none border transition-all duration-300 disabled:cursor-not-allowed",
 								{
@@ -133,6 +181,48 @@ export const ActionPanel = ({
 							)}
 						</button>
 
+						{/* Кнопка "В избранное" */}
+						<button
+							type="button"
+							onClick={handleToggleFavorite}
+							disabled={isAnyActionInProgress || !model}
+							onMouseEnter={() => setVariant("link")}
+							onMouseLeave={() => setVariant("default")}
+							className={cn(
+								"group aspect-square lg:aspect-auto flex-1 h-14 lg:h-16 flex items-center justify-center gap-x-2 rounded-none border transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+								isCurrentlyFavorite
+									? "bg-rose-50 border-rose-200 text-rose-600"
+									: "border-slate-200 text-slate-600 hover:bg-slate-100"
+							)}
+							aria-label={
+								isCurrentlyFavorite
+									? "Удалить из избранного"
+									: "Добавить в избранное"
+							}>
+							{isSavingFavorite ? (
+								<>
+									<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin" />
+									<span className="hidden lg:inline font-medium">
+										Сохранение...
+									</span>
+								</>
+							) : (
+								<>
+									<HeartIcon
+										className={cn(
+											"w-5 h-5 lg:w-6 lg:h-6 transition-all",
+											isCurrentlyFavorite && "text-rose-500 fill-current"
+										)}
+									/>
+									<span className="hidden lg:inline font-medium">
+										{isCurrentlyFavorite ? "Добавлено" : "Добавить в избранное"}
+									</span>
+								</>
+							)}
+						</button>
+
+						{/* Кнопка "В корзину" - deprecated */}
+						{/*
 						<button
 							type="button"
 							onClick={handleAddToCartClick}
@@ -162,6 +252,7 @@ export const ActionPanel = ({
 								</>
 							)}
 						</button>
+						*/}
 					</div>
 				</div>
 			</div>

@@ -10,9 +10,28 @@ import { CartItemCard } from "@/components/shared/card/cart";
 import { PATHS } from "@/constants";
 import { useCartStore } from "@/stores/cart";
 
-export const CartWrapper = () => {
-	const { setVariant } = useCursorStore();
+const content = {
+	default: {
+		title: "Ваша корзина.",
+	},
+	orderSummary: {
+		finish: {
+			label: "Перейти к оформлению",
+		},
+	},
+	notFound: {
+		icon: ShoppingBag,
+		title: "Корзина пуста.",
+		description:
+			"Похоже, вы еще не создали свои идеальные часы. Перейдите в конструктор, чтобы начать.",
+		button: {
+			label: "Перейти в конфигуратор",
+			href: PATHS.CONFIGURATOR,
+		},
+	},
+};
 
+export const CartWrapper = () => {
 	const items = useCartStore((state) => state.items);
 	const removeFromCart = useCartStore((state) => state.removeFromCart);
 	const subtotal = useMemo(
@@ -24,20 +43,17 @@ export const CartWrapper = () => {
 	if (items.length === 0) {
 		return (
 			<div className="container mx-auto flex flex-col items-center justify-center min-h-[70vh] text-center p-8">
-				<ShoppingBag className="w-24 h-24 text-slate-200 mb-8" />
+				<content.notFound.icon className="w-24 h-24 text-slate-200 mb-8" />
 				<h1 className="font-light text-5xl tracking-tighter text-black mb-4">
-					Корзина пуста.
+					{content.notFound.title}
 				</h1>
 				<p className="text-lg text-slate-600 max-w-md mb-8">
-					Похоже, вы еще не создали свои идеальные часы. Перейдите в
-					конструктор, чтобы начать.
+					{content.notFound.description}
 				</p>
 				<Link
-					href={PATHS.STORE}
-					onMouseEnter={() => setVariant("link")}
-					onMouseLeave={() => setVariant("default")}
-					className="h-16 inline-flex items-center justify-center px-8 bg-black text-white font-semibold rounded-none hover:bg-zinc-800 transition-colors">
-					Перейти в магазин
+					href={content.notFound.button.href}
+					className="h-16 inline-flex items-center justify-center px-8 bg-black text-white font-medium hover:bg-zinc-800 transition-colors">
+					{content.notFound.button.label}
 				</Link>
 			</div>
 		);
@@ -46,7 +62,7 @@ export const CartWrapper = () => {
 	return (
 		<div className="mx-auto px-4 py-12 sm:px-6 lg:px-16 pb-32 lg:pb-12">
 			<h1 className="px-4 lg:px-0 font-light text-5xl md:text-7xl tracking-tighter text-black mb-12">
-				Ваша корзина.
+				{content.default.title}
 			</h1>
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 				{/* Список товаров */}
@@ -69,7 +85,7 @@ export const CartWrapper = () => {
 					<button
 						onClick={() => alert("Переход к оформлению заказа (TBD)")}
 						className="w-full h-16 mt-6 bg-black text-white font-semibold text-base rounded-none hover:bg-zinc-800 transition-colors">
-						Перейти к оформлению
+						{content.orderSummary.finish.label}
 					</button>
 				</div>
 			</div>
@@ -85,7 +101,7 @@ export const CartWrapper = () => {
 				<button
 					onClick={() => alert("Переход к оформлению заказа (TBD)")}
 					className="w-full h-14 bg-black text-white font-semibold text-base rounded-none hover:bg-zinc-800 transition-colors">
-					Перейти к оформлению
+					{content.orderSummary.finish.label}
 				</button>
 			</div>
 		</div>

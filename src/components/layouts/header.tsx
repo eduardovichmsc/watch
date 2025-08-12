@@ -4,22 +4,46 @@
 import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag, User2 } from "lucide-react";
+import { Menu, X, ShoppingBag, User2, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-import { useCartStore } from "@/stores/cart";
 import { MAIN_LINKS, PATHS } from "@/constants";
-import { useCursorStore } from "@/stores/cursor";
 import { SOCIAL_MEDIA_LINKS } from "@/constants";
-import { cn } from "@/lib/utils";
 import { SITE } from "@/constants";
+import { useCartStore } from "@/stores/cart";
+import { useCursorStore } from "@/stores/cursor";
+import { useFavoritesStore } from "@/stores/favorites";
+import { cn } from "@/lib/utils";
+
+const content = {
+	logo: "WotchsModClub",
+	navLinks: MAIN_LINKS,
+	buttonLinks: {
+		auth: {
+			label: "Авторизоваться",
+			href: SITE.BASE + PATHS.ADMIN,
+			icon: User2,
+		},
+		cart: {
+			label: "Корзина",
+			href: PATHS.CART,
+			icon: ShoppingBag,
+		},
+		favorites: {
+			label: "Избранное",
+			href: PATHS.FAVORITES,
+			icon: Heart,
+		},
+	},
+	socialMediaLinks: SOCIAL_MEDIA_LINKS,
+};
 
 export function Header() {
 	const { setVariant } = useCursorStore();
 	const pathname = usePathname();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
-	const items = useCartStore((store) => store.items);
+	// const items = useCartStore((store) => store.items);
+	const { favorites } = useFavoritesStore();
 
 	const isHomePage = pathname === PATHS.HOME;
 
@@ -84,7 +108,7 @@ export function Header() {
 							"hidden lg:inline text-2xl sm:text-3xl font-bold font-cormorant transition-colors",
 							hasBackground ? "text-slate-900" : "text-white"
 						)}>
-						WotchModsClub
+						{content.logo}
 					</Link>
 
 					<div className="inline lg:hidden"></div>
@@ -93,7 +117,7 @@ export function Header() {
 					<div className="flex items-center gap-4 sm:gap-6">
 						{/* Навигация для десктопа */}
 						<nav className="hidden lg:flex items-center gap-6">
-							{MAIN_LINKS.map((item) => (
+							{content.navLinks.map((item) => (
 								<Link
 									key={item.label}
 									href={item.href}
@@ -140,8 +164,8 @@ export function Header() {
 						{/* Иконки и кнопка меню */}
 						<div className="flex items-center gap-4 sm:gap-6">
 							<Link
-								href={SITE.BASE + PATHS.ADMIN}
-								aria-label="Авторизоваться"
+								href={content.buttonLinks.auth.href}
+								aria-label={content.buttonLinks.auth.label}
 								onMouseEnter={() => setVariant("link")}
 								onMouseLeave={() => setVariant("default")}
 								className={cn(
@@ -151,12 +175,13 @@ export function Header() {
 										: "text-slate-100 hover:text-white",
 									isMenuOpen ? "text-slate-600" : null
 								)}>
-								<User2 className="size-6" />
+								<content.buttonLinks.auth.icon className="size-6" />
 							</Link>
 
-							<Link
-								href={PATHS.CART}
-								aria-label="Корзина"
+							{/* Корзина - Deprecated */}
+							{/* <Link
+								href={content.buttonLinks.cart.href}
+								aria-label={content.buttonLinks.cart.label}
 								onMouseEnter={() => setVariant("link")}
 								onMouseLeave={() => setVariant("default")}
 								className={cn(
@@ -166,7 +191,7 @@ export function Header() {
 										: "text-slate-100 hover:text-white",
 									isMenuOpen ? "text-slate-600" : null
 								)}>
-								<ShoppingBag className="size-6" />
+								<content.buttonLinks.cart.icon className="size-6" />
 								{items.length > 0 && (
 									<div
 										className={cn(
@@ -178,6 +203,35 @@ export function Header() {
 										)}>
 										<span className="text-xs font-semibold">
 											{items.length > 9 ? "9+" : items.length}
+										</span>
+									</div>
+								)}
+							</Link> */}
+
+							<Link
+								href={content.buttonLinks.favorites.href}
+								aria-label={content.buttonLinks.favorites.label}
+								onMouseEnter={() => setVariant("link")}
+								onMouseLeave={() => setVariant("default")}
+								className={cn(
+									"relative transition-colors",
+									hasBackground
+										? "text-slate-600 hover:text-slate-900"
+										: "text-slate-100 hover:text-white",
+									isMenuOpen ? "text-slate-600" : null
+								)}>
+								<content.buttonLinks.favorites.icon className="size-6" />
+								{favorites.length > 0 && (
+									<div
+										className={cn(
+											"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
+											hasBackground
+												? "bg-black text-white"
+												: "bg-white text-black",
+											isMenuOpen ? "border border-slate-900" : null
+										)}>
+										<span className="text-xs font-semibold">
+											{favorites.length > 9 ? "9+" : favorites.length}
 										</span>
 									</div>
 								)}
@@ -227,7 +281,7 @@ export function Header() {
 
 							{/* Основная навигация */}
 							<nav className="flex flex-col items-end gap-y-4 -mt-20">
-								{MAIN_LINKS.map((item, index) => (
+								{content.navLinks.map((item, index) => (
 									<motion.div
 										key={item.href}
 										initial={{ x: 100, opacity: 0 }}
@@ -263,7 +317,7 @@ export function Header() {
 									hello@wotchmod.club
 								</a>
 								<span className="text-slate-300">/</span>
-								{SOCIAL_MEDIA_LINKS.map((link, index) => (
+								{content.socialMediaLinks.map((link, index) => (
 									<Fragment key={index}>
 										<a
 											href="#"
@@ -272,7 +326,7 @@ export function Header() {
 											onMouseLeave={() => setVariant("default")}>
 											{link.label}
 										</a>
-										{SOCIAL_MEDIA_LINKS.length - 1 > index && (
+										{content.socialMediaLinks.length - 1 > index && (
 											<span className="block text-slate-300">/</span>
 										)}
 									</Fragment>

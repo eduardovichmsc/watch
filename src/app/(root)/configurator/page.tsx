@@ -1,6 +1,6 @@
 // app/configurator/page.tsx
-
 import { Suspense } from "react";
+import { Metadata } from "next";
 
 import {
 	getCases,
@@ -14,6 +14,11 @@ import {
 } from "@/services/data";
 import { WatchConfigurator } from "@/components/sections/configurator";
 import { ConfiguratorLoader } from "@/components/sections/configurator/loader";
+
+export const metadata: Metadata = {
+	title: "Конфигуратор | WotchModClub",
+	description: "Кастомная сборка часов Seikomod | WotchModClub",
+};
 
 export default async function ConfiguratorPage() {
 	const [

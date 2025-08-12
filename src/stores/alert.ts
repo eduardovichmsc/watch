@@ -1,4 +1,4 @@
-// src/stores/alert-store.ts
+// src/stores/alert.ts
 // @ts-nocheck
 import { create } from "zustand";
 
