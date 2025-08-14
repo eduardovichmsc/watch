@@ -1,6 +1,3 @@
-"use client";
-
-import { useCursorStore } from "@/stores/cursor";
 import Image from "next/image";
 
 const content = {
@@ -15,15 +12,10 @@ const content = {
 };
 
 export const PhilosophySection = () => {
-	const { setVariant } = useCursorStore();
-
 	return (
 		<section className="bg-white text-black py-24 sm:py-32">
 			<div className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16s items-center">
-				<div
-					className="relative w-full aspect-5/6"
-					onMouseEnter={() => setVariant("heart")}
-					onMouseLeave={() => setVariant("default")}>
+				<div className="relative w-full aspect-5/6">
 					<Image
 						src={content.image}
 						fill

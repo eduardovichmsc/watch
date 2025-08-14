@@ -4,9 +4,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Settings } from "lucide-react";
-import { PATHS } from "@/constants/paths";
+import { PATHS } from "@/constants";
 import type { Build } from "@/types";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 
 interface BuildCardProps {
 	build: Build;

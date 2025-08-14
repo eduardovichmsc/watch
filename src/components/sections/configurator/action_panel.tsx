@@ -2,10 +2,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useAlertStore } from "@/stores/alert";
-// import { useCartStore } from "@/stores/cart";
-import { useCursorStore } from "@/stores/cursor";
-import { useFavoritesStore } from "@/stores/favorites";
+import { useAlertStore } from "@/stores";
+// import { useCartStore } from "@/stores";
+import { useCursorStore } from "@/stores";
+import { useFavoritesStore } from "@/stores";
 import { WatchSelection, WatchType } from "@/types";
 import { CheckIcon, HeartIcon, Loader2, Share2Icon } from "lucide-react";
 import Link from "next/link";
@@ -138,7 +138,7 @@ export const ActionPanel = ({
 					</Link>
 				</p>
 
-				<div className="px-2 lg:px-0 flex w-full items-center justify-between gap-x-2">
+				<div className="flex w-full items-center justify-between gap-x-2">
 					<div className="lg:hidden">
 						<span className="block font-mono text-xs uppercase text-slate-500">
 							Стоимость

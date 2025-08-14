@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Settings, ArrowRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
-import { PATHS } from "@/constants/paths";
-import { usePreloaderStore } from "@/stores/preloader";
-import { useCursorStore } from "@/stores/cursor";
+import { PATHS } from "@/constants";
+import { usePreloaderStore } from "@/stores";
+import { useCursorStore } from "@/stores";
 
 const content = {
 	image: {

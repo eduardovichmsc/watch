@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { CarouselApi } from "@/components/ui/carousel";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
@@ -12,10 +11,12 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
+
+import type { CarouselApi } from "@/components/ui/carousel";
 import type { Build } from "@/types";
 import { BuildCard } from "@/components/shared/card/build";
-import { useCursorStore } from "@/stores/cursor";
-import { PATHS } from "@/constants/paths";
+import { useCursorStore } from "@/stores";
+import { PATHS } from "@/constants";
 
 interface Props {
 	builds: Build[];
@@ -74,9 +75,8 @@ export const BuildsCarousel = ({ builds, showMore }: Props) => {
 					href={PATHS.STORE}
 					onMouseEnter={() => setVariant("link")}
 					onMouseLeave={() => setVariant("default")}
-					className="group inline-flex items-center justify-center gap-x-3 h-14 w-full sm:w-auto px-8 bg-transparent text-black border border-zinc-800 font-semibold transition-colors hover:bg-black hover:text-white">
+					className="inline-flex items-center justify-center gap-x-3 h-14 w-full sm:w-auto px-8 bg-transparent text-black border border-zinc-800 font-medium transition-colors hover:bg-black hover:text-white">
 					<span>Смотреть всю галерею</span>
-					<ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5" />
 				</Link>
 
 				{builds.length > 3 && (

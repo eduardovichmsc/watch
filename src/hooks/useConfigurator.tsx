@@ -14,7 +14,7 @@ import type {
 	SecondHand,
 	GMTHand,
 } from "@/types";
-import { useConfiguratorStore } from "@/stores/configurator";
+import { useConfiguratorStore } from "@/stores";
 
 // Определяем режимы работы конфигуратора для более чистой логики
 type ConfiguratorMode = "loading" | "preselected" | "manual";

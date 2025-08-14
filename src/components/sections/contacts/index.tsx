@@ -4,7 +4,7 @@
 import { ContactForm } from "@/components/sections/contacts/form";
 import { InfoBlock } from "@/components/sections/contacts/info";
 import { SocialLink } from "@/components/sections/contacts/social_link";
-import { SOCIAL_MEDIA_LINKS } from "@/constants/socials";
+import { SOCIAL_MEDIA_LINKS } from "@/constants";
 
 const content = {
 	title: "Свяжитесь с нами.",

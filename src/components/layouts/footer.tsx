@@ -1,7 +1,10 @@
-// src/components/layout/Footer.tsx
+// src/components/layout/footer.tsx
+"use client";
+
 import Link from "next/link";
 import { SOCIAL_MEDIA_LINKS } from "@/constants";
 import { MAIN_LINKS } from "@/constants";
+import { useCursorStore } from "@/stores";
 
 const content = {
 	logo: "WotchModClub",
@@ -53,6 +56,8 @@ const content = {
 };
 
 export function Footer() {
+	const { setVariant } = useCursorStore();
+
 	return (
 		<footer className="bg-black text-zinc-400">
 			<div className="mx-auto px-8 lg:px-16 py-16 sm:pt-24">
@@ -135,7 +140,9 @@ export function Footer() {
 							{content.madeBy.text}{" "}
 							<a
 								href={content.madeBy.link.href}
-								className="hover:text-zinc-200">
+								className="hover:text-zinc-200"
+								onMouseEnter={() => setVariant("link")}
+								onMouseLeave={() => setVariant("default")}>
 								{content.madeBy.link.label}
 							</a>
 						</span>

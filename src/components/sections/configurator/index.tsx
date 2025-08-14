@@ -17,7 +17,7 @@ import { ActionPanel } from "./action_panel";
 import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { PATHS } from "@/constants/paths";
+import { PATHS } from "@/constants";
 import { LogoControlPanel } from "./logo/control_panel";
 
 interface WatchConfiguratorProps {
@@ -204,7 +204,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 					model={selectedModel}
 					selection={selection}
 					totalPrice={totalPrice}
-					className="sticky bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm p-4 border-t border-slate-200 lg:static lg:bg-transparent lg:p-6 lg:pb-0 lg:border-t-0"
+					className="sticky bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm p-4 border-t border-slate-200 lg:static lg:bg-transparent lg:p-6 lg:pr-0 lg:pb-0 lg:border-t-0"
 				/>
 			</div>
 		</div>

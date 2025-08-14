@@ -1,5 +1,4 @@
 // app/components/sections/cart/order_summary.tsx
-
 "use client";
 
 export const OrderSummary = ({ subtotal }: { subtotal: number }) => {

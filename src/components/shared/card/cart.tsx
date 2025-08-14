@@ -2,11 +2,11 @@
 
 "use client";
 
-import { SITE } from "@/constants/site";
-import { CartItem } from "@/stores/cart";
-import { useCursorStore } from "@/stores/cursor";
 import { Trash2Icon } from "lucide-react";
 import Link from "next/link";
+import { SITE } from "@/constants";
+import { CartItem } from "@/stores";
+import { useCursorStore } from "@/stores";
 
 export function CartItemCard({
 	item,

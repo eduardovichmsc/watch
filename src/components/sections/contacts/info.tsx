@@ -1,5 +1,5 @@
 "use client";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 
 export const InfoBlock = ({
 	title,

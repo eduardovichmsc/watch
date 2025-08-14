@@ -2,10 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { useFavoritesStore } from "@/stores/favorites";
-import { FavoriteItemCard } from "@/components/shared/card/favorite";
 import { Heart } from "lucide-react";
-import { PATHS } from "@/constants/paths";
+import { useFavoritesStore } from "@/stores";
+import { FavoriteItemCard } from "@/components/shared/card/favorite";
+import { PATHS } from "@/constants";
 
 const content = {
 	default: {

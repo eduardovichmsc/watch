@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 
 interface Crumb {
 	label: string;

@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import { FaqItem } from "@/components/shared/card/faq";
-import { PATHS } from "@/constants/paths";
+import { PATHS } from "@/constants";
 
 const faqData = [
 	{

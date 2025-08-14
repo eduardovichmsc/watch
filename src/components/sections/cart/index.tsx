@@ -1,7 +1,7 @@
 // src/components/cart/index.tsx
 "use client";
 
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 import { Link, ShoppingBag } from "lucide-react";
 import { useMemo } from "react";
 

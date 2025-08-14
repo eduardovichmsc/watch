@@ -156,7 +156,7 @@ export function Header() {
 							className={cn(
 								"hidden lg:block w-px h-6",
 								hasBackground
-									? "bg-slate-400 mix-blend-normal opacity-100"
+									? "bg-slate-200 mix-blend-normal opacity-100"
 									: "bg-white mix-blend-difference opacity-50"
 							)}
 						/>
@@ -201,7 +201,7 @@ export function Header() {
 												: "bg-white text-black",
 											isMenuOpen ? "border border-slate-900" : null
 										)}>
-										<span className="text-xs font-semibold">
+										<span className="text-xs font-medium">
 											{items.length > 9 ? "9+" : items.length}
 										</span>
 									</div>
@@ -230,7 +230,7 @@ export function Header() {
 												: "bg-white text-black",
 											isMenuOpen ? "border border-slate-900" : null
 										)}>
-										<span className="text-xs font-semibold">
+										<span className="text-xs font-medium">
 											{favorites.length > 9 ? "9+" : favorites.length}
 										</span>
 									</div>
@@ -298,7 +298,7 @@ export function Header() {
 											className={cn(
 												"text-5xl sm:text-6xl md:text-8xl text-right transition-colors",
 												pathname === item.href
-													? "text-black font-medium"
+													? "text-black"
 													: "text-neutral-400 hover:text-black font-light"
 											)}>
 											{item.label}

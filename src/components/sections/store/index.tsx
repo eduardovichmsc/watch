@@ -31,6 +31,7 @@ export const BuildWrapper = ({ initialBuilds, categories }: Props) => {
 				categories={categories}
 				selectedCategoryId={selectedCategoryId}
 				onSelectCategory={setSelectedCategoryId}
+				buildsCount={filteredBuilds.length}
 			/>
 
 			{filteredBuilds.length > 0 ? (

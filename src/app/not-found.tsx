@@ -77,7 +77,7 @@ export default function NotFoundPage() {
 						href={content.primaryButton.path}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
-						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 bg-black text-white font-semibold uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 bg-black text-white font-medium uppercase tracking-wider hover:bg-zinc-800 transition-colors">
 						<Compass size={20} />
 						{content.primaryButton.label}
 					</Link>
@@ -85,7 +85,7 @@ export default function NotFoundPage() {
 						href={content.primaryButton.path}
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
-						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 border border-slate-300 text-slate-800 font-semibold uppercase tracking-wider hover:bg-slate-100 transition-colors">
+						className="flex items-center justify-center gap-2 w-full sm:w-auto h-14 px-8 border border-slate-300 text-slate-800 font-medium uppercase tracking-wider hover:bg-slate-100 transition-colors">
 						<Wrench size={20} />
 						{content.secondaryButton.label}
 					</Link>

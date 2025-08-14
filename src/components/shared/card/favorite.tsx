@@ -4,10 +4,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { X, Eye, Settings } from "lucide-react";
-import { PATHS } from "@/constants/paths";
-import type { FavoriteItem } from "@/stores/favorites";
-import { useFavoritesStore } from "@/stores/favorites";
-import { useCursorStore } from "@/stores/cursor";
+import type { FavoriteItem } from "@/stores";
+import { useFavoritesStore } from "@/stores";
+import { useCursorStore } from "@/stores";
+import { PATHS } from "@/constants";
+import { WATCH_PREVIEW_Z_INDEX } from "@/constants";
 
 interface FavoriteItemCardProps {
 	item: FavoriteItem;
@@ -45,19 +46,8 @@ export const FavoriteItemCard = ({ item }: FavoriteItemCardProps) => {
 		}
 
 		if (item.type === "custom") {
-			const zIndexMap: { [key: string]: string } = {
-				strap: "z-10",
-				watchCase: "z-11",
-				dial: "z-12",
-				// z-13 для логотипа
-				bezel: "z-14",
-				hand: "z-15",
-				secondHand: "z-16",
-				gmtHand: "z-17",
-			};
-
 			return (
-				<div className="relative w-full h-full transition-transform duration-500 ease-in-out scale-105 group-hover:scale-100">
+				<div className="relative w-full h-full transition-transform duration-500 ease-in-out scale-95 group-hover:scale-90">
 					{/* Преобразуем объект selection в массив и рендерим */}
 					{Object.entries(item.selection).map(([partType, part]) => {
 						if (!part || !part.image) return null;
@@ -69,7 +59,9 @@ export const FavoriteItemCard = ({ item }: FavoriteItemCardProps) => {
 								width={400}
 								height={400}
 								className={`absolute inset-0 w-full h-full object-contain ${
-									zIndexMap[partType] || "z-0"
+									WATCH_PREVIEW_Z_INDEX[
+										partType as keyof typeof WATCH_PREVIEW_Z_INDEX
+									] || "z-0"
 								}`}
 							/>
 						);

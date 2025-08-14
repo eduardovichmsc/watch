@@ -3,11 +3,12 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useRef } from "react"; // Импортируем useRef
+import { useRef } from "react";
 import type { WatchSelection, WatchType } from "@/types";
 import { cn } from "@/lib/utils";
 import type { CustomLogoState } from "@/hooks/useConfigurator";
-import { useResizeObserver } from "@/hooks/useResizeObserver"; // Импортируем ваш хук
+import { useResizeObserver } from "@/hooks/useResizeObserver";
+import { WATCH_PREVIEW_Z_INDEX } from "@/constants/maps";
 
 interface Props {
 	isLoading: boolean;
@@ -55,36 +56,26 @@ export function WatchPreviewPanel({
 				{canShowPreview ? (
 					<>
 						{/* Рендеринг компонентов часов */}
-						{Object.entries(selection).map(([partType, item]) => {
-							const zIndexMap: { [key: string]: string } = {
-								strap: "z-10",
-								watchCase: "z-11",
-								dial: "z-12",
-								// z-13 = логотип
-								bezel: "z-14",
-								hand: "z-15",
-								secondHand: "z-16",
-								gmtHand: "z-17",
-							};
-							return (
-								<AnimatePresence key={partType}>
-									{item && item.image && (
-										<motion.img
-											key={item.id}
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											exit={{ opacity: 0 }}
-											transition={{ duration: 0.3 }}
-											src={item.image}
-											alt={item.name}
-											className={`absolute inset-0 w-full h-full object-contain ${
-												zIndexMap[partType] || "z-0"
-											}`}
-										/>
-									)}
-								</AnimatePresence>
-							);
-						})}
+						{Object.entries(selection).map(([partType, item]) => (
+							<AnimatePresence key={partType}>
+								{item && item.image && (
+									<motion.img
+										key={item.id}
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										exit={{ opacity: 0 }}
+										transition={{ duration: 0.3 }}
+										src={item.image}
+										alt={item.name}
+										className={`absolute inset-0 w-full h-full object-contain ${
+											WATCH_PREVIEW_Z_INDEX[
+												partType as keyof typeof WATCH_PREVIEW_Z_INDEX
+											] || "z-0"
+										}`}
+									/>
+								)}
+							</AnimatePresence>
+						))}
 
 						{/* Рендеринг кастомного логотипа */}
 						<AnimatePresence>
@@ -93,7 +84,7 @@ export function WatchPreviewPanel({
 									initial={{ opacity: 0, scale: 0.8 }}
 									animate={{ opacity: 1, scale: 1 }}
 									exit={{ opacity: 0, scale: 0.8 }}
-									className="absolute inset-0 z-[13] flex items-center justify-center pointer-events-none">
+									className={`absolute inset-0 flex items-center justify-center pointer-events-none ${WATCH_PREVIEW_Z_INDEX.customLogo}`}>
 									<motion.div
 										animate={{
 											scale: customLogo.scale,

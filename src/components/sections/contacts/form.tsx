@@ -2,8 +2,8 @@
 "use client";
 
 import { useState } from "react";
-import { useAlertStore } from "@/stores/alert";
-import { useCursorStore } from "@/stores/cursor";
+import { useAlertStore } from "@/stores";
+import { useCursorStore } from "@/stores";
 
 type SubmissionStatus = "idle" | "submitting" | "success" | "error";
 

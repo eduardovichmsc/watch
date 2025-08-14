@@ -1,4 +1,4 @@
-// src/components/sections/configurator/accordion.tsx
+// src/components/sections/configurator/accordion/index.tsx
 "use client";
 
 import { ChevronDown, MoveHorizontalIcon } from "lucide-react";
@@ -7,16 +7,21 @@ import { useEffect, useState } from "react";
 import {
 	Carousel,
 	CarouselContent,
-	CarouselItem,
 	type CarouselApi,
 } from "@/components/ui/carousel";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
+import { AccordionItem } from "./item";
 
-type Item = {
+export type Item = {
 	id: number | string;
 	name: string;
 	image: string | null;
 	price?: string;
+};
+
+export type AccordionItemStyle = {
+	scale?: number;
+	top?: number;
 };
 
 interface Props<T extends Item> {
@@ -29,10 +34,7 @@ interface Props<T extends Item> {
 	selectedItem: T | null;
 	onSelect: (item: T) => void;
 	disabled?: boolean;
-	style?: {
-		scale?: number;
-		top?: number;
-	};
+	style?: AccordionItemStyle;
 	children?: React.ReactNode;
 }
 
@@ -71,8 +73,6 @@ export function AccordionSection<T extends Item>({
 			<button
 				onClick={onToggle}
 				disabled={disabled}
-				onMouseEnter={() => setVariant("link")}
-				onMouseLeave={() => setVariant("default")}
 				className="flex justify-between items-center w-full py-5 lg:pl-6 lg:py-6 text-left disabled:cursor-not-allowed">
 				<div>
 					<h3 className="text-lg font-medium text-slate-900">
@@ -105,72 +105,30 @@ export function AccordionSection<T extends Item>({
 						}}
 						transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
 						className="overflow-hidden">
-						{/* Условный рендеринг */}
 						<div className="pb-6 px-2 lg:px-6 lg:pr-0">
 							{children ? (
-								// Если есть `children`, рендерим `children`
 								children
 							) : items.length === 0 ? (
-								// Если массив `items` пуст, показываем сообщение
 								<p className="text-sm text-center text-slate-500 font-mono">
 									НЕТ ДОСТУПНЫХ ОПЦИЙ
 								</p>
 							) : (
-								// Если сверху не сработало, рендерим карусель
 								<div
-									onMouseEnter={() => setVariant("drag")}
-									onMouseLeave={() => setVariant("link")}>
+									onMouseEnter={() => setVariant("link")}
+									onMouseLeave={() => setVariant("default")}>
 									<Carousel
 										setApi={setApi}
 										opts={{ align: "start", dragFree: true }}
 										className="w-full select-none">
 										<CarouselContent className="-ml-2">
 											{items.map((item) => (
-												<CarouselItem
+												<AccordionItem
 													key={item.id}
-													className="pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5">
-													<button
-														onClick={() => onSelect(item)}
-														onMouseEnter={() => setVariant("link")}
-														onMouseLeave={() => setVariant("drag")}
-														className={`w-full block text-left p-1 lg:p-2 border-2 rounded-none transition-colors ${
-															selectedItem?.id === item.id
-																? "border-black"
-																: "border-slate-200 hover:border-slate-400"
-														}`}>
-														<div className="w-full aspect-square mb-2 relative overflow-hidden bg-white">
-															<div
-																className="absolute inset-0 flex items-center justify-center"
-																style={{
-																	transform: `scale(${
-																		(style?.scale ?? 100) / 100
-																	})`,
-																	top: `${style?.top ?? 0}%`,
-																}}>
-																{item.image ? (
-																	<img
-																		src={item.image}
-																		alt={item.name}
-																		className="h-full w-full object-cover"
-																	/>
-																) : (
-																	<span className="text-xs text-slate-400">
-																		No Img
-																	</span>
-																)}
-															</div>
-														</div>
-														<p className="font-medium text-xs text-slate-800 truncate">
-															{item.name}
-														</p>
-														{item.price && parseFloat(item.price) > 0 && (
-															<p className="text-xs text-slate-500">
-																+{" "}
-																{parseFloat(item.price).toLocaleString("ru-RU")}
-															</p>
-														)}
-													</button>
-												</CarouselItem>
+													item={item}
+													isSelected={selectedItem?.id === item.id}
+													onSelect={() => onSelect(item)}
+													style={style}
+												/>
 											))}
 										</CarouselContent>
 									</Carousel>
@@ -178,7 +136,6 @@ export function AccordionSection<T extends Item>({
 							)}
 						</div>
 
-						{/* Подсказка о прокрутке (показывается, только если есть куда крутить) */}
 						{!children && canScroll && (
 							<div className="flex items-center justify-center text-xs text-slate-500 font-mono mb-6">
 								<MoveHorizontalIcon className="size-4 mr-2" />

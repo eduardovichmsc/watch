@@ -1,4 +1,6 @@
 // src/app/store/[id]/page.tsx
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import {
 	getBezels,
 	getBuildById,
@@ -9,9 +11,7 @@ import {
 	getSecondHands,
 	getStraps,
 } from "@/services/data";
-import { notFound } from "next/navigation";
 import { BuildDetail } from "@/components/sections/store/details";
-import type { Metadata } from "next";
 
 interface Props {
 	params: Promise<{ id: string }>;

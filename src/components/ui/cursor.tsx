@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 import { ChevronDown, Heart, MoveHorizontal, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 

@@ -1,5 +1,5 @@
 import { PATHS } from "@/constants/paths";
-import { useCursorStore } from "@/stores/cursor";
+import { useCursorStore } from "@/stores";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 

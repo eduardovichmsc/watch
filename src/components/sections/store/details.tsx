@@ -1,10 +1,9 @@
-// src/components/gallery/build-detail.tsx
+// src/components/store/build/details.tsx
 "use client";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-	Settings,
 	ArrowLeft,
 	ShoppingCartIcon,
 	CheckIcon,
@@ -16,35 +15,21 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { PATHS } from "@/constants/paths";
 import type { Build, WatchSelection } from "@/types";
-import { useCursorStore } from "@/stores/cursor";
-import { useCartStore } from "@/stores/cart";
-import { useAlertStore } from "@/stores/alert";
-import {
-	useConfiguratorStore,
-	PreselectedComponents,
-} from "@/stores/configurator";
-import { useFavoritesStore } from "@/stores/favorites";
-import { ComponentListItem } from "./components/item";
+import { useCursorStore } from "@/stores";
+import { useCartStore } from "@/stores";
+import { useAlertStore } from "@/stores";
+import { useConfiguratorStore, PreselectedComponents } from "@/stores";
+import { useFavoritesStore } from "@/stores";
 import { cn } from "@/lib/utils";
 import { ComponentsList } from "./components/list";
+import { SELECTION_KEY_MAP } from "@/constants";
 
-interface BuildDetailProps {
+interface Props {
 	build: Build;
 	calculatedPrice: number;
 }
 
-// Словарь для корректного маппинга типов компонентов из API
-const componentTypeKeyMap: { [key: string]: keyof WatchSelection } = {
-	case: "watchCase",
-	bezel: "bezel",
-	dial: "dial",
-	strap: "strap",
-	hand: "hand",
-	secondhand: "secondHand",
-	gmthands: "gmtHand",
-};
-
-export const BuildDetail = ({ build, calculatedPrice }: BuildDetailProps) => {
+export const BuildDetail = ({ build, calculatedPrice }: Props) => {
 	const { setVariant } = useCursorStore();
 	const setPreselection = useConfiguratorStore(
 		(state) => state.setPreselection
@@ -88,7 +73,7 @@ export const BuildDetail = ({ build, calculatedPrice }: BuildDetailProps) => {
 			gmtHand: null,
 		};
 		build.components.forEach((component) => {
-			const key = componentTypeKeyMap[component.type.toLowerCase()];
+			const key = SELECTION_KEY_MAP[component.type.toLowerCase()];
 			if (key) {
 				// @ts-ignore
 				selection[key] = {
@@ -260,6 +245,7 @@ export const BuildDetail = ({ build, calculatedPrice }: BuildDetailProps) => {
 									</span>
 								</button> */}
 
+								{/* Добавить в корзину */}
 								<button
 									type="button"
 									onClick={handleToggleFavorite}
@@ -278,12 +264,18 @@ export const BuildDetail = ({ build, calculatedPrice }: BuildDetailProps) => {
 											? "Удалить из избранного"
 											: "Добавить в избранное"
 									}>
-									<Heart className={"w-6 h-6 transition-all text-white"} />
+									<Heart
+										className={cn(
+											"w-6 h-6 transition-all text-white",
+											isCurrentlyFavorite && "fill-current"
+										)}
+									/>
 									<span className="text-sm sm:text-base">
 										{isCurrentlyFavorite ? "Добавлено" : "Добавить в избранное"}
 									</span>
 								</button>
 
+								{/* Поделиться */}
 								<button
 									type="button"
 									onClick={handleShareClick}

@@ -1,4 +1,4 @@
-import { PATHS } from "@/constants/paths";
+import { PATHS } from "@/constants";
 import { WatchType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
