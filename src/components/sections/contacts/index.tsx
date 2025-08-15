@@ -4,14 +4,14 @@
 import { ContactForm } from "@/components/sections/contacts/form";
 import { InfoBlock } from "@/components/sections/contacts/info";
 import { SocialLink } from "@/components/sections/contacts/social_link";
-import { SOCIAL_MEDIA_LINKS } from "@/constants";
+import { SITE, SOCIAL_MEDIA_LINKS } from "@/constants";
 
 const content = {
-	title: "Свяжитесь с нами.",
+	title: "Связаться с нами.",
 	contacts: {
 		title: "Контакты",
-		lines: ["hello@wotchmod.club", "+7 (700) 123-45-67"],
-		hrefs: ["mailto:hello@wotchmod.club", "tel:+77001234567"],
+		lines: [SITE.EMAIL.TEXT, SITE.PHONE.TEXT],
+		hrefs: [`mailto:${SITE.EMAIL.TEXT}`, `tel:${SITE.PHONE.HREF}`],
 	},
 	socials: {
 		title: "Социальные сети",

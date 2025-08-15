@@ -22,7 +22,7 @@ export const RecentBuildsSection = async () => {
 
 	return (
 		<section className="w-full bg-white text-black overflow-hidden">
-			<div className="mx-auto px-4 sm:px-8 lg:px-16 py-20 sm:py-24">
+			<div className="mx-auto px-8 sm:px-8 lg:px-16 py-20 sm:py-24">
 				<div className="max-w-3xl">
 					<h2 className="mt-4 font-light text-5xl md:text-7xl tracking-tighter text-black">
 						{content.title}

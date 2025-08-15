@@ -4,15 +4,13 @@
 import { motion } from "framer-motion";
 import { FaqItem } from "@/components/shared/card/faq";
 import { PATHS } from "@/constants";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useCursorStore } from "@/stores/cursor";
 
 const faqData = [
 	{
-		question: "Какие материалы я могу использовать в конструкторе?",
-		answer:
-			"Мы предлагаем премиальные материалы: хирургическую сталь 316L, титан Grade 5, сапфировое стекло с антибликовым покрытием, а также натуральную кожу и каучук для ремешков.",
-	},
-	{
-		question: "Сколько времени занимает изготовление и доставка?",
+		question: "Сколько времени занимает изготовление?",
 		answer:
 			"Каждые часы собираются вручную после вашего заказа. Сборка занимает от 7 до 14 рабочих дней. Сроки доставки зависят от вашего региона, но в среднем составляют 5-10 дней.",
 	},
@@ -22,7 +20,7 @@ const faqData = [
 			"На все наши часы предоставляется международная гарантия 2 года. Она покрывает любые дефекты механизма и производственные недостатки. Гарантия не распространяется на естественный износ и повреждения по вине владельца.",
 	},
 	{
-		question: "Могу ли я вернуть часы, если дизайн мне не понравился?",
+		question: "Возможен ли возврат кастомных часов?",
 		answer:
 			"Поскольку каждые часы создаются по индивидуальному заказу, возврат возможен только в случае производственного брака. Мы рекомендуем тщательно проверять 3D-модель в конструкторе перед оформлением заказа.",
 	},
@@ -40,58 +38,60 @@ const containerVariants = {
 
 const itemVariants = {
 	hidden: { y: 20, opacity: 0 },
-	show: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+	show: {
+		y: 0,
+		opacity: 1,
+		transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+	},
 } as const;
 
 export const FaqSection = () => {
+	const { setVariant } = useCursorStore();
+
 	return (
-		<section className="w-full bg-stone-50 text-stone-900 lg:px-16 py-24 sm:py-32 overflow-hidden">
+		<section className="w-full bg-white text-black py-20 md:py-28 lg:py-32">
 			<motion.div
-				className="w-full px-8 lg:px-16 lg:max-w-4xl mx-auto"
+				className="container mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-3 gap-12"
 				initial="hidden"
 				whileInView="show"
 				viewport={{ once: true, amount: 0.2 }}
 				variants={containerVariants}>
-				<motion.div className="text-center" variants={itemVariants}>
-					<h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
-						Частые вопросы
-					</h2>
-					<p className="mt-4 text-lg text-stone-600">
-						Все, что вам нужно знать перед тем, как создать свои идеальные часы.
+				{/* Левая колонка: Заголовок */}
+				<motion.div className="lg:col-span-1" variants={itemVariants}>
+					<p className="font-mono text-sm uppercase tracking-wider text-slate-500 mb-2">
+						FAQ
 					</p>
+					<h2 className="font-light text-5xl md:text-6xl tracking-tighter text-black">
+						Ответы на вопросы.
+					</h2>
+					<p className="mt-6 text-slate-600 leading-relaxed">
+						Здесь собрана ключевая информация о наших материалах, сроках и
+						гарантиях. Если вы не нашли ответ, свяжитесь с нами.
+					</p>
+					<Link
+						href={PATHS.CONTACTS}
+						onMouseEnter={() => setVariant("link")}
+						onMouseLeave={() => setVariant("default")}
+						className="group inline-flex items-center gap-2 mt-8 text-black font-medium group">
+						<span>Перейти к контактам</span>
+						<ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+					</Link>
 				</motion.div>
 
+				{/* Правая колонка: Список вопросов */}
 				<motion.div
-					className="mt-16 border-t border-stone-200"
+					className="lg:col-span-2 space-y-2"
 					variants={containerVariants}>
 					{faqData.map((item, index) => (
 						<FaqItem
 							key={index}
+							index={index}
 							question={item.question}
 							answer={item.answer}
 							isInitiallyOpen={index === 0}
 							variants={itemVariants}
 						/>
 					))}
-				</motion.div>
-
-				<motion.div
-					className="mt-16 text-center border border-stone-200 p-8"
-					variants={itemVariants}>
-					<h3 className="text-xl font-bold">Не нашли ответ?</h3>
-					<p className="mt-2 text-stone-600">
-						Наша команда поддержки готова помочь вам с любым вопросом.
-					</p>
-					<a
-						href={PATHS.CONTACTS}
-						className="
-              group inline-flex items-center gap-3 mt-6 px-8 py-3 
-              font-semibold text-base border border-stone-800 text-stone-800
-              hover:bg-stone-800 hover:text-stone-50 
-              transition-colors duration-300 ease-in-out
-            ">
-						Связаться с нами
-					</a>
 				</motion.div>
 			</motion.div>
 		</section>

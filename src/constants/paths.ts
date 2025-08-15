@@ -11,7 +11,6 @@ export const PATHS = {
 
 export const MAIN_LINKS = [
 	{ label: "Главная", href: PATHS.HOME },
-	{ label: "О нас", href: PATHS.ABOUT },
 	{ label: "Магазин", href: PATHS.STORE },
 	{ label: "Конфигуратор", href: PATHS.CONFIGURATOR },
 	{ label: "Контакты", href: PATHS.CONTACTS },

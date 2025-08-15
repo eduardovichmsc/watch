@@ -43,21 +43,21 @@ export const BuildsCarousel = ({ builds, showMore }: Props) => {
 	return (
 		<Carousel
 			setApi={setApi}
-			className="mt-16 lg:-ml-4"
+			className="mt-8 lg:mt-16 lg:-ml-4"
 			opts={{ align: "start", dragFree: true }}>
 			<CarouselContent>
 				{builds.map((build) => (
 					<CarouselItem
 						key={build.id}
 						className="lg:pl-4 md:basis-1/2 lg:basis-1/3">
-						<div className="p-1 h-full">
+						<div className="lg:p-1 h-full">
 							<BuildCard build={build} />
 						</div>
 					</CarouselItem>
 				))}
 				{showMore && (
 					<CarouselItem className="lg:pl-4 basis-1/3 md:basis-1/4 lg:basis-1/6">
-						<div className="p-1 h-full">
+						<div className="lg:p-1 h-full">
 							<Link
 								href={PATHS.STORE}
 								onMouseEnter={() => setVariant("link")}

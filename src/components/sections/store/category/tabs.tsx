@@ -22,9 +22,16 @@ export const CategoryTabs = ({
 	const allCategories = [{ id: null, name: "Все" }, ...categories];
 
 	return (
-		<div className="flex items-end justify-between gap-8 mb-10 border-b border-slate-200">
-			{/* Категорий */}
-			<div className="flex overflow-x-auto">
+		<div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-8 mb-10">
+			{/* Количество сборок */}
+			<div className="hidden lg:block pb-0 md:pb-2.5 md:order-2">
+				<p className="text-sm font-medium text-slate-500 whitespace-nowrap">
+					Найдено: {buildsCount}
+				</p>
+			</div>
+
+			{/* Категории */}
+			<div className="flex overflow-x-auto border-b border-slate-200 md:order-1">
 				{allCategories.map((category) => (
 					<button
 						key={category.id ?? "all"}
@@ -32,23 +39,16 @@ export const CategoryTabs = ({
 						onMouseEnter={() => setVariant("link")}
 						onMouseLeave={() => setVariant("default")}
 						className={cn(
-							"px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors duration-300",
-							// активная
+							"px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors duration-500",
 							selectedCategoryId === category.id
-								? "border-b-2 border-black text-black"
+								? // активная
+								  "border-b-2 border-black text-black"
 								: // неактивная
 								  "border-b-2 border-transparent text-slate-500 hover:text-black"
 						)}>
 						{category.name}
 					</button>
 				))}
-			</div>
-
-			{/* Количество сборок */}
-			<div className="pb-2.5">
-				<p className="text-sm font-medium text-slate-500 whitespace-nowrap">
-					Найдено: {buildsCount}
-				</p>
 			</div>
 		</div>
 	);

@@ -15,23 +15,30 @@ import { useFavoritesStore } from "@/stores/favorites";
 import { cn } from "@/lib/utils";
 
 const content = {
-	logo: "WotchsModClub",
+	logo: SITE.logo.text,
 	navLinks: MAIN_LINKS,
 	buttonLinks: {
 		auth: {
 			label: "Авторизоваться",
 			href: SITE.BASE + PATHS.ADMIN,
 			icon: User2,
+			hasNumber: false,
+			isHidden: false,
 		},
+
 		cart: {
 			label: "Корзина",
 			href: PATHS.CART,
 			icon: ShoppingBag,
+			hasNumber: true,
+			isHidden: true,
 		},
 		favorites: {
 			label: "Избранное",
 			href: PATHS.FAVORITES,
 			icon: Heart,
+			hasNumber: true,
+			isHidden: false,
 		},
 	},
 	socialMediaLinks: SOCIAL_MEDIA_LINKS,
@@ -42,10 +49,15 @@ export function Header() {
 	const pathname = usePathname();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
-	// const items = useCartStore((store) => store.items);
+	const items = useCartStore((store) => store.items);
 	const { favorites } = useFavoritesStore();
 
 	const isHomePage = pathname === PATHS.HOME;
+
+	const counts = {
+		cart: items.length,
+		favorites: favorites.length,
+	};
 
 	// Логика скролла и закрытия меню
 	useEffect(() => {
@@ -163,79 +175,48 @@ export function Header() {
 
 						{/* Иконки и кнопка меню */}
 						<div className="flex items-center gap-4 sm:gap-6">
-							<Link
-								href={content.buttonLinks.auth.href}
-								aria-label={content.buttonLinks.auth.label}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}
-								className={cn(
-									"relative transition-colors",
-									hasBackground
-										? "text-slate-600 hover:text-slate-900"
-										: "text-slate-100 hover:text-white",
-									isMenuOpen ? "text-slate-600" : null
-								)}>
-								<content.buttonLinks.auth.icon className="size-6" />
-							</Link>
+							{Object.entries(content.buttonLinks).map(([key, link]) => {
+								if (link.isHidden) {
+									return null; // Пропускаем рендер, если isHidden: true
+								}
 
-							{/* Корзина - Deprecated */}
-							{/* <Link
-								href={content.buttonLinks.cart.href}
-								aria-label={content.buttonLinks.cart.label}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}
-								className={cn(
-									"relative transition-colors",
-									hasBackground
-										? "text-slate-600 hover:text-slate-900"
-										: "text-slate-100 hover:text-white",
-									isMenuOpen ? "text-slate-600" : null
-								)}>
-								<content.buttonLinks.cart.icon className="size-6" />
-								{items.length > 0 && (
-									<div
-										className={cn(
-											"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
-											hasBackground
-												? "bg-black text-white"
-												: "bg-white text-black",
-											isMenuOpen ? "border border-slate-900" : null
-										)}>
-										<span className="text-xs font-medium">
-											{items.length > 9 ? "9+" : items.length}
-										</span>
-									</div>
-								)}
-							</Link> */}
+								const Icon = link.icon;
+								const count = link.hasNumber
+									? counts[key as keyof typeof counts] || 0
+									: 0;
 
-							<Link
-								href={content.buttonLinks.favorites.href}
-								aria-label={content.buttonLinks.favorites.label}
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}
-								className={cn(
-									"relative transition-colors",
-									hasBackground
-										? "text-slate-600 hover:text-slate-900"
-										: "text-slate-100 hover:text-white",
-									isMenuOpen ? "text-slate-600" : null
-								)}>
-								<content.buttonLinks.favorites.icon className="size-6" />
-								{favorites.length > 0 && (
-									<div
+								return (
+									<Link
+										key={key}
+										href={link.href}
+										aria-label={link.label}
+										onMouseEnter={() => setVariant("link")}
+										onMouseLeave={() => setVariant("default")}
 										className={cn(
-											"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
+											"relative transition-colors",
 											hasBackground
-												? "bg-black text-white"
-												: "bg-white text-black",
-											isMenuOpen ? "border border-slate-900" : null
+												? "text-slate-600 hover:text-slate-900"
+												: "text-slate-100 hover:text-white",
+											isMenuOpen ? "text-slate-600" : null
 										)}>
-										<span className="text-xs font-medium">
-											{favorites.length > 9 ? "9+" : favorites.length}
-										</span>
-									</div>
-								)}
-							</Link>
+										<Icon className="size-6" />
+										{link.hasNumber && count > 0 && (
+											<div
+												className={cn(
+													"absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full",
+													hasBackground
+														? "bg-black text-white"
+														: "bg-white text-black",
+													isMenuOpen ? "border border-slate-900" : null
+												)}>
+												<span className="text-xs font-medium">
+													{count > 9 ? "9+" : count}
+												</span>
+											</div>
+										)}
+									</Link>
+								);
+							})}
 
 							<button
 								type="button"

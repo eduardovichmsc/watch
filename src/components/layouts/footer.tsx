@@ -1,62 +1,67 @@
 // src/components/layout/footer.tsx
-"use client";
-
 import Link from "next/link";
-import { SOCIAL_MEDIA_LINKS } from "@/constants";
-import { MAIN_LINKS } from "@/constants";
-import { useCursorStore } from "@/stores";
+import { SOCIAL_MEDIA_LINKS, MAIN_LINKS, PATHS, SITE } from "@/constants";
+import { getWatchTypes } from "@/services/data";
 
-const content = {
-	logo: "WotchModClub",
-	tagline: "Инженерия. Воплощенная в вас.",
-	socials: SOCIAL_MEDIA_LINKS,
-	links: [
-		{
-			title: "Магазин",
-			items: MAIN_LINKS.filter((item) => !item.label.includes("Контакты")),
-		},
-		{
-			title: "Компания",
-			items: [
-				{ href: "/about", label: "О нас" },
-				{ href: "/craftsmanship", label: "Наше мастерство" },
-				{ href: "/contact", label: "Контакты" },
-			],
-		},
-		{
-			title: "Поддержка",
-			items: [
-				{ href: "/faq", label: "FAQ" },
-				{ href: "/shipping", label: "Доставка и оплата" },
-				{ href: "/warranty", label: "Гарантия" },
-			],
-		},
-	],
-	newsletter: {
-		title: "Будьте в курсе",
-		description:
-			"Подпишитесь, чтобы получать эксклюзивные предложения и новости о запуске коллекций.",
-		placeholder: "Ваш email",
-		buttonText: "Подписаться",
-	},
-	legal: {
-		copyright: `© ${new Date().getFullYear()} WotchModClub. Все права защищены.`,
+const generateContent = async () => {
+	const watchTypes = await getWatchTypes();
+
+	const topModels = watchTypes.slice(0, 3).map((model) => ({
+		label: model.name,
+		href: `${SITE.BASE}${PATHS.CONFIGURATOR}?model=${model.id}`,
+	}));
+
+	const modelLinks = [
+		...topModels,
+		...(watchTypes.length > 4
+			? [
+					{
+						href: PATHS.STORE,
+						label: "Все модели",
+					},
+			  ]
+			: []),
+	];
+
+	const modelsColumn = {
+		title: "Наши модели",
+		items: modelLinks,
+	};
+
+	return {
+		logo: SITE.logo.text,
+		tagline: "Инженерия. Воплощенная в вас.",
+		socials: SOCIAL_MEDIA_LINKS,
 		links: [
-			{ href: "/privacy-policy", label: "Политика конфиденциальности" },
-			{ href: "/terms-of-service", label: "Условия использования" },
+			{
+				title: "Магазин",
+				items: MAIN_LINKS.filter((item) => !item.label.includes("Контакты")),
+			},
+			modelsColumn,
+			{
+				title: "Компания",
+				items: [
+					{ href: "/about", label: "О нас" },
+					{ href: "/craftsmanship", label: "Наше мастерство" },
+					{ href: "/contacts", label: "Контакты" },
+				],
+			},
 		],
-	},
-	madeBy: {
-		text: "Сделано",
-		link: {
-			label: "@joinway.24",
-			href: "https://join-way.com/",
+		legal: {
+			copyright: `© ${new Date().getFullYear()} WotchModClub. Все права защищены.`,
 		},
-	},
+		madeBy: {
+			text: "Сделано",
+			link: {
+				label: "@joinway.24",
+				href: "https://join-way.com/",
+			},
+		},
+	};
 };
 
-export function Footer() {
-	const { setVariant } = useCursorStore();
+export const Footer = async () => {
+	const content = await generateContent();
 
 	return (
 		<footer className="bg-black text-zinc-400">
@@ -77,6 +82,8 @@ export function Footer() {
 									key={social.label}
 									href={social.href}
 									aria-label={social.label}
+									target="_blank"
+									rel="noopener noreferrer"
 									className="transition-colors hover:text-white">
 									<social.icon className="size-6" />
 								</Link>
@@ -85,7 +92,7 @@ export function Footer() {
 					</div>
 
 					{/* Средний блок: Колонки ссылок */}
-					<div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-3 gap-8">
+					<div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
 						{content.links.map((column) => (
 							<div key={column.title}>
 								<h3 className="font-mono text-sm uppercase tracking-widest text-zinc-300">
@@ -96,7 +103,7 @@ export function Footer() {
 										<li key={link.href}>
 											<Link
 												href={link.href}
-												className="transition-colors hover:text-white">
+												className="transition-colors hover:text-white group">
 												{link.label}
 											</Link>
 										</li>
@@ -105,29 +112,6 @@ export function Footer() {
 							</div>
 						))}
 					</div>
-
-					{/* Deprecated Правый блок: Подписка */}
-					{/* <div className="lg:col-span-4">
-						<h3 className="text-lg font-semibold text-white">
-							{content.newsletter.title}
-						</h3>
-						<p className="mt-4 text-sm text-zinc-400">
-							{content.newsletter.description}
-						</p>
-						<form className="mt-6 flex flex-col sm:flex-row gap-2">
-							<input
-								type="email"
-								placeholder={content.newsletter.placeholder}
-								className="w-full h-12 px-4 bg-transparent border border-zinc-800 text-white rounded-none focus:outline-none focus:ring-1 focus:ring-white focus:border-white transition-colors"
-								aria-label="Email для подписки"
-							/>
-							<button
-								type="submit"
-								className="h-12 px-6 bg-white text-black font-semibold rounded-none shrink-0 hover:bg-zinc-200 transition-colors">
-								{content.newsletter.buttonText}
-							</button>
-						</form>
-					</div> */}
 				</div>
 
 				{/* Нижняя часть футера с копирайтом */}
@@ -138,17 +122,17 @@ export function Footer() {
 					<div className="flex items-center gap-6">
 						<span className="font-mono text-xs text-zinc-500">
 							{content.madeBy.text}{" "}
-							<a
+							<Link
 								href={content.madeBy.link.href}
-								className="hover:text-zinc-200"
-								onMouseEnter={() => setVariant("link")}
-								onMouseLeave={() => setVariant("default")}>
+								target="_blank"
+								rel="noopener noreferrer"
+								className="hover:text-zinc-200">
 								{content.madeBy.link.label}
-							</a>
+							</Link>
 						</span>
 					</div>
 				</div>
 			</div>
 		</footer>
 	);
-}
+};

@@ -97,7 +97,7 @@ export const Hero = () => {
 
 				<motion.h1
 					variants={itemVariants}
-					className="mt-4 font-extralight text-6xl md:text-8xl lg:text-9xl tracking-tighter text-white leading-none">
+					className="mt-4 font-extralight text-5xl md:text-8xl lg:text-9xl tracking-tighter text-white leading-none">
 					{content.title.line1}
 					<br />
 					{content.title.line2}

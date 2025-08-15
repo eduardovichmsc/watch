@@ -3,9 +3,11 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useCursorStore } from "@/stores/cursor";
 
-type FaqItemProps = {
+type Props = {
+	index: number;
 	question: string;
 	answer: string;
 	isInitiallyOpen?: boolean;
@@ -13,24 +15,39 @@ type FaqItemProps = {
 };
 
 export const FaqItem = ({
+	index,
 	question,
 	answer,
 	isInitiallyOpen = false,
 	variants,
-}: FaqItemProps) => {
+}: Props) => {
 	const [isOpen, setIsOpen] = useState(isInitiallyOpen);
+	const { setVariant } = useCursorStore();
 
 	return (
-		<motion.div className="border-b border-stone-200" variants={variants}>
+		<motion.div
+			className="border-b border-slate-200"
+			variants={variants}
+			onMouseEnter={() => setVariant("link")}
+			onMouseLeave={() => setVariant("default")}>
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex w-full cursor-pointer list-none items-center justify-between py-6 text-left text-lg font-semibold text-stone-800 transition-colors hover:text-stone-950">
-				<span>{question}</span>
-				<motion.div
-					animate={{ rotate: isOpen ? 45 : 0 }}
-					transition={{ duration: 0.3, ease: "easeOut" }}>
-					<Plus className="h-5 w-5 flex-shrink-0" />
-				</motion.div>
+				className="w-full cursor-pointer py-6 text-left">
+				<div className="flex items-center gap-4">
+					<span className="font-mono text-slate-400">
+						{String(index + 1).padStart(2, "0")}
+					</span>
+					<span className="flex-1 text-xl font-medium text-black">
+						{question}
+					</span>
+
+					<motion.div
+						className="ml-auto"
+						animate={{ rotate: isOpen ? 90 : 0 }}
+						transition={{ duration: 0.3, ease: "easeInOut" }}>
+						<ChevronRight className="size-5 text-slate-400" />
+					</motion.div>
+				</div>
 			</button>
 
 			<AnimatePresence initial={false}>
@@ -39,8 +56,8 @@ export const FaqItem = ({
 						initial={{ opacity: 0, height: 0 }}
 						animate={{ opacity: 1, height: "auto" }}
 						exit={{ opacity: 0, height: 0 }}
-						transition={{ duration: 0.3, ease: "easeOut" }}>
-						<div className="pb-6 pr-8 text-base text-stone-600 leading-relaxed">
+						transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
+						<div className="pt-4 pb-8 pl-10 text-base text-slate-600 leading-relaxed">
 							{answer}
 						</div>
 					</motion.section>
