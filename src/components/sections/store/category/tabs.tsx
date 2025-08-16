@@ -4,7 +4,7 @@ import type { Category } from "@/types";
 import { useCursorStore } from "@/stores";
 import { cn } from "@/lib/utils";
 
-interface CategoryTabsProps {
+interface Props {
 	categories: Category[];
 	selectedCategoryId: number | null;
 	onSelectCategory: (id: number | null) => void;
@@ -16,7 +16,7 @@ export const CategoryTabs = ({
 	selectedCategoryId,
 	onSelectCategory,
 	buildsCount,
-}: CategoryTabsProps) => {
+}: Props) => {
 	const { setVariant } = useCursorStore();
 
 	const allCategories = [{ id: null, name: "Все" }, ...categories];

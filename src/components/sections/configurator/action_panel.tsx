@@ -139,16 +139,57 @@ export const ActionPanel = ({
 				</p>
 
 				<div className="flex w-full items-center justify-between gap-x-2">
-					<div className="lg:hidden">
+					{/* Показатель стоимости - deprecated */}
+					{/* <div className="lg:hidden">
 						<span className="block font-mono text-xs uppercase text-slate-500">
 							Стоимость
 						</span>
 						<span className="block font-medium text-2xl text-black">
 							{totalPrice.toLocaleString("ru-RU")} KZT
 						</span>
-					</div>
+					</div> */}
 
-					<div className="flex items-center gap-x-2 lg:gap-x-4 lg:w-full">
+					<div className="flex items-center gap-x-2 lg:gap-x-4 w-full">
+						{/* Кнопка "В избранное" */}
+						<button
+							type="button"
+							onClick={handleToggleFavorite}
+							disabled={isAnyActionInProgress || !model}
+							onMouseEnter={() => setVariant("link")}
+							onMouseLeave={() => setVariant("default")}
+							className={cn(
+								"group aspect-auto flex-1 h-14 lg:h-16 flex items-center justify-center gap-x-2 rounded-none border transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+								isCurrentlyFavorite
+									? "bg-rose-50 border-rose-200 text-rose-600"
+									: "border-slate-200 text-slate-600 hover:bg-slate-100"
+							)}
+							aria-label={
+								isCurrentlyFavorite
+									? "Удалить из избранного"
+									: "Добавить в избранное"
+							}>
+							{isSavingFavorite ? (
+								<>
+									<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin" />
+									{/* hidden lg:inline - deprecated  */}
+									<span className="font-medium">Сохранение...</span>
+								</>
+							) : (
+								<>
+									<HeartIcon
+										className={cn(
+											"w-5 h-5 lg:w-6 lg:h-6 transition-all",
+											isCurrentlyFavorite && "text-rose-500 fill-current"
+										)}
+									/>
+									{/* hidden lg:inline - deprecated  */}
+									<span className="font-medium">
+										{isCurrentlyFavorite ? "Добавлено" : "Добавить в избранное"}
+									</span>
+								</>
+							)}
+						</button>
+
 						{/* Кнопка "Поделиться" */}
 						<button
 							type="button"
@@ -178,46 +219,6 @@ export const ActionPanel = ({
 								<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-slate-500" />
 							) : (
 								<Share2Icon className="w-5 h-5 lg:w-6 lg:h-6" />
-							)}
-						</button>
-
-						{/* Кнопка "В избранное" */}
-						<button
-							type="button"
-							onClick={handleToggleFavorite}
-							disabled={isAnyActionInProgress || !model}
-							onMouseEnter={() => setVariant("link")}
-							onMouseLeave={() => setVariant("default")}
-							className={cn(
-								"group aspect-square lg:aspect-auto flex-1 h-14 lg:h-16 flex items-center justify-center gap-x-2 rounded-none border transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-								isCurrentlyFavorite
-									? "bg-rose-50 border-rose-200 text-rose-600"
-									: "border-slate-200 text-slate-600 hover:bg-slate-100"
-							)}
-							aria-label={
-								isCurrentlyFavorite
-									? "Удалить из избранного"
-									: "Добавить в избранное"
-							}>
-							{isSavingFavorite ? (
-								<>
-									<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin" />
-									<span className="hidden lg:inline font-medium">
-										Сохранение...
-									</span>
-								</>
-							) : (
-								<>
-									<HeartIcon
-										className={cn(
-											"w-5 h-5 lg:w-6 lg:h-6 transition-all",
-											isCurrentlyFavorite && "text-rose-500 fill-current"
-										)}
-									/>
-									<span className="hidden lg:inline font-medium">
-										{isCurrentlyFavorite ? "Добавлено" : "Добавить в избранное"}
-									</span>
-								</>
 							)}
 						</button>
 

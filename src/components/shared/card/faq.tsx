@@ -34,7 +34,7 @@ export const FaqItem = ({
 				onClick={() => setIsOpen(!isOpen)}
 				className="w-full cursor-pointer py-6 text-left">
 				<div className="flex items-center gap-4">
-					<span className="font-mono text-slate-400">
+					<span className="font-mono text-slate-400 hidden lg:block">
 						{String(index + 1).padStart(2, "0")}
 					</span>
 					<span className="flex-1 text-xl font-medium text-black">
@@ -57,7 +57,7 @@ export const FaqItem = ({
 						animate={{ opacity: 1, height: "auto" }}
 						exit={{ opacity: 0, height: 0 }}
 						transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
-						<div className="pt-4 pb-8 pl-10 text-base text-slate-600 leading-relaxed">
+						<div className="lg:pt-4 pb-8 lg:pl-10 text-base text-slate-600 leading-relaxed">
 							{answer}
 						</div>
 					</motion.section>
