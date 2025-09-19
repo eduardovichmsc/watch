@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import { useCursorStore } from "@/stores";
 import { AccordionItem } from "./item";
+import { cn } from "@/lib/utils";
 
 export type Item = {
 	id: number | string;
@@ -36,6 +37,7 @@ interface Props<T extends Item> {
 	disabled?: boolean;
 	style?: AccordionItemStyle;
 	children?: React.ReactNode;
+	isLoading?: boolean;
 }
 
 export function AccordionSection<T extends Item>({
@@ -50,6 +52,7 @@ export function AccordionSection<T extends Item>({
 	disabled = false,
 	style,
 	children,
+	isLoading,
 }: Props<T>) {
 	const { setVariant } = useCursorStore();
 	const [api, setApi] = useState<CarouselApi>();
@@ -67,9 +70,11 @@ export function AccordionSection<T extends Item>({
 
 	return (
 		<div
-			className={`px-2 border-b border-slate-200 ${
-				disabled ? "opacity-50" : ""
-			}`}>
+			className={cn(
+				"px-2 border-b border-slate-200",
+				disabled ? "opacity-50" : "",
+				isLoading ? "blur-xs" : ""
+			)}>
 			<button
 				onClick={onToggle}
 				disabled={disabled}

@@ -6,7 +6,6 @@ import { Loader2 } from "lucide-react";
 import { useRef } from "react";
 import type { WatchSelection, WatchType } from "@/types";
 import { cn } from "@/lib/utils";
-import type { CustomLogoState } from "@/hooks/useConfigurator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { WATCH_PREVIEW_Z_INDEX } from "@/constants/maps";
 
@@ -16,7 +15,6 @@ interface Props {
 	selection: WatchSelection;
 	selectedModel: WatchType | null;
 	className?: string;
-	customLogo: CustomLogoState;
 }
 
 export function WatchPreviewPanel({
@@ -25,7 +23,6 @@ export function WatchPreviewPanel({
 	selection,
 	selectedModel,
 	className,
-	customLogo,
 }: Props) {
 	// Хуки
 	const previewContainerRef = useRef<HTMLDivElement>(null);
@@ -76,35 +73,6 @@ export function WatchPreviewPanel({
 								)}
 							</AnimatePresence>
 						))}
-
-						{/* Рендеринг кастомного логотипа */}
-						<AnimatePresence>
-							{customLogo.image && (
-								<motion.div
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									exit={{ opacity: 0, scale: 0.8 }}
-									className={`absolute inset-0 flex items-center justify-center pointer-events-none ${WATCH_PREVIEW_Z_INDEX.customLogo}`}>
-									<motion.div
-										animate={{
-											scale: customLogo.scale,
-											x: `${customLogo.x}%`,
-											y: `${customLogo.y}%`,
-										}}
-										className="relative">
-										<img
-											src={customLogo.image}
-											alt="Custom Logo"
-											style={{
-												width: `${logoSize}px`,
-												height: "auto",
-											}}
-											className="object-contain"
-										/>
-									</motion.div>
-								</motion.div>
-							)}
-						</AnimatePresence>
 					</>
 				) : (
 					// Заглушка, если предпросмотр недоступен

@@ -18,7 +18,6 @@ import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { PATHS } from "@/constants";
-import { LogoControlPanel } from "./logo/control_panel";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -40,16 +39,18 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		filteredParts,
 		totalPrice,
 		canShowPreview,
-		isLoading,
-		mode,
 		handleSelectPart,
 		handleAccordionToggle,
 
-		// Лого
-		customLogo,
-		handleLogoChange,
-		handleLogoPropChange,
-		removeLogo,
+		mode,
+		isLoading,
+		isPartsLoading,
+
+		// // Лого
+		// customLogo,
+		// handleLogoChange,
+		// handleLogoPropChange,
+		// removeLogo,
 	} = useWatchConfiguratorParams(props);
 
 	const partSections = [
@@ -113,13 +114,12 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		: [];
 
 	return (
-		<div className="lg:grid lg:grid-cols-2 relative pb-8 lg:pb-0">
+		<div className="lg:grid lg:grid-cols-2 relative pb-8">
 			<WatchPreviewPanel
 				isLoading={isLoading}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
-				customLogo={customLogo}
 				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
@@ -160,11 +160,15 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 					{selectedModel &&
 						partSections.map((section, index) => {
 							const isAvailable = section.items.length > 0;
-							const selectedName = isAvailable
-								? section.selectedItem?.name || "Не выбрано"
-								: "Недоступно для этой модели";
+							let selectedName = "Не доступно для этой модели";
+							if (isPartsLoading) {
+								selectedName = "Загружаем";
+							} else if (isAvailable) {
+								selectedName = section.selectedItem?.name || "Не выбрано";
+							}
 							return (
 								<AccordionSection
+									isLoading={isPartsLoading}
 									key={section.key}
 									title={section.title}
 									count={section.items.length}
@@ -179,7 +183,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 							);
 						})}
 
-					{selectedModel && (
+					{/* {selectedModel && (
 						<AccordionSection
 							title="Ваш логотип (опционально)"
 							selectedOptionName={
@@ -198,7 +202,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 								onRemove={removeLogo}
 							/>
 						</AccordionSection>
-					)}
+					)} */}
 				</div>
 				<ActionPanel
 					model={selectedModel}

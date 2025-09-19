@@ -14,51 +14,33 @@ import type {
 	SecondHand,
 	GMTHand,
 } from "@/types";
-import { useConfiguratorStore } from "@/stores";
+import { useConfiguratorStore } from "@/stores/configurator";
+import {
+	getCases,
+	getBezels,
+	getDials,
+	getStraps,
+	getHands,
+	getSecondHands,
+	getGMTHands,
+} from "@/services/data";
 
-// Определяем режимы работы конфигуратора для более чистой логики
 type ConfiguratorMode = "loading" | "preselected" | "manual";
+type PartsLoadingState = "idle" | "loading" | "loaded";
 
-// Состояние логотипа
-export interface CustomLogoState {
-	image: string | null;
-	scale: number;
-	x: number;
-	y: number;
-}
-
-// Интерфейс для пропсов, которые хук получает от компонента
 interface UseWatchConfiguratorProps {
 	watchTypes: WatchType[];
-	cases: WatchCase[];
-	bezels: Bezel[];
-	dials: Dial[];
-	straps: Strap[];
-	hands: Hand[];
-	secondHands: SecondHand[];
-	gmtHands: GMTHand[];
+	// ... (остальные пропсы не используются, но оставим для типа)
 }
 
 export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
-	const {
-		watchTypes,
-		cases,
-		bezels,
-		dials,
-		straps,
-		hands,
-		secondHands,
-		gmtHands,
-	} = props;
+	const { watchTypes } = props;
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
-
-	// Получаем данные и функции из Zustand стора синхронно
 	const { modelFromStoreId, componentsFromStore, clearPreselection } =
 		useConfiguratorStore.getState();
 
-	// Основные состояния
 	const [mode, setMode] = useState<ConfiguratorMode>("loading");
 	const [selectedModel, setSelectedModel] = useState<WatchType | null>(null);
 	const [selection, setSelection] = useState<WatchSelection>({
@@ -71,80 +53,59 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		gmtHand: null,
 	});
 	const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-	const isInitialMount = useRef(true);
 	const prevModelId = useRef<string | number | null>(null);
+	const isInitialMount = useRef(true);
 
-	// Состояние логотипа
-	const [customLogo, setCustomLogo] = useState<CustomLogoState>({
-		image: null,
-		scale: 0.2,
-		x: 0,
-		y: 25,
+	const [partsLoadingState, setPartsLoadingState] =
+		useState<PartsLoadingState>("idle");
+	const [fetchedParts, setFetchedParts] = useState<{
+		cases: WatchCase[];
+		bezels: Bezel[];
+		dials: Dial[];
+		straps: Strap[];
+		hands: Hand[];
+		secondHands: SecondHand[];
+		gmtHands: GMTHand[];
+	}>({
+		cases: [],
+		bezels: [],
+		dials: [],
+		straps: [],
+		hands: [],
+		secondHands: [],
+		gmtHands: [],
 	});
 
-	// Фильтруем детали, доступные для выбранной модели
-	const filteredParts = useMemo(() => {
-		if (!selectedModel) {
-			return {
-				filteredCases: [],
-				filteredBezels: [],
-				filteredDials: [],
-				filteredStraps: [],
-				filteredHands: [],
-				filteredSecondHands: [],
-				filteredGMTHands: [],
-			};
-		}
-		const filterFn = (part: any) =>
-			part.watch_types.some((wt: WatchType) => wt.id === selectedModel.id);
-		return {
-			filteredCases: cases.filter(filterFn),
-			filteredBezels: bezels.filter(filterFn),
-			filteredDials: dials.filter(filterFn),
-			filteredStraps: straps.filter(filterFn),
-			filteredHands: hands.filter(filterFn),
-			filteredSecondHands: secondHands.filter(filterFn),
-			filteredGMTHands: gmtHands.filter(filterFn),
-		};
-	}, [
-		selectedModel,
-		cases,
-		bezels,
-		dials,
-		straps,
-		hands,
-		secondHands,
-		gmtHands,
-	]);
-
-	// Эффект для инициализации. Запускается только ОДИН РАЗ при монтировании.
+	// Эффект для инициализации модели (запускается один раз)
 	useEffect(() => {
 		let initialModel: WatchType | null = null;
 		const modelIdFromUrl = searchParams.get("model");
-
 		if (modelFromStoreId) {
 			setMode("preselected");
 			initialModel = watchTypes.find((m) => m.id === modelFromStoreId) || null;
-			setOpenAccordion("strap");
 		} else if (modelIdFromUrl) {
 			setMode("manual");
 			initialModel =
 				watchTypes.find((m) => m.id.toString() === modelIdFromUrl) || null;
-			setOpenAccordion("strap");
 		} else {
 			setMode("manual");
-			setOpenAccordion("model");
 		}
-
 		setSelectedModel(initialModel);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Эффект, который устанавливает детали по умолчанию или из стора
+	// --- ОБЪЕДИНЕННЫЙ ЭФФЕКТ ДЛЯ ЗАГРУЗКИ И УСТАНОВКИ ДЕТАЛЕЙ ---
 	useEffect(() => {
-		if (mode === "loading") return;
-
 		if (!selectedModel) {
+			setFetchedParts({
+				cases: [],
+				bezels: [],
+				dials: [],
+				straps: [],
+				hands: [],
+				secondHands: [],
+				gmtHands: [],
+			});
 			setSelection({
 				watchCase: null,
 				bezel: null,
@@ -154,65 +115,97 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 				secondHand: null,
 				gmtHand: null,
 			});
-			prevModelId.current = null;
+			setPartsLoadingState("idle");
 			return;
 		}
 
 		if (selectedModel.id !== prevModelId.current) {
-			const {
-				filteredCases,
-				filteredBezels,
-				filteredDials,
-				filteredStraps,
-				filteredHands,
-				filteredSecondHands,
-				filteredGMTHands,
-			} = filteredParts;
+			const fetchAndSetParts = async () => {
+				setPartsLoadingState("loading");
+				const modelId = selectedModel.id;
 
-			const findPartById = <T extends { id: number | string }>(
-				partId: number | string | undefined,
-				parts: T[]
-			): T | null => {
-				// Если есть ID из стора, ищем по нему. Если не нашли, берем дефолтный.
-				if (partId !== undefined) {
-					return parts.find((p) => p.id === partId) || parts[0] || null;
+				// 1. Загружаем все детали
+				const [cases, bezels, dials, straps, hands, secondHands, gmtHands] =
+					await Promise.all([
+						getCases(modelId),
+						getBezels(modelId),
+						getDials(modelId),
+						getStraps(modelId),
+						getHands(modelId),
+						getSecondHands(modelId),
+						getGMTHands(modelId),
+					]);
+
+				// Сохраняем загруженные детали в состояние
+				setFetchedParts({
+					cases,
+					bezels,
+					dials,
+					straps,
+					hands,
+					secondHands,
+					gmtHands,
+				});
+
+				// 2. Сразу же вычисляем и устанавливаем `selection` на основе новых деталей
+				const findPartById = <T extends { id: number | string }>(
+					partId: number | string | undefined,
+					parts: T[]
+				): T | null => {
+					if (partId !== undefined)
+						return parts.find((p) => p.id === partId) || parts[0] || null;
+					return parts[0] || null;
+				};
+
+				setSelection({
+					watchCase: findPartById(componentsFromStore?.watchCase, cases),
+					bezel: findPartById(componentsFromStore?.bezel, bezels),
+					dial: findPartById(componentsFromStore?.dial, dials),
+					strap: findPartById(componentsFromStore?.strap, straps),
+					hand: findPartById(componentsFromStore?.hand, hands),
+					secondHand: findPartById(
+						componentsFromStore?.secondHand,
+						secondHands
+					),
+					gmtHand: findPartById(componentsFromStore?.gmtHand, gmtHands),
+				});
+
+				// 3. Очищаем стор и завершаем загрузку
+				if (modelFromStoreId) {
+					clearPreselection();
 				}
-				// Если ID из стора нет, просто берем дефолтный.
-				return parts[0] || null;
+				prevModelId.current = selectedModel.id;
+				setPartsLoadingState("loaded");
+
+				// Устанавливаем открытый аккордеон
+				if (
+					mode === "preselected" ||
+					(mode === "manual" && searchParams.get("model"))
+				) {
+					setOpenAccordion("strap");
+				} else {
+					setOpenAccordion("model");
+				}
 			};
 
-			setSelection({
-				watchCase: findPartById(componentsFromStore?.watchCase, filteredCases),
-				bezel: findPartById(componentsFromStore?.bezel, filteredBezels),
-				dial: findPartById(componentsFromStore?.dial, filteredDials),
-				strap: findPartById(componentsFromStore?.strap, filteredStraps),
-				hand: findPartById(componentsFromStore?.hand, filteredHands),
-				secondHand: findPartById(
-					componentsFromStore?.secondHand,
-					filteredSecondHands
-				),
-				gmtHand: findPartById(componentsFromStore?.gmtHand, filteredGMTHands),
-			});
-
-			// Очищаем стор ПОСЛЕ того, как использовали его данные
-			if (modelFromStoreId) {
-				clearPreselection();
-			}
-
-			prevModelId.current = selectedModel.id;
+			fetchAndSetParts();
 		}
 	}, [
 		selectedModel,
-		filteredParts,
 		mode,
 		modelFromStoreId,
 		componentsFromStore,
 		clearPreselection,
+		searchParams,
 	]);
 
 	// Эффект для обновления URL
 	useEffect(() => {
-		if (isInitialMount.current || mode === "loading") {
+		if (
+			isInitialMount.current ||
+			mode === "loading" ||
+			partsLoadingState === "loading"
+		) {
 			isInitialMount.current = false;
 			return;
 		}
@@ -230,7 +223,29 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		if (currentParams !== newParams) {
 			router.replace(`${pathname}?${newParams}`, { scroll: false });
 		}
-	}, [selection, selectedModel, mode, pathname, router, searchParams]);
+	}, [
+		selection,
+		selectedModel,
+		mode,
+		partsLoadingState,
+		pathname,
+		router,
+		searchParams,
+	]);
+
+	// filteredParts теперь является производным от fetchedParts
+	const filteredParts = useMemo(
+		() => ({
+			filteredCases: fetchedParts.cases,
+			filteredBezels: fetchedParts.bezels,
+			filteredDials: fetchedParts.dials,
+			filteredStraps: fetchedParts.straps,
+			filteredHands: fetchedParts.hands,
+			filteredSecondHands: fetchedParts.secondHands,
+			filteredGMTHands: fetchedParts.gmtHands,
+		}),
+		[fetchedParts]
+	);
 
 	// Вычисление итоговой цены
 	const totalPrice = useMemo(() => {
@@ -245,7 +260,7 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		return Object.values(selection).some((item) => item?.image);
 	}, [selection]);
 
-	// Обработчик выбора детали
+	// Обработчики
 	const handleSelectPart = <T extends keyof WatchSelection>(
 		partType: T,
 		item: WatchSelection[T]
@@ -253,28 +268,8 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		setSelection((prev) => ({ ...prev, [partType]: item }));
 	};
 
-	// Обработчик открытия/закрытия аккордеона
 	const handleAccordionToggle = (name: string) => {
 		setOpenAccordion(openAccordion === name ? null : name);
-	};
-
-	// Обработчик загрузки файла
-	const handleLogoChange = (file: File) => {
-		const reader = new FileReader();
-		reader.onloadend = () => {
-			setCustomLogo((prev) => ({ ...prev, image: reader.result as string }));
-		};
-		reader.readAsDataURL(file);
-	};
-
-	// Обработчик изменения свойств (размер, позиция)
-	const handleLogoPropChange = (prop: keyof CustomLogoState, value: number) => {
-		setCustomLogo((prev) => ({ ...prev, [prop]: value }));
-	};
-
-	// Удаление логотипа
-	const removeLogo = () => {
-		setCustomLogo((prev) => ({ ...prev, image: null }));
 	};
 
 	return {
@@ -286,14 +281,9 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		totalPrice,
 		canShowPreview,
 		isLoading: mode === "loading",
+		isPartsLoading: partsLoadingState === "loading",
 		mode,
 		handleSelectPart,
 		handleAccordionToggle,
-
-		// Лого
-		customLogo,
-		handleLogoChange,
-		handleLogoPropChange,
-		removeLogo,
 	};
 }

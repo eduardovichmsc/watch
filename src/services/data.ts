@@ -16,18 +16,19 @@ import {
 
 const API_BASE_URL = SITE.API_URL;
 
-async function fetchAllPages<T>(resourcePath: string): Promise<T[]> {
+async function fetchAllPages<T>(
+	resourcePath: string,
+	watchTypeId?: number | string
+): Promise<T[]> {
 	let results: T[] = [];
-	let nextUrl: string | null = `${API_BASE_URL}/${resourcePath}`;
+	let nextUrl: string | null = `${API_BASE_URL}/${resourcePath}${
+		watchTypeId ? `?watch_type=${watchTypeId}` : ""
+	}`;
 	const headers = { "Content-Type": "application/json" };
 
 	try {
 		while (nextUrl) {
-			const response = await fetch(nextUrl, {
-				headers,
-				cache: "no-store",
-				// cache: "force-cache",
-			});
+			const response = await fetch(nextUrl, { headers, cache: "no-store" });
 			if (!response.ok) {
 				throw new Error(
 					`API request for ${nextUrl} failed with status ${response.status}`
@@ -60,6 +61,8 @@ async function fetchSingle<T>(resourcePath: string): Promise<T | null> {
 				`API request for ${url} failed with status ${response.status}`
 			);
 		}
+
+		console.log(response.json());
 		return await response.json();
 	} catch (error) {
 		console.error(`Error fetching single resource for ${resourcePath}:`, error);
@@ -91,30 +94,34 @@ export async function getBuildById(id: string | number): Promise<Build | null> {
 }
 
 // Details
-export async function getCases(): Promise<WatchCase[]> {
-	return fetchAllPages<WatchCase>("cases/");
+export async function getCases(
+	watchTypeId?: number | string
+): Promise<WatchCase[]> {
+	return fetchAllPages<WatchCase>("cases/", watchTypeId);
 }
-
-export async function getBezels(): Promise<Bezel[]> {
-	return fetchAllPages<Bezel>("bezels/");
+export async function getBezels(
+	watchTypeId?: number | string
+): Promise<Bezel[]> {
+	return fetchAllPages<Bezel>("bezels/", watchTypeId);
 }
-
-export async function getDials(): Promise<Dial[]> {
-	return fetchAllPages<Dial>("dials/");
+export async function getDials(watchTypeId?: number | string): Promise<Dial[]> {
+	return fetchAllPages<Dial>("dials/", watchTypeId);
 }
-
-export async function getStraps(): Promise<Strap[]> {
-	return fetchAllPages<Strap>("straps/");
+export async function getStraps(
+	watchTypeId?: number | string
+): Promise<Strap[]> {
+	return fetchAllPages<Strap>("straps/", watchTypeId);
 }
-
-export async function getHands(): Promise<Hand[]> {
-	return fetchAllPages<Hand>("hands/");
+export async function getHands(watchTypeId?: number | string): Promise<Hand[]> {
+	return fetchAllPages<Hand>("hands/", watchTypeId);
 }
-
-export async function getSecondHands(): Promise<SecondHand[]> {
-	return fetchAllPages<SecondHand>("secondhands/");
+export async function getSecondHands(
+	watchTypeId?: number | string
+): Promise<SecondHand[]> {
+	return fetchAllPages<SecondHand>("secondhands/", watchTypeId);
 }
-
-export async function getGMTHands(): Promise<GMTHand[]> {
-	return fetchAllPages<GMTHand>("gmthands/");
+export async function getGMTHands(
+	watchTypeId?: number | string
+): Promise<GMTHand[]> {
+	return fetchAllPages<GMTHand>("gmthands/", watchTypeId);
 }

@@ -7,7 +7,8 @@ export type CursorVariant =
 	| "drag"
 	| "preview"
 	| "heart"
-	| "open";
+	| "open"
+	| "isLoading";
 
 interface CursorState {
 	variant: CursorVariant;
