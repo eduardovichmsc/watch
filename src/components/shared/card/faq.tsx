@@ -27,7 +27,6 @@ export const FaqItem = ({
 	return (
 		<motion.div
 			className="border-b border-slate-200"
-			variants={variants}
 			onMouseEnter={() => setVariant("link")}
 			onMouseLeave={() => setVariant("default")}>
 			<button

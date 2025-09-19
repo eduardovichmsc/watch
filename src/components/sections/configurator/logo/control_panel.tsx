@@ -46,9 +46,15 @@ export const LogoControlPanel = ({
 					className="hidden"
 					onChange={handleFileChange}
 				/>
-				<p className="text-xs text-slate-500 mt-3">
-					Рекомендуется PNG с прозрачным фоном
-				</p>
+				<div className="mt-3">
+					<p className="text-xs text-slate-500">
+						Качество печати на циферблате напрямую зависит от загруженных
+						файлов.
+					</p>
+					<p className="text-xs text-slate-500">
+						Рекомендуется использовать PNG с прозрачным фоном.
+					</p>
+				</div>
 			</div>
 		);
 	}

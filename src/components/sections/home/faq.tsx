@@ -45,12 +45,7 @@ export const FaqSection = () => {
 
 	return (
 		<section className="w-full bg-white text-black py-20 md:py-28 lg:py-32">
-			<motion.div
-				className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-3 gap-12"
-				initial="hidden"
-				whileInView="show"
-				viewport={{ once: true, amount: 0.2 }}
-				variants={containerVariants}>
+			<div className="container mx-auto px-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
 				{/* Левая колонка: Заголовок */}
 				<motion.div className="lg:col-span-1" variants={itemVariants}>
 					<p className="font-mono text-sm uppercase tracking-wider text-slate-500 mb-2">
@@ -87,7 +82,7 @@ export const FaqSection = () => {
 						/>
 					))}
 				</motion.div>
-			</motion.div>
+			</div>
 		</section>
 	);
 };
