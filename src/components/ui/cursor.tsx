@@ -3,15 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useCursorStore } from "@/stores";
-import {
-	ChevronDown,
-	Heart,
-	Loader2Icon,
-	MoveHorizontal,
-	Search,
-} from "lucide-react";
+import { ChevronDown, Heart, MoveHorizontal, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Spinner } from "./spinner";
 
 export const CustomCursor = () => {
 	const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -26,7 +19,7 @@ export const CustomCursor = () => {
 
 	useEffect(() => {
 		setVariant("default");
-	}, [pathname]);
+	}, [pathname, setVariant]);
 
 	// Определение типа устройства
 	useEffect(() => {
@@ -84,7 +77,7 @@ export const CustomCursor = () => {
 			borderColor: "rgba(255, 255, 255, 0.7)",
 			mixBlendMode: "difference",
 			borderWidth: "1px",
-			backgroundColor: "transparent",
+			backgroundColor: "rgba(255, 255, 255, 0)",
 		},
 		link: {
 			height: 48,

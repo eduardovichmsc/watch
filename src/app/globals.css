@@ -184,7 +184,7 @@ body {
 }
 
 * {
-	@apply cursor-none;
+	/* @apply cursor-none; */
 }
 
 /* SELECTION - Выделение */

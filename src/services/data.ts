@@ -62,7 +62,6 @@ async function fetchSingle<T>(resourcePath: string): Promise<T | null> {
 			);
 		}
 
-		console.log(response.json());
 		return await response.json();
 	} catch (error) {
 		console.error(`Error fetching single resource for ${resourcePath}:`, error);

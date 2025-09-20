@@ -30,7 +30,6 @@ type PartsLoadingState = "idle" | "loading" | "loaded";
 
 interface UseWatchConfiguratorProps {
 	watchTypes: WatchType[];
-	// ... (остальные пропсы не используются, но оставим для типа)
 }
 
 export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
@@ -216,10 +215,8 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 				if (value) params.set(key, value.id.toString());
 			});
 		}
-
 		const currentParams = searchParams.toString();
 		const newParams = params.toString();
-
 		if (currentParams !== newParams) {
 			router.replace(`${pathname}?${newParams}`, { scroll: false });
 		}
@@ -247,7 +244,6 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		[fetchedParts]
 	);
 
-	// Вычисление итоговой цены
 	const totalPrice = useMemo(() => {
 		return Object.values(selection).reduce(
 			(acc, item) => acc + (item ? parseFloat(item.price || "0") : 0),
@@ -255,12 +251,10 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		);
 	}, [selection, selectedModel]);
 
-	// Проверка, можно ли показать предпросмотр
 	const canShowPreview = useMemo(() => {
 		return Object.values(selection).some((item) => item?.image);
 	}, [selection]);
 
-	// Обработчики
 	const handleSelectPart = <T extends keyof WatchSelection>(
 		partType: T,
 		item: WatchSelection[T]

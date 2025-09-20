@@ -64,11 +64,13 @@ export function WatchPreviewPanel({
 										transition={{ duration: 0.3 }}
 										src={item.image}
 										alt={item.name}
-										className={`absolute inset-0 w-full h-full object-contain ${
+										className={cn(
+											"absolute inset-0 w-full h-full object-contain",
 											WATCH_PREVIEW_Z_INDEX[
 												partType as keyof typeof WATCH_PREVIEW_Z_INDEX
-											] || "z-0"
-										}`}
+											] || "z-0",
+											isLoading && "blur-xs"
+										)}
 									/>
 								)}
 							</AnimatePresence>

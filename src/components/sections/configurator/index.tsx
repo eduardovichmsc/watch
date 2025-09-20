@@ -18,6 +18,7 @@ import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { PATHS } from "@/constants";
+import { RestorePrompt } from "./restore";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -45,12 +46,6 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		mode,
 		isLoading,
 		isPartsLoading,
-
-		// // Лого
-		// customLogo,
-		// handleLogoChange,
-		// handleLogoPropChange,
-		// removeLogo,
 	} = useWatchConfiguratorParams(props);
 
 	const partSections = [
@@ -116,7 +111,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 	return (
 		<div className="lg:grid lg:grid-cols-2 relative pb-8">
 			<WatchPreviewPanel
-				isLoading={isLoading}
+				isLoading={isPartsLoading}
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
@@ -125,7 +120,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 
 			{/* Правая колонка */}
 			<div className="h-fit">
-				<div className="lg:sticky top-16 z-50 bg-white/80 backdrop-blur-md px-4 py-6 lg:px-6 lg:py-8 border-b border-slate-200">
+				<div className="lg:sticky top-16 z-50 bg-white/80 backdrop-blur-md px-8 py-8 lg:pl-6 lg:py-8 border-b border-slate-200">
 					{selectedModel && (
 						<Breadcrumbs crumbs={breadcrumbs} className="mb-4" />
 					)}

@@ -71,14 +71,14 @@ export function AccordionSection<T extends Item>({
 	return (
 		<div
 			className={cn(
-				"px-2 border-b border-slate-200",
+				"mx-auto px-8 lg:pl-0 border-b border-slate-200",
 				disabled ? "opacity-50" : "",
 				isLoading ? "blur-xs" : ""
 			)}>
 			<button
 				onClick={onToggle}
 				disabled={disabled}
-				className="flex justify-between items-center w-full py-5 lg:pl-6 lg:py-6 text-left disabled:cursor-not-allowed">
+				className="flex justify-between items-center w-full py-6 lg:pl-6 text-left disabled:cursor-not-allowed">
 				<div>
 					<h3 className="text-lg font-medium text-slate-900">
 						{title}
