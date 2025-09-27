@@ -3,7 +3,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import type { WatchSelection, WatchType } from "@/types";
 import { cn } from "@/lib/utils";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
@@ -19,7 +19,6 @@ interface Props {
 
 export function WatchPreviewPanel({
 	isLoading,
-	canShowPreview,
 	selection,
 	selectedModel,
 	className,
@@ -27,6 +26,13 @@ export function WatchPreviewPanel({
 	// Хуки
 	const previewContainerRef = useRef<HTMLDivElement>(null);
 	const dimensions = useResizeObserver(previewContainerRef);
+
+	const isSelectionEmpty = useMemo(() => {
+		return Object.values(selection).every((part) => !part?.image);
+	}, [selection]);
+
+	const showSelectionParts = !isSelectionEmpty;
+	const showBaseModelImage = isSelectionEmpty && !!selectedModel?.image;
 
 	// Дефолтные настройки логотипа
 	const LOGO_BASE_SIZE_PERCENT = 0.3;
@@ -50,34 +56,43 @@ export function WatchPreviewPanel({
 					)}
 				</AnimatePresence>
 
-				{canShowPreview ? (
-					<>
-						{/* Рендеринг компонентов часов */}
-						{Object.entries(selection).map(([partType, item]) => (
-							<AnimatePresence key={partType}>
-								{item && item.image && (
-									<motion.img
-										key={item.id}
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										transition={{ duration: 0.3 }}
-										src={item.image}
-										alt={item.name}
-										className={cn(
-											"absolute inset-0 w-full h-full object-contain",
-											WATCH_PREVIEW_Z_INDEX[
-												partType as keyof typeof WATCH_PREVIEW_Z_INDEX
-											] || "z-0",
-											isLoading && "blur-xs"
-										)}
-									/>
-								)}
-							</AnimatePresence>
-						))}
-					</>
+				{showSelectionParts ? (
+					// Показываем детали из selection
+					Object.entries(selection).map(([partType, item]) => (
+						<AnimatePresence key={partType}>
+							{item && item.image && (
+								<motion.img
+									key={item.id}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									transition={{ duration: 0.3 }}
+									src={item.image}
+									alt={item.name}
+									className={cn(
+										"absolute inset-0 w-full h-full object-contain",
+										WATCH_PREVIEW_Z_INDEX[
+											partType as keyof typeof WATCH_PREVIEW_Z_INDEX
+										] || "z-0"
+									)}
+								/>
+							)}
+						</AnimatePresence>
+					))
+				) : showBaseModelImage ? (
+					// Показываем базовое изображение модели
+					<motion.img
+						key={selectedModel.id}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.3 }}
+						src={selectedModel.image!}
+						alt={selectedModel.name}
+						className="absolute inset-0 w-full h-full object-contain z-10"
+					/>
 				) : (
-					// Заглушка, если предпросмотр недоступен
+					// Показываем заглушку
 					<div
 						ref={previewContainerRef}
 						className="w-full h-full bg-slate-50 flex items-center justify-center p-8">
