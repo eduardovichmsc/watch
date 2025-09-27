@@ -2,14 +2,14 @@
 "use client";
 
 import type {
-	WatchCase,
 	Bezel,
 	Dial,
-	Strap,
-	WatchType,
+	GMTHand,
 	Hand,
 	SecondHand,
-	GMTHand,
+	Strap,
+	WatchCase,
+	WatchType,
 } from "@/types";
 import { AccordionSection } from "./accordion";
 import { WatchPreviewPanel } from "./preview_panel";
@@ -18,7 +18,7 @@ import { useWatchConfiguratorParams } from "@/hooks/useConfigurator";
 import { ConfiguratorLoader } from "./loader";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { PATHS } from "@/constants";
-import { RestorePrompt } from "./restore";
+import { LogoControlPanel } from "./logo/control_panel";
 
 interface WatchConfiguratorProps {
 	watchTypes: WatchType[];
@@ -46,6 +46,11 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		mode,
 		isLoading,
 		isPartsLoading,
+		// --- РАСКОММЕНТИРУЕМ ЛОГО ---
+		customLogo,
+		handleLogoChange,
+		handleLogoPropChange,
+		removeLogo,
 	} = useWatchConfiguratorParams(props);
 
 	const partSections = [
@@ -115,11 +120,13 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
+				customLogo={customLogo}
 				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
 			/>
 
 			{/* Правая колонка */}
 			<div className="h-fit">
+				{/* Заголовок */}
 				<div className="lg:sticky top-16 z-50 bg-white/80 backdrop-blur-md px-8 py-8 lg:pl-6 lg:py-8 border-b border-slate-200">
 					{selectedModel && (
 						<Breadcrumbs crumbs={breadcrumbs} className="mb-4" />
@@ -178,7 +185,8 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 							);
 						})}
 
-					{/* {selectedModel && (
+					{/* --- РАСКОММЕНТИРУЕМ АККОРДЕОН ЛОГОТИПА --- */}
+					{selectedModel && (
 						<AccordionSection
 							title="Ваш логотип (опционально)"
 							selectedOptionName={
@@ -186,10 +194,11 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 							}
 							isOpen={openAccordion === "logo"}
 							onToggle={() => handleAccordionToggle("logo")}
-							items={[]}
+							items={[]} // Пустые, так как контент кастомный
 							count={0}
 							selectedItem={null}
 							onSelect={() => {}}>
+							{/* Передаем панель управления как дочерний элемент */}
 							<LogoControlPanel
 								logoState={customLogo}
 								onLogoChange={handleLogoChange}
@@ -197,7 +206,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 								onRemove={removeLogo}
 							/>
 						</AccordionSection>
-					)} */}
+					)}
 				</div>
 				<ActionPanel
 					model={selectedModel}
