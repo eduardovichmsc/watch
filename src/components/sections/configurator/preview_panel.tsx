@@ -3,48 +3,77 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useRef, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import type { WatchSelection, WatchType } from "@/types";
 import { cn } from "@/lib/utils";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { WATCH_PREVIEW_Z_INDEX } from "@/constants/maps";
-import { CustomLogoState } from "@/hooks/useConfigurator";
+import { WATCH_PREVIEW_Z_INDEX } from "@/constants";
+import type { CustomLogoState } from "@/hooks/useConfigurator";
+import { TransformControls } from "./logo/transform_controls";
 
 interface Props {
 	isLoading: boolean;
-	canShowPreview: boolean;
 	selection: WatchSelection;
 	selectedModel: WatchType | null;
 	className?: string;
-	customLogo: CustomLogoState; // <-- Раскомментируем проп
+	customLogo: CustomLogoState;
+	onLogoRemove: () => void;
+	onLogoUpdate: (transform: Partial<CustomLogoState>) => void;
 }
 
 export function WatchPreviewPanel({
 	isLoading,
-	canShowPreview,
 	selection,
 	selectedModel,
 	className,
-	customLogo, // <-- Получаем проп
+	customLogo,
+	onLogoRemove,
+	onLogoUpdate,
 }: Props) {
 	const previewContainerRef = useRef<HTMLDivElement>(null);
 	const dimensions = useResizeObserver(previewContainerRef);
+	const [isLogoSelected, setIsLogoSelected] = useState(false);
 
+	// Рассчитываем реальный размер логотипа в пикселях
 	const LOGO_BASE_SIZE_PERCENT = 0.3;
-	const logoSize = dimensions ? dimensions.width * LOGO_BASE_SIZE_PERCENT : 0;
+	const logoBaseSize = dimensions
+		? dimensions.width * LOGO_BASE_SIZE_PERCENT
+		: 0;
+	const currentLogoSize = logoBaseSize * customLogo.scale;
 
-	const isSelectionEmpty = useMemo(() => {
-		return Object.values(selection).every((part) => !part?.image);
-	}, [selection]);
+	// Динамически рассчитываем границы для перетаскивания, чтобы края логотипа не выходили за пределы
+	const dragConstraints = useMemo(() => {
+		if (!dimensions || !currentLogoSize) return false;
 
-	const showSelectionParts = !isSelectionEmpty;
-	const showBaseModelImage = isSelectionEmpty && !!selectedModel?.image;
+		const halfLogo = currentLogoSize / 2;
+		return {
+			left: -(dimensions.width / 2) + halfLogo,
+			right: dimensions.width / 2 - halfLogo,
+			top: -(dimensions.height / 2) + halfLogo,
+			bottom: dimensions.height / 2 - halfLogo,
+		};
+	}, [dimensions, currentLogoSize]);
+
+	// Определяем, что показывать в превью
+	const isSelectionEmpty = useMemo(
+		() => Object.values(selection).every((part) => !part?.image),
+		[selection]
+	);
+	const canShowPreview = !isSelectionEmpty || !!selectedModel?.image;
 
 	return (
-		<div className={cn(className)}>
+		<div
+			className={cn(className)}
+			onClick={(e) => {
+				if ((e.target as HTMLElement).closest(".logo-draggable") === null) {
+					setIsLogoSelected(false);
+				}
+			}}>
 			<div
 				ref={previewContainerRef}
-				className="relative aspect-4/3 lg:aspect-square w-full">
+				className="relative aspect-4/3 lg:aspect-square w-full overflow-hidden">
+				{" "}
+				{/* Добавлен overflow-hidden для надежности */}
 				<AnimatePresence>
 					{isLoading && (
 						<motion.div
@@ -56,73 +85,125 @@ export function WatchPreviewPanel({
 						</motion.div>
 					)}
 				</AnimatePresence>
-
-				{showSelectionParts ? (
+				{canShowPreview ? (
 					<>
-						{/* Рендеринг компонентов часов */}
-						{Object.entries(selection).map(([partType, item]) => (
-							<AnimatePresence key={partType}>
-								{item && item.image && (
+						{/* Рендеринг компонентов часов или базовой модели */}
+						{!isSelectionEmpty
+							? Object.entries(selection).map(([partType, item]) => {
+									const isAboveLogoLayer = [
+										"bezel",
+										"hand",
+										"secondHand",
+										"gmtHand",
+									].includes(partType);
+									return (
+										<AnimatePresence key={partType}>
+											{item && item.image && (
+												<motion.img
+													key={item.id}
+													initial={{ opacity: 0 }}
+													animate={{ opacity: 1 }}
+													exit={{ opacity: 0 }}
+													transition={{ duration: 0.3 }}
+													src={item.image}
+													alt={item.name}
+													className={cn(
+														"absolute inset-0 w-full h-full object-contain pointer-events-none",
+														WATCH_PREVIEW_Z_INDEX[
+															partType as keyof typeof WATCH_PREVIEW_Z_INDEX
+														] || "z-0",
+														isAboveLogoLayer && "pointer-events-none"
+													)}
+												/>
+											)}
+										</AnimatePresence>
+									);
+							  })
+							: selectedModel?.image && (
 									<motion.img
-										key={item.id}
+										key={selectedModel.id}
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
 										exit={{ opacity: 0 }}
-										transition={{ duration: 0.3 }}
-										src={item.image}
-										alt={item.name}
-										className={cn(
-											"absolute inset-0 w-full h-full object-contain",
-											WATCH_PREVIEW_Z_INDEX[
-												partType as keyof typeof WATCH_PREVIEW_Z_INDEX
-											] || "z-0"
-										)}
+										src={selectedModel.image}
+										alt={selectedModel.name}
+										className="absolute inset-0 w-full h-full object-contain z-10"
 									/>
-								)}
-							</AnimatePresence>
-						))}
+							  )}
 
-						{/* --- РЕНДЕРИНГ КАСТОМНОГО ЛОГОТИПА --- */}
+						{/* Рендеринг кастомного логотипа */}
 						<AnimatePresence>
 							{customLogo.image && (
 								<motion.div
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									exit={{ opacity: 0, scale: 0.8 }}
-									transition={{ type: "spring", stiffness: 300, damping: 25 }}
-									className={`absolute inset-0 flex items-center justify-center pointer-events-none ${WATCH_PREVIEW_Z_INDEX.customLogo}`}>
-									<motion.div
-										animate={{
-											scale: customLogo.scale,
-											x: `${customLogo.x}%`,
-											y: `${customLogo.y}%`,
-										}}
-										className="relative">
-										<img
-											src={customLogo.image}
-											alt="Custom Logo"
-											style={{
-												width: `${logoSize}px`,
-												height: "auto",
-											}}
-											className="object-contain"
-										/>
-									</motion.div>
+									className={cn(
+										"logo-draggable absolute top-1/2 left-1/2 -ml-8 cursor-grab active:cursor-grabbing",
+										WATCH_PREVIEW_Z_INDEX.customLogo
+									)}
+									drag
+									dragConstraints={dragConstraints}
+									dragMomentum={false}
+									onDragEnd={(event, info) => {
+										const containerRect =
+											previewContainerRef.current?.getBoundingClientRect();
+										if (!containerRect) return;
+										const newX =
+											((info.point.x - containerRect.left) /
+												containerRect.width -
+												0.5) *
+											100;
+										const newY =
+											((info.point.y - containerRect.top) /
+												containerRect.height -
+												0.5) *
+											100;
+										onLogoUpdate({
+											x: parseFloat(newX.toFixed(2)),
+											y: parseFloat(newY.toFixed(2)),
+										});
+									}}
+									onTap={() => setIsLogoSelected(true)}
+									animate={{
+										x: `${customLogo.x}%`,
+										y: `${customLogo.y}%`,
+										rotate: customLogo.rotation,
+									}}
+									style={{
+										width: currentLogoSize,
+										height: currentLogoSize,
+									}}>
+									<img
+										src={customLogo.image}
+										alt="Custom Logo"
+										className="w-full h-full object-contain pointer-events-none select-none"
+									/>
+									<AnimatePresence>
+										{isLogoSelected && (
+											<TransformControls
+												onRemove={() => {
+													setIsLogoSelected(false);
+													onLogoRemove();
+												}}
+												onScale={(e, info) => {
+													const delta = info.delta.x + info.delta.y;
+													const newScale = customLogo.scale + delta * 0.003;
+													onLogoUpdate({
+														scale: parseFloat(
+															Math.max(0.05, Math.min(newScale, 1.0)).toFixed(3)
+														),
+													});
+												}}
+												onRotate={(e, info) => {
+													onLogoUpdate({
+														rotation: customLogo.rotation + info.delta.x * 0.5,
+													});
+												}}
+											/>
+										)}
+									</AnimatePresence>
 								</motion.div>
 							)}
 						</AnimatePresence>
 					</>
-				) : showBaseModelImage ? (
-					<motion.img
-						key={selectedModel.id}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.3 }}
-						src={selectedModel.image!}
-						alt={selectedModel.name}
-						className="absolute inset-0 w-full h-full object-contain z-10"
-					/>
 				) : (
 					<div
 						ref={previewContainerRef}

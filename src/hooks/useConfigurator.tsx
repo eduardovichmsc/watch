@@ -39,6 +39,7 @@ export interface CustomLogoState {
 	scale: number;
 	x: number;
 	y: number;
+	rotation: number;
 }
 
 // Интерфейс для пропсов, которые хук получает от компонента
@@ -93,9 +94,10 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	// Состояние для кастомного логотипа
 	const [customLogo, setCustomLogo] = useState<CustomLogoState>({
 		image: null,
-		scale: 0.2,
+		scale: 0.5,
 		x: 0,
-		y: 25,
+		y: 0,
+		rotation: 0,
 	});
 
 	// --- РЕФЫ ДЛЯ УПРАВЛЕНИЯ ЭФФЕКТАМИ ---
@@ -303,7 +305,18 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 	};
 
 	const removeLogo = () => {
-		setCustomLogo({ image: null, scale: 0.2, x: 0, y: 25 });
+		setCustomLogo({
+			image: null,
+			scale: 0.2,
+			x: 0,
+			y: 25,
+			rotation: 0,
+		});
+	};
+
+	// --- НОВЫЙ ОБРАБОТЧИК ДЛЯ ПРЯМЫХ МАНИПУЛЯЦИЙ ---
+	const updateLogoTransform = (transform: Partial<CustomLogoState>) => {
+		setCustomLogo((prev) => ({ ...prev, ...transform }));
 	};
 
 	// --- ВОЗВРАЩАЕМЫЙ ОБЪЕКТ ---
@@ -324,5 +337,6 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		handleLogoChange,
 		handleLogoPropChange,
 		removeLogo,
+		updateLogoTransform,
 	};
 }

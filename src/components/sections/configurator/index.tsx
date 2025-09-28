@@ -51,6 +51,7 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		handleLogoChange,
 		handleLogoPropChange,
 		removeLogo,
+		updateLogoTransform,
 	} = useWatchConfiguratorParams(props);
 
 	const partSections = [
@@ -117,11 +118,12 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 		<div className="lg:grid lg:grid-cols-2 relative pb-8">
 			<WatchPreviewPanel
 				isLoading={isPartsLoading}
-				canShowPreview={canShowPreview}
 				selection={selection}
 				selectedModel={selectedModel}
 				customLogo={customLogo}
 				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
+				onLogoRemove={removeLogo}
+				onLogoUpdate={updateLogoTransform}
 			/>
 
 			{/* Правая колонка */}
@@ -185,24 +187,22 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 							);
 						})}
 
-					{/* --- РАСКОММЕНТИРУЕМ АККОРДЕОН ЛОГОТИПА --- */}
 					{selectedModel && (
 						<AccordionSection
 							title="Ваш логотип (опционально)"
+							isLoading={isPartsLoading}
 							selectedOptionName={
 								customLogo.image ? "Логотип загружен" : "Не загружен"
 							}
 							isOpen={openAccordion === "logo"}
 							onToggle={() => handleAccordionToggle("logo")}
-							items={[]} // Пустые, так как контент кастомный
+							items={[]}
 							count={0}
 							selectedItem={null}
 							onSelect={() => {}}>
-							{/* Передаем панель управления как дочерний элемент */}
 							<LogoControlPanel
 								logoState={customLogo}
 								onLogoChange={handleLogoChange}
-								onPropChange={handleLogoPropChange}
 								onRemove={removeLogo}
 							/>
 						</AccordionSection>
