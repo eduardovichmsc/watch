@@ -71,7 +71,7 @@ export function AccordionSection<T extends Item>({
 	return (
 		<div
 			className={cn(
-				"mx-auto px-8 lg:pl-0 border-b border-slate-200",
+				"mx-auto px-8 lg:pl-0 border-b border-slate-200 lg:pr-0",
 				disabled ? "opacity-50" : "",
 				isLoading ? "blur-xs" : ""
 			)}>

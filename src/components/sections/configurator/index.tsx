@@ -121,13 +121,13 @@ export function WatchConfigurator(props: WatchConfiguratorProps) {
 				selection={selection}
 				selectedModel={selectedModel}
 				customLogo={customLogo}
-				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 border-b lg:border border-slate-200 z-40 select-none"
+				className="sticky top-14 lg:top-17 lg:-mt-0.5 self-start bg-white p-4 lg:p-6 lg:ml-16 border-b lg:border border-slate-200 z-40 select-none"
 				onLogoRemove={removeLogo}
 				onLogoUpdate={updateLogoTransform}
 			/>
 
 			{/* Правая колонка */}
-			<div className="h-fit">
+			<div className="h-fit lg:pr-16">
 				{/* Заголовок */}
 				<div className="lg:sticky top-16 z-50 bg-white/80 backdrop-blur-md px-8 py-8 lg:pl-6 lg:py-8 border-b border-slate-200">
 					{selectedModel && (

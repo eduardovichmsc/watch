@@ -16,8 +16,8 @@ const generateContent = async () => {
 		...(watchTypes.length > 4
 			? [
 					{
-						href: PATHS.STORE,
-						label: "Все модели",
+						href: PATHS.CONFIGURATOR,
+						label: "Посмотреть все",
 					},
 			  ]
 			: []),

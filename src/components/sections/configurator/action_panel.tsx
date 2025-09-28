@@ -7,9 +7,17 @@ import { useAlertStore } from "@/stores";
 import { useCursorStore } from "@/stores";
 import { useFavoritesStore } from "@/stores";
 import { WatchSelection, WatchType } from "@/types";
-import { CheckIcon, HeartIcon, Loader2, Share2Icon } from "lucide-react";
+import {
+	CheckIcon,
+	Download,
+	HeartIcon,
+	Loader2,
+	Share2Icon,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
+import html2canvas from "html2canvas-pro";
+import { useLogoStore } from "@/stores/logo";
 
 interface ActionPanelProps {
 	model: WatchType | null;
@@ -34,6 +42,7 @@ export const ActionPanel = ({
 	const [isSharing, setIsSharing] = useState(false);
 	const [isCopied, setIsCopied] = useState(false);
 	const [isSavingFavorite, setIsSavingFavorite] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
 	const [isAddingToCart, setIsAddingToCart] = useState(false);
 	const [isAdded, setIsAdded] = useState(false);
 
@@ -118,9 +127,48 @@ export const ActionPanel = ({
 	// 	}
 	// };
 
+	// Логика "Скачивания сборки"
+	const handleDownloadImage = async () => {
+		const element = document.getElementById("watch-preview-container");
+		if (!element) {
+			showAlert("Не удалось найти элемент для скачивания.", "error");
+			return;
+		}
+
+		setIsDownloading(true);
+		setVariant("default");
+
+		try {
+			const canvas = await html2canvas(element, {
+				// backgroundColor: null,
+				allowTaint: true,
+				ignoreElements: (e) => e.classList.contains("ignore-in-screenshot"),
+			});
+
+			const link = document.createElement("a");
+			link.href = canvas.toDataURL("image/png");
+			link.download = `WotchModClub_${model?.name || "Custom"}.png`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+
+			showAlert("Изображение сохранено!", "success");
+		} catch (error) {
+			console.error("Ошибка при создании изображения:", error);
+			showAlert("Не удалось сохранить изображение.", "error");
+		} finally {
+			setIsDownloading(false);
+		}
+	};
+
 	// Блокировка всех кнопок
 	const isAnyActionInProgress =
-		isSharing || isAddingToCart || isCopied || isAdded || isSavingFavorite;
+		isSharing ||
+		isAddingToCart ||
+		isCopied ||
+		isAdded ||
+		isSavingFavorite ||
+		isDownloading;
 
 	return (
 		<div className={cn(className)}>
@@ -219,6 +267,29 @@ export const ActionPanel = ({
 								<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-slate-500" />
 							) : (
 								<Share2Icon className="w-5 h-5 lg:w-6 lg:h-6" />
+							)}
+						</button>
+
+						{/* Кнопка "Скачать" */}
+						<button
+							type="button"
+							onClick={handleDownloadImage}
+							disabled={isAnyActionInProgress || !model}
+							onMouseEnter={() => setVariant("link")}
+							onMouseLeave={() => setVariant("default")}
+							className={cn(
+								"aspect-square lg:aspect-auto h-14 lg:h-16 flex items-center justify-center rounded-none border transition-all duration-300 disabled:cursor-not-allowed",
+								{
+									"w-14 lg:w-16 border-slate-300 bg-slate-100": isDownloading,
+									"w-14 lg:w-16 border-slate-200 text-slate-600 hover:bg-slate-100":
+										!isDownloading,
+								}
+							)}
+							aria-label="Скачать изображение">
+							{isDownloading ? (
+								<Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin" />
+							) : (
+								<Download className="w-5 h-5 lg:w-6 lg-h-6" />
 							)}
 						</button>
 

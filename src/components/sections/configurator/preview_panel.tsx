@@ -10,6 +10,7 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { WATCH_PREVIEW_Z_INDEX } from "@/constants";
 import type { CustomLogoState } from "@/hooks/useConfigurator";
 import { TransformControls } from "./logo/transform_controls";
+import { useLogoStore } from "@/stores/logo";
 
 interface Props {
 	isLoading: boolean;
@@ -21,6 +22,13 @@ interface Props {
 	onLogoUpdate: (transform: Partial<CustomLogoState>) => void;
 }
 
+const getProxyImageUrl = (url: string) => {
+	if (url.startsWith("/")) {
+		return url;
+	}
+	return `/api/image_proxy?url=${encodeURIComponent(url)}`;
+};
+
 export function WatchPreviewPanel({
 	isLoading,
 	selection,
@@ -30,9 +38,11 @@ export function WatchPreviewPanel({
 	onLogoRemove,
 	onLogoUpdate,
 }: Props) {
+	const { isSelected: isLogoSelected, setSelected: setIsLogoSelected } =
+		useLogoStore();
+
 	const previewContainerRef = useRef<HTMLDivElement>(null);
 	const dimensions = useResizeObserver(previewContainerRef);
-	const [isLogoSelected, setIsLogoSelected] = useState(false);
 
 	// Рассчитываем реальный размер логотипа в пикселях
 	const LOGO_BASE_SIZE_PERCENT = 0.3;
@@ -64,6 +74,7 @@ export function WatchPreviewPanel({
 	return (
 		<div
 			className={cn(className)}
+			id="watch-preview-container"
 			onClick={(e) => {
 				if ((e.target as HTMLElement).closest(".logo-draggable") === null) {
 					setIsLogoSelected(false);
@@ -105,7 +116,7 @@ export function WatchPreviewPanel({
 													animate={{ opacity: 1 }}
 													exit={{ opacity: 0 }}
 													transition={{ duration: 0.3 }}
-													src={item.image}
+													src={getProxyImageUrl(item.image)}
 													alt={item.name}
 													className={cn(
 														"absolute inset-0 w-full h-full object-contain pointer-events-none",
@@ -125,7 +136,7 @@ export function WatchPreviewPanel({
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
 										exit={{ opacity: 0 }}
-										src={selectedModel.image}
+										src={getProxyImageUrl(selectedModel.image)}
 										alt={selectedModel.name}
 										className="absolute inset-0 w-full h-full object-contain z-10"
 									/>

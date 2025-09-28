@@ -314,7 +314,7 @@ export function useWatchConfiguratorParams(props: UseWatchConfiguratorProps) {
 		});
 	};
 
-	// --- НОВЫЙ ОБРАБОТЧИК ДЛЯ ПРЯМЫХ МАНИПУЛЯЦИЙ ---
+	// Обновление логотипа
 	const updateLogoTransform = (transform: Partial<CustomLogoState>) => {
 		setCustomLogo((prev) => ({ ...prev, ...transform }));
 	};

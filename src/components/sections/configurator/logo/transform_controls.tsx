@@ -1,6 +1,7 @@
 // src/components/sections/configurator/logo/transform-controls.tsx
 "use client";
 
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { RotateCw, Maximize, Trash2 } from "lucide-react";
 
@@ -21,10 +22,17 @@ export const TransformControls = ({
 	onScale,
 	onRemove,
 }: TransformControlsProps) => {
+	const ignoreClass = "ignore-in-screenshot";
+
 	return (
 		<>
 			{/* Рамка */}
-			<div className="absolute inset-0 border border-dashed border-blue-500 pointer-events-none" />
+			<div
+				className={cn(
+					"absolute inset-0 border border-dashed border-blue-500 pointer-events-none",
+					ignoreClass
+				)}
+			/>
 
 			{/* Вращение */}
 			<motion.div
